@@ -1,0 +1,144 @@
+Implement the following plan:
+
+# Plan : Interface de jeu — Frontend 3D
+
+## Contexte
+Le backend du module `game/` est en place (GamesController.show → `inertia.render('game/home')`). On crée maintenant la page frontend fullscreen avec une scène Three.js (juge au centre, widgets flottants glassmorphism), un fond noir immersif et des effets de lumière dramatiques.
+
+Choix confirmés : GLB pour le modèle 3D, jauge de culpabilité comme widget exemple, input de défense inclus.
+
+---
+
+## Packages à installer
+
+```bash
+cd apps/web && pnpm add three @react-three/fiber @react-three/drei @react-three/postprocessing
+pnpm add -D @types/three
+```
+
+---
+
+## Architecture des fichiers
+
+```
+app/game/ui/
+├── pages/
+│   └── home.tsx                  ← page Inertia (layout='none', fullscreen)
+└── components/
+    ├── Scene3D.tsx               ← Canvas R3F + juge + lumières + objets
+    ├── TimerWidget.tsx           ← timer en haut à gauche (glassmorphism)
+    ├── GuiltGaugeWidget.tsx      ← jauge culpabilité en haut à droite (glassmorphism + glow)
+    └── DefenseInput.tsx          ← input défense en bas au centre (glassmorphism)
+```
+
+---
+
+## Détail des composants
+
+### `pages/home.tsx`
+- `<AppLayout layout="none">` pour supprimer header/sidebar (expérience fullscreen)
+- `<div className="relative w-screen h-screen bg-black overflow-hidden">`
+- Structure de layers :
+  - Layer 0 (z-0) : `<Scene3D />` en position absolute inset-0
+  - Layer 10 (z-10) : `<TimerWidget />`, `<GuiltGaugeWidget />`, `<DefenseInput />`
+- Props passées : `guiltPourcent` (depuis `usePage().props` ou hardcodé à `0` pour l'instant)
+
+### `Scene3D.tsx`
+Canvas React Three Fiber (`gl={{ antialias: true }}`, `shadows`, `camera={{ fov: 45, position: [0, 0, 5] }}`).
+
+**Lumières :**
+- `<ambientLight intensity={0.2} />` — lumière ambiante sombre
+- `<directionalLight position={[2, 5, 2]} intensity={1.2} color="#ffffff" castShadow />` — lumière principale froide
+- `<pointLight position={[-3, 2, 0]} intensity={0.8} color="#4444ff" />` — rim light bleu gauche
+- `<pointLight position={[3, -1, 0]} intensity={0.5} color="#ff2200" />` — accent rouge bas-droite (culpabilité)
+- `<spotLight position={[0, 6, 0]} intensity={2} angle={0.3} penumbra={0.5} color="#ffffff" />` — spotlight dramatique top
+
+**Juge (placeholder → GLB) :**
+```tsx
+// Placeholder actif tant que le GLB n'est pas fourni
+<mesh position={[0, 0, 0]} castShadow>
+  <capsuleGeometry args={[0.4, 1.2, 16, 32]} />
+  <meshStandardMaterial color="#1a1a2e" metalness={0.3} roughness={0.6} />
+</mesh>
+```
+Quand le GLB est fourni : `useGLTF('/models/judge.glb')` avec morph targets exposés via `ref.current.morphTargetInfluences`.
+
+**Objets flottants (avec `<Float>`):**
+- Gavel (marteau) : box géométrique rotée + `<Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5} />`
+- Document : plane geometry incliné + `<Float speed={2} floatIntensity={0.8} />`
+- Orbe lumineux : `<mesh><sphereGeometry args={[0.08, 16, 16]} /><meshStandardMaterial emissive="#3366ff" emissiveIntensity={3} /></mesh>` × 4, positions aléatoires
+
+**Post-processing :**
+```tsx
+<EffectComposer>
+  <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} height={300} intensity={0.8} />
+</EffectComposer>
+```
+
+**Sol / reflet :**
+`<ContactShadows opacity={0.4} scale={6} blur={2} far={4} color="#000000" />`
+
+### `TimerWidget.tsx`
+```tsx
+// Props: timeRemaining: number (secondes)
+// Affichage: MM:SS avec état d'urgence (rouge si < 60s)
+```
+- Position : `fixed top-6 left-6`
+- Style glassmorphism : `bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-6 py-3`
+- Icône horloge Lucide + texte monospace blanc
+- Si < 60s : border rouge + text rouge + animation pulse CSS
+
+### `GuiltGaugeWidget.tsx`
+```tsx
+// Props: value: number (0-100)
+```
+- Position : `fixed top-6 right-6`
+- SVG arc de cercle (stroke-dasharray/dashoffset) — pas de lib externe
+- Gradient du stroke : vert (0%) → orange (50%) → rouge (100%)
+- Glow CSS : `drop-shadow` sur le SVG arc avec `filter: drop-shadow(0 0 8px currentColor)`
+- Label "CULPABILITÉ" + valeur en % au centre
+- Style glassmorphism identique au Timer
+
+### `DefenseInput.tsx`
+- Position : `fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4`
+- `<textarea>` ou `<input>` glassmorphism
+- Bouton "Envoyer" à droite avec icon SendHorizontal (Lucide)
+- Style : `bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-4`
+- Placeholder : "Présentez votre défense..."
+- État local React `useState` pour la valeur — pas encore connecté à l'API
+
+---
+
+## Fichiers critiques de référence
+- `app/common/ui/components/app_layout.tsx` — pour `layout='none'`
+- `app/core/ui/app/app.tsx` — routing Inertia (`game/home` → `app/game/ui/pages/home.tsx`)
+- `app/core/ui/css/app.css` — imports Tailwind (pas de modification nécessaire)
+- `app/game/controllers/games_controller.ts` — `inertia.render('game/home')` déjà en place
+
+---
+
+## Notes importantes
+- **Pas de SSR** pour cette page : Three.js est client-only. Le jeu ne doit PAS être dans `SSR_ROUTES` (c'est déjà le cas par défaut — rien à changer).
+- **Placeholder GLB** : le composant `Scene3D` accepte une prop optionnelle `modelPath?: string`. Si absent → capsule. Si présent → `useGLTF(modelPath)`. Le switch est transparent pour la page parente.
+- Le style global noir ne doit pas "fuir" sur d'autres pages : le fond noir est `className` sur la `<div>` de la page, pas un override global.
+
+---
+
+## Vérification
+```bash
+# Démarrer le dev server
+cd apps/web && node ace serve --hmr
+
+# Naviguer vers /game (auth requise)
+# Vérifier :
+# ✓ Fond noir fullscreen sans header/sidebar
+# ✓ Canvas 3D visible avec capsule juge + objets flottants
+# ✓ Timer widget en haut à gauche
+# ✓ Gauge culpabilité en haut à droite (valeur 0 par défaut)
+# ✓ Input défense en bas au centre
+# ✓ Effets de bloom visibles sur les orbes lumineux
+# ✓ 0 erreur TypeScript dans app/game/ui/
+```
+
+
+If you need specific details from before exiting plan mode (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/panda/.REDACTED.jsonl

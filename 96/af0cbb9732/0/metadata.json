@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "96af0cbb9732",
+  "session_id": "444696a8-a5a2-410c-aefa-6c6f05042b75",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-02T13:23:55.699619Z",
+  "branch": "fix/ui-ux",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/app/common/ui/components/app_lang_changer.tsx",
+    "apps/web/app/game/controllers/files_controller.ts",
+    "apps/web/app/game/controllers/games_controller.ts",
+    "apps/web/app/game/models/discussion.ts",
+    "apps/web/app/game/models/file.ts",
+    "apps/web/app/game/models/game.ts",
+    "apps/web/app/game/models/message.ts",
+    "apps/web/app/game/ui/components/DefenseInput.tsx",
+    "apps/web/app/game/ui/components/GuiltGaugeWidget.tsx",
+    "apps/web/app/game/ui/components/Scene3D.tsx",
+    "apps/web/app/game/ui/components/TimerWidget.tsx",
+    "apps/web/app/game/ui/pages/home.tsx",
+    "apps/web/app/infrastructure/database/migrations/1772450032402_create_games_table.ts",
+    "apps/web/app/infrastructure/database/migrations/1772450170177_create_files_table.ts",
+    "apps/web/app/infrastructure/database/migrations/1772700000001_create_discussions_table.ts",
+    "apps/web/app/infrastructure/database/migrations/1772700000002_create_messages_table.ts"
+  ],
+  "agent": "Claude Code",
+  "token_usage": {
+    "input_tokens": 2178,
+    "cache_creation_tokens": 91755,
+    "cache_read_tokens": 2196384,
+    "output_tokens": 11187,
+    "api_call_count": 46
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-02T13:23:55.646319Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 519,
+    "total_committed": 519,
+    "agent_percentage": 0
+  }
+}
