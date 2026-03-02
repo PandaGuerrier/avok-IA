@@ -7,7 +7,7 @@ import User from '#users/models/user'
 import { forgotPasswordValidator } from '#auth/validators'
 
 import PasswordResetService from '#users/services/password_reset_service'
-import { primaryDomain } from '#start/domains'
+
 
 @inject()
 export default class ForgotPasswordController {
@@ -30,7 +30,7 @@ export default class ForgotPasswordController {
     const user = await User.findBy('email', validatedData.email)
 
     if (!user) {
-      return response.redirect().toRoute('auth.start.show', {}, { domain: primaryDomain })
+      return response.redirect().toRoute('auth.start.show')
     }
 
     const { token } = await this.passwordResetService.generateToken(user)
@@ -50,6 +50,6 @@ export default class ForgotPasswordController {
     /**
      * Redirect back with a success message.
      */
-    return response.redirect().toRoute('auth.start.show', {}, { domain: primaryDomain })
+    return response.redirect().toRoute('auth.start.show')
   }
 }

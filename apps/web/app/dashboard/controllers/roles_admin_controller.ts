@@ -3,7 +3,7 @@ import Role from '#users/models/role'
 import { AllPermissions } from '#users/utils/permission'
 import { createRoleValidator, updateRoleValidator } from '#dashboard/validators'
 import RolePolicy from '#dashboard/policies/role_policy'
-import { primaryDomain } from '#start/domains'
+
 
 export default class RolesAdminController {
   public async index({ inertia, bouncer }: HttpContext) {
@@ -17,7 +17,7 @@ export default class RolesAdminController {
 
     const payload = await request.validateUsing(createRoleValidator)
     const role = await Role.create(payload)
-    return response.redirect().toRoute('admin_roles.show', { id: role.uuid }, { domain: primaryDomain })
+    return response.redirect().toRoute('admin_roles.show', { id: role.uuid })
   }
 
   public async show({ inertia, params, bouncer }: HttpContext) {
@@ -46,6 +46,6 @@ export default class RolesAdminController {
     const role = await Role.findByOrFail('uuid', params.id)
     await role.delete()
 
-    return response.redirect().toRoute('admin_roles.index', {}, { domain: primaryDomain })
+    return response.redirect().toRoute('admin_roles.index')
   }
 }

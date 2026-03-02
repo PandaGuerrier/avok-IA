@@ -6,7 +6,7 @@ import User from '#users/models/user'
 import UserPolicy from '#dashboard/policies/user_policy'
 
 import { inviteUserValidator } from '#dashboard/validators'
-import { primaryDomain } from '#start/domains'
+
 
 export default class InviteController {
   public async handle({ bouncer, request, response }: HttpContext) {
@@ -24,6 +24,6 @@ export default class InviteController {
       user: user,
     })
 
-    return response.redirect().toRoute('users.index', {}, { domain: primaryDomain })
+    return response.redirect().toRoute('users.index')
   }
 }

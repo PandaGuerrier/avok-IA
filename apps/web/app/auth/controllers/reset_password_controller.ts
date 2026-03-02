@@ -5,7 +5,7 @@ import User from '#users/models/user'
 import { resetPasswordValidator } from '#auth/validators'
 import PasswordResetService from '#users/services/password_reset_service'
 import { inject } from '@adonisjs/core/container'
-import { primaryDomain } from '#start/domains'
+
 
 @inject()
 export default class ResetPasswordController {
@@ -19,7 +19,7 @@ export default class ResetPasswordController {
 
     if (!token) {
       session.flash('resetPasswordError', 'true')
-      return response.redirect().toRoute('auth.forgot_password.show', {}, { domain: primaryDomain })
+      return response.redirect().toRoute('auth.forgot_password.show')
     }
 
     /**
@@ -36,7 +36,7 @@ export default class ResetPasswordController {
 
     if (!token) {
       session.flash('resetPasswordError', 'true')
-      return response.redirect().toRoute('auth.forgot_password.show', {}, { domain: primaryDomain })
+      return response.redirect().toRoute('auth.forgot_password.show')
     }
 
     /**
@@ -56,6 +56,6 @@ export default class ResetPasswordController {
     /**
      * Redirect to the login page.
      */
-    return response.redirect().toRoute('auth.start.show', {}, { domain: primaryDomain })
+    return response.redirect().toRoute('auth.start.show')
   }
 }

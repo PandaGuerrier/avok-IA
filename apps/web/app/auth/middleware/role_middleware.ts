@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 import Role from '#users/models/role'
-import { primaryDomain } from '#start/domains'
+
 
 export const returnToKey = 'return_to'
 
@@ -18,10 +18,10 @@ export default class RoleMiddleware {
   async handle({ auth, response }: HttpContext, next: NextFn, roles: Role[]) {
     const user = auth.user
 
-    if (!user) response.redirect().toRoute('home.show', {}, { domain: primaryDomain })
+    if (!user) response.redirect().toRoute('home.show')
 
     if (!roles.includes(user!.role)) {// todo: fix non-null assertion
-      return response.redirect().toRoute('home.show', {}, { domain: primaryDomain })
+      return response.redirect().toRoute('home.show')
     }
 
     return next()

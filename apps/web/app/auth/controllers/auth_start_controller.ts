@@ -1,6 +1,5 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { afterAuthRedirectRoute } from '#config/auth'
-import { primaryDomain } from '#start/domains'
 import limiter from '@adonisjs/limiter/services/main'
 import { Limiter } from '@adonisjs/limiter'
 
@@ -56,7 +55,7 @@ export default class AuthStartController {
       session.flashErrors({
         E_TOO_MANY_REQUESTS: i18n.t('errors.E_TOO_MANY_REQUESTS'),
       })
-      return response.redirect().toRoute('auth.start.show', {}, { domain: primaryDomain })
+      return response.redirect().toRoute('auth.start.show')
     }
 
     await auth.use('web').login(user)
@@ -67,7 +66,7 @@ export default class AuthStartController {
       return response.redirect().toPath(safeReturnTo)
     }
 
-    return response.redirect().toRoute(afterAuthRedirectRoute, {}, { domain: primaryDomain })
+    return response.redirect().toRoute(afterAuthRedirectRoute)
   }
 
   async register({ auth, request, response }: HttpContext) {
@@ -95,6 +94,6 @@ export default class AuthStartController {
     await auth.use('web').login(user)
     await emitter.emit('user:registered', { user })
 
-    return response.redirect().toRoute(afterAuthRedirectRoute, {}, { domain: primaryDomain })
+    return response.redirect().toRoute(afterAuthRedirectRoute)
   }
 }

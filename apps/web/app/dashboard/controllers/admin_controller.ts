@@ -3,7 +3,7 @@ import AdminPolicy from '#dashboard/policies/admin_policy'
 import WebsiteSetting from '#common/models/website_setting'
 import { editWebsiteSettingsValidator } from '#dashboard/validators'
 import { DateTime } from 'luxon'
-import { primaryDomain } from '#start/domains'
+
 
 export default class AdminController {
   public async handle({ request, response, bouncer }: HttpContext) {
@@ -27,9 +27,7 @@ export default class AdminController {
     })
 
     await settings.save()
-    return response.redirect().toRoute('admin.settings.show', {}, {
-      domain: primaryDomain
-    })
+    return response.redirect().toRoute('admin.settings.show')
   }
 
   public async show({ bouncer, inertia }: HttpContext) {

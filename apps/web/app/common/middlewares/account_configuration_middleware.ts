@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
-import { primaryDomain } from '#start/domains'
+
 
 export default class AccountConfigurationMiddleware {
   allowedRoutes = ['/verification', '/logout', '/me/ban']
@@ -11,7 +11,7 @@ export default class AccountConfigurationMiddleware {
     if (auth.isAuthenticated) {
       const user = auth.user!
       if (!user.isEmailVerified) {
-        return response.redirect().toRoute('verification.wait', {}, { domain: primaryDomain })
+        return response.redirect().toRoute('verification.wait')
       }
       return await next()
     } else return await next()

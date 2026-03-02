@@ -8,7 +8,6 @@
 */
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
-import { primaryDomain } from '#start/domains'
 
 const DashboardController = () => import('#dashboard/controllers/dashboard_controller')
 const UsersController = () => import('#dashboard/controllers/users_controller')
@@ -43,4 +42,3 @@ router
   })
   .prefix('/dashboard')
   .middleware([middleware.auth()])
-  .domain(primaryDomain)

@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 import WebsiteSetting from '#common/models/website_setting'
 import { can, PermissionActions } from '#users/utils/permission'
-import { primaryDomain } from '#start/domains'
+
 
 export default class MaintenanceMiddleware {
   async handle({ request, response, auth  }: HttpContext, next: NextFn) {
@@ -31,7 +31,7 @@ export default class MaintenanceMiddleware {
         return await next()
       }
 
-      return response.redirect().toRoute('maintenance.show', {}, { domain: primaryDomain })
+      return response.redirect().toRoute('maintenance.show')
     }
 
     return await next()

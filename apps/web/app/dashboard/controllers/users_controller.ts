@@ -5,7 +5,7 @@ import UserDto from '#users/dtos/user'
 import UserPolicy from '#dashboard/policies/user_policy'
 import { createUserValidator, editUserValidator, listUserValidator } from '#dashboard/validators'
 import Role from '#users/models/role'
-import { primaryDomain } from '#start/domains'
+
 
 export default class UsersController {
   public async index({ bouncer, inertia, request }: HttpContext) {
@@ -71,7 +71,7 @@ export default class UsersController {
 
     await user.save()
 
-    return response.redirect().toRoute('users.index', {}, { domain: primaryDomain })
+    return response.redirect().toRoute('users.index')
   }
 
   public async update({ bouncer, params, request, response }: HttpContext) {
@@ -89,7 +89,7 @@ export default class UsersController {
 
     await user.save()
 
-    return response.redirect().toRoute('users.index', {}, { domain: primaryDomain })
+    return response.redirect().toRoute('users.index')
   }
 
   public async destroy({ bouncer, params, response }: HttpContext) {
@@ -99,6 +99,6 @@ export default class UsersController {
 
     await user.delete()
 
-    return response.redirect().toRoute('users.index', {}, { domain: primaryDomain })
+    return response.redirect().toRoute('users.index')
   }
 }

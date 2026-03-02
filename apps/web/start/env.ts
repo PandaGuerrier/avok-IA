@@ -37,21 +37,6 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_USER: Env.schema.string(),
   DB_PASSWORD: Env.schema.string.optional(),
   DB_DATABASE: Env.schema.string(),
-
-  /*
-  |----------------------------------------------------------
-  | Variables for configuring the mail package
-  |----------------------------------------------------------
-  */
-  RESEND_API_KEY: Env.schema.string(),
-  EMAIL_FROM: Env.schema.string(),
-  MAIL_FROM_NAME: Env.schema.string(),
-  /*
-  |----------------------------------------------------------
-  | Variables for configuring ally package
-  |----------------------------------------------------------
-  */
-
   /*
   |----------------------------------------------------------
   | Variables for configuring the drive package
@@ -69,16 +54,4 @@ export default await Env.create(new URL('../', import.meta.url), {
   REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),
   REDIS_PASSWORD: Env.schema.string.optional(),
-
-  /*
-  |----------------------------------------------------------
-  | Variables for @vbusatta/adonis-stripe
-  |----------------------------------------------------------
-  */
-  STRIPE_API_KEY: Env.schema.string(),
-  STRIPE_WEBHOOK: Env.schema.string.optional(),
-  STRIPE_API_VERSION: Env.schema.string.optional(),
-
-  PRIMARY_DOMAIN: Env.schema.string.optional(),
-  APP_DOMAIN: Env.schema.string.optional(),
 })

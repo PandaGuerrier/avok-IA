@@ -5,7 +5,7 @@ import type { NextFn } from '@adonisjs/core/types/http'
 import type { Authenticators } from '@adonisjs/auth/types'
 
 import { afterAuthRedirectRoute } from '#config/auth'
-import { primaryDomain } from '#start/domains'
+
 
 /**
  * Guest middleware is used to deny access to routes that should
@@ -25,7 +25,7 @@ export default class GuestMiddleware {
   ) {
     for (let guard of options.guards || [ctx.auth.defaultGuard]) {
       if (await ctx.auth.use(guard).check()) {
-        const redirectTo = router.builderForDomain(primaryDomain).make(afterAuthRedirectRoute)
+        const redirectTo = router.makeUrl(afterAuthRedirectRoute)
 
         return ctx.response.redirect(redirectTo, true)
       }

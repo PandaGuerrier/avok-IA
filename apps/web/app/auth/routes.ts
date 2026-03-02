@@ -8,7 +8,6 @@
 */
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-import { primaryDomain } from '#start/domains'
 
 const AuthStartController = () => import('#auth/controllers/auth_start_controller')
 const SignOutController = () => import('#auth/controllers/sign_out_controller')
@@ -55,4 +54,3 @@ router
     // Locale switch
     router.get('/switch/:locale', () => {}).use(middleware.switchLocale())
   })
-.domain(primaryDomain)
