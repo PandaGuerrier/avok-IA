@@ -7,10 +7,9 @@ import {
   beforeCreate,
   belongsTo,
   column,
-  hasMany,
 } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 
 import { attachment, attachmentManager } from '@jrmc/adonis-attachment'
@@ -18,10 +17,7 @@ import type { Attachment } from '@jrmc/adonis-attachment/types/attachment'
 
 import BaseModel from '#common/models/base_model'
 import Role from '#users/models/role'
-
-import ResetPasswordToken from '#users/models/reset_password_token'
 import { randomUUID } from 'crypto'
-import Notification from '#users/models/notification'
 import type { UserPreferences } from '#users/dtos/user'
 
 const AuthFinder = withAuthFinder(() => hash.use('argon'), {
@@ -63,9 +59,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @belongsTo(() => Role)
   declare role: BelongsTo<typeof Role>
 
-  @hasMany(() => ResetPasswordToken)
-  declare resetPasswordTokens: HasMany<typeof ResetPasswordToken>
-
   @column()
   declare provider: string | null
 
@@ -74,9 +67,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
     prepare: (value) => JSON.stringify(value),
   })
   declare preferences: UserPreferences
-
-  @hasMany(() => Notification)
-  declare notifications: HasMany<typeof Notification>
 
   public get id() {
     return this.uuid

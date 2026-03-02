@@ -42,8 +42,6 @@ router.use([
   () => import('#core/middleware/initialize_bouncer_middleware'),
   () => import('#core/middleware/detect_user_locale_middleware'),
   () => import('#auth/middleware/silent_auth_middleware'),
-  () => import('#common/middlewares/account_configuration_middleware'),
-  () => import('#common/middlewares/maintenance_middleware'),
 ])
 
 /**
