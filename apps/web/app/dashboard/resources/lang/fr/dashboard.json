@@ -1,0 +1,139 @@
+{
+  "admin": {
+    "table": {
+      "not_provided": "Aucune donnée fournie",
+      "columns": {
+        "id": "Id du service",
+        "name": "Nom",
+        "dokploy_server_id": "Id du serveur Dokploy",
+        "status": "Status",
+        "actions": "Actions",
+        "domains": "Nom de domaines associés",
+        "user": "Utilisateur référent"
+      },
+      "row_actions": {
+        "redeploy": "Redéployer",
+        "start": "Démarrer",
+        "stop": "Arrêter",
+        "open_menu": "Ouvrir le menu",
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "filters": {
+        "search_placeholder": "Recherche...",
+        "clear_filters": "Effacer les filtres",
+        "no_results": "Aucun résultat trouvé."
+      }
+    },
+    "toolbar": {
+      "invite": "Inviter",
+      "add": "Ajouter"
+    },
+    "delete": {
+      "title": "Supprimer le service",
+      "description": "Êtes-vous sûr de vouloir supprimer <strong1>{{name}}</strong1> ? Cette action supprimera définitivement le service du système. Cette opération est irréversible.",
+      "confirm_placeholder": "Saisissez le nom du service pour confirmer la suppression.",
+      "confirm_button": "Supprimer",
+      "alert": {
+        "title": "Attention!",
+        "description": "Soyez prudent, cette opération ne peut pas être annulée."
+      },
+      "toast": {
+        "title": "Le service a été supprimé :"
+      }
+    }
+  },
+  "services": {
+    "store": {
+      "title": "Création & Attribution d'un service",
+      "description": "Attribuez un service (créé au préalable sur Dokploy)",
+      "form": {
+        "name": {
+          "label": "Nom du service",
+          "placeholder": "Mon app trop chouette"
+        },
+        "dokployApiKey": {
+          "label": "Clé API Dokploy",
+          "placeholder": "*********"
+        },
+        "dokployServerId": {
+          "label": "Id du serveur Dokploy",
+          "placeholder": "12pl-_ddzz"
+        },
+        "domains": {
+          "label": "Domaines du site web (facultatif)",
+          "placeholder": "pandaguerrier.fr, conodia.fr, .."
+        }
+      }
+    },
+    "actions": {
+      "start": {
+        "title": "Démarrer votre application",
+        "description": "Voulez-vous vraiment démarrer cette application ?",
+        "buttons": {
+          "submit": "Démarrer l'application",
+          "cancel": "Annuler"
+        },
+        "toast": {
+          "title": "Succès",
+          "description": "Votre service a bien été démarré !"
+        }
+      },
+      "stop": {
+        "title": "Arrêt",
+        "description": "Voulez-vous vraiment arrêter cette application ?",
+        "buttons": {
+          "submit": "Arrêter l'application",
+          "cancel": "Annuler"
+        },
+        "toast": {
+          "title": "Succès",
+          "description": "Votre service a bien été arrêté !"
+        }
+      },
+      "redeploy": {
+        "title": "Redeployer",
+        "description": "Voulez-vous vraiment redéployer cette application ?",
+        "buttons": {
+          "submit": "Redéployer l'application",
+          "cancel": "Annuler"
+        },
+        "toast": {
+          "title": "Succès",
+          "description": "Votre service a bien été redéployé !"
+        }
+      }
+    },
+    "index": {
+      "page": {
+        "title": "Vos services",
+        "description": "Gérez vos services avec une interface intuitive.",
+        "breadcrumbs": {
+          "services": "Services"
+        }
+      },
+      "status": {
+        "active": "En ligne",
+        "launching": "Lancement",
+        "inactive": "Hors ligne"
+      },
+      "table": {
+        "not_provided": "Aucune donnée fournie",
+        "columns": {
+          "id": "Id du service",
+          "name": "Nom",
+          "dokploy_server_id": "Id du serveur Dokploy",
+          "status": "Status",
+          "actions": "Actions",
+          "domains": "Nom de domaines associés"
+        },
+        "row_actions": {
+          "redeploy": "Redéployer",
+          "start": "Démarrer",
+          "stop": "Arrêter",
+          "open_menu": "Ouvrir le menu"
+        }
+      }
+    }
+  }
+}

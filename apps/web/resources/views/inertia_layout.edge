@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="{{ asset('resources/images/favicon.png')}}">
+
+    <!-- SEO -->
+    <meta name="description" content="Eaglet" />
+    <meta name="keywords" content="Eaglet" />
+    <meta name="author" content="Eaglet" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Eaglet" />
+    <meta property="og:description" content="Eaglet" />
+
+    <!-- Twitter -->
+    <meta name="twitter:title" content="Eaglet" />
+    <meta name="twitter:description" content="Eaglet" />
+
+    <title inertia>
+      Eaglet
+    </title>
+
+    @stack('dumper')
+    @viteReactRefresh()
+    @inertiaHead()
+    @vite([
+    'resources/js/app.js',
+    'app/core/ui/app/app.tsx'
+    ])
+  </head>
+
+  <body class="min-h-screen w-screen font-sans">
+    @inertia()
+  </body>
+
+</html>
