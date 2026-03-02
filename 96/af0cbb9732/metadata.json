@@ -3,7 +3,7 @@
   "checkpoint_id": "96af0cbb9732",
   "strategy": "manual-commit",
   "branch": "fix/ui-ux",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "apps/web/adonisrc.ts",
     "apps/web/app/common/ui/components/app_footer.tsx",
@@ -22,6 +22,7 @@
     "apps/web/app/game/models/file.ts",
     "apps/web/app/game/models/game.ts",
     "apps/web/app/game/models/message.ts",
+    "apps/web/app/game/routes.ts",
     "apps/web/app/game/ui/components/DefenseInput.tsx",
     "apps/web/app/game/ui/components/GuiltGaugeWidget.tsx",
     "apps/web/app/game/ui/components/Scene3D.tsx",
@@ -56,13 +57,20 @@
       "context": "/96/af0cbb9732/1/context.md",
       "content_hash": "/96/af0cbb9732/1/content_hash.txt",
       "prompt": "/96/af0cbb9732/1/prompt.txt"
+    },
+    {
+      "metadata": "/96/af0cbb9732/2/metadata.json",
+      "transcript": "/96/af0cbb9732/2/full.jsonl",
+      "context": "/96/af0cbb9732/2/context.md",
+      "content_hash": "/96/af0cbb9732/2/content_hash.txt",
+      "prompt": "/96/af0cbb9732/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 2289,
-    "cache_creation_tokens": 267148,
-    "cache_read_tokens": 9630207,
-    "output_tokens": 41616,
-    "api_call_count": 153
+    "input_tokens": 5059,
+    "cache_creation_tokens": 300614,
+    "cache_read_tokens": 10500436,
+    "output_tokens": 52397,
+    "api_call_count": 177
   }
 }

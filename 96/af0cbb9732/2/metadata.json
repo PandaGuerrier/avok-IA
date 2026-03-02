@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "96af0cbb9732",
+  "session_id": "bbeadd78-2a44-4f0e-83f5-b59cb0078df3",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-02T13:23:56.09166Z",
+  "branch": "fix/ui-ux",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/app/common/ui/components/app_lang_changer.tsx",
+    "apps/web/app/game/controllers/files_controller.ts",
+    "apps/web/app/game/controllers/games_controller.ts",
+    "apps/web/app/game/models/discussion.ts",
+    "apps/web/app/game/models/file.ts",
+    "apps/web/app/game/models/game.ts",
+    "apps/web/app/game/models/message.ts",
+    "apps/web/app/game/routes.ts",
+    "apps/web/app/infrastructure/database/migrations/1772450032402_create_games_table.ts",
+    "apps/web/app/infrastructure/database/migrations/1772450170177_create_files_table.ts",
+    "apps/web/app/infrastructure/database/migrations/1772700000001_create_discussions_table.ts",
+    "apps/web/app/infrastructure/database/migrations/1772700000002_create_messages_table.ts"
+  ],
+  "agent": "Claude Code",
+  "token_usage": {
+    "input_tokens": 2770,
+    "cache_creation_tokens": 33466,
+    "cache_read_tokens": 870229,
+    "output_tokens": 10781,
+    "api_call_count": 24
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-02T13:23:56.018472Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 238,
+    "total_committed": 238,
+    "agent_percentage": 0
+  },
+  "transcript_path": ".claude/projects/-Users-panda-WebstormProjects-projetiakid/bbeadd78-2a44-4f0e-83f5-b59cb0078df3.jsonl"
+}

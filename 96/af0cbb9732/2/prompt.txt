@@ -1,0 +1,114 @@
+Implement the following plan:
+
+# Plan : Système de jeu — Backend (Étape 1/2)
+
+## Contexte
+Le module `app/game/` existe déjà avec `Game`, `File`, leurs migrations, et un `GamesController` vide. On ajoute la session de discussion et les messages de chat IA, puis (étape 2 après validation) la page frontend 3D/glassmorphism.
+
+---
+
+## Étape 1 : Backend (ce plan)
+
+### Migrations à créer
+
+**`app/infrastructure/database/migrations/1772700000001_create_discussions_table.ts`**
+- `uuid` (PK)
+- `game_uuid` uuid, FK → `games.uuid`, nullable
+- `created_at` / `updated_at` timestamps
+
+**`app/infrastructure/database/migrations/1772700000002_create_messages_table.ts`**
+- `uuid` (PK)
+- `discussion_uuid` uuid, FK → `discussions.uuid`, notNullable
+- `user_input` text, nullable
+- `ai_response` text, nullable
+- `created_at` / `updated_at` timestamps
+
+---
+
+### Modèles à créer
+
+**`app/game/models/discussion.ts`**
+- UUID PK, `selfAssignPrimaryKey = true`, `@beforeCreate` → `randomUUID()`
+- `@column() declare gameUuid: string | null`
+- `@hasMany(() => Message) declare messages: HasMany<typeof Message>`
+- `@belongsTo(() => Game) declare game: BelongsTo<typeof Game>`
+- Timestamps `@column.dateTime`
+
+**`app/game/models/message.ts`**
+- UUID PK, `selfAssignPrimaryKey = true`, `@beforeCreate` → `randomUUID()`
+- `@column() declare discussionUuid: string`
+- `@column() declare userInput: string | null`
+- `@column() declare aiResponse: string | null`
+- `@belongsTo(() => Discussion) declare discussion: BelongsTo<typeof Discussion>`
+- Timestamps `@column.dateTime`
+
+---
+
+### Modèles à modifier
+
+**`app/game/models/game.ts`** — ajouter :
+- `@hasMany(() => Discussion) declare discussions: HasMany<typeof Discussion>`
+
+---
+
+### Routes — `app/game/routes.ts`
+```ts
+router.get('/game', [GamesController, 'show']).as('game.show').middleware(middleware.auth())
+```
+
+### Controller — `app/game/controllers/games_controller.ts`
+Ajouter méthode `show` :
+```ts
+async show({ inertia }: HttpContext) {
+  return inertia.render('game/home')
+}
+```
+
+---
+
+## Fichiers touchés
+| Action | Chemin |
+|--------|--------|
+| Créer | `app/infrastructure/database/migrations/1772700000001_create_discussions_table.ts` |
+| Créer | `app/infrastructure/database/migrations/1772700000002_create_messages_table.ts` |
+| Créer | `app/game/models/discussion.ts` |
+| Créer | `app/game/models/message.ts` |
+| Modifier | `app/game/models/game.ts` |
+| Modifier | `app/game/routes.ts` |
+| Modifier | `app/game/controllers/games_controller.ts` |
+
+---
+
+## Étape 2 : Frontend (après ta validation)
+- Installer `three`, `@react-three/fiber`, `@react-three/drei` dans `apps/web`
+- Page `app/game/ui/pages/home.tsx` — fullscreen 100vh, Canvas 3D z-0 + UI flottante z-10
+- Composants glassmorphism dans `app/game/ui/components/` :
+  - `GlassContainer.tsx` — wrapper HOC style glassmorphism
+  - `TimeRemainingWidget.tsx` — timer statique en haut
+  - `GuiltyScoreWidget.tsx` — jauge circulaire en haut à droite
+  - `DefenseInput.tsx` — input chat en bas
+  - `Scene3D.tsx` — capsule avatar + objets flottants + lumières
+
+---
+
+## Vérification (Étape 1)
+```bash
+cd apps/web
+node ace migration:run --dry-run   # → 2 nouvelles migrations listées sans erreur
+node ace build                      # → 0 erreur TypeScript
+```
+
+
+If you need specific details from before exiting plan mode (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/panda/.REDACTED.jsonl
+
+---
+
+implemente l'ui de game (dans apps/web/app/game/ui/pages), je veux un style 3d avec des éléments flottants, avec un fond noir, mais très visuel, effets de lumière..
+
+Au millieu un model 3d (une personne, la "judge"), qui aura des expression de visages (je te donnerai le model 3d, tu le veux en quel format ?).
+
+je veux des éléments flottant: un timer, et un élement flottant exemple;
+
+---
+
+[Request interrupted by user for tool use]
