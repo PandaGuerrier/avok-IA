@@ -1,0 +1,193 @@
+Implement the following plan:
+
+# Plan: Nettoyage du projet — base fraîche
+
+## Contexte
+Le projet contient plusieurs modules fonctionnels (billing, newsletter, tenants/sites builder) qui ne font plus partie du scope. L'objectif est de supprimer tout ce qui n'est pas essentiel et de repartir sur une base simple avec : auth, home, dashboard, système de rôles & permissions, et gestion du profil utilisateur.
+
+---
+
+## Modules entiers à supprimer (rm -rf)
+- `apps/web/app/billing/`
+- `apps/web/app/newsletter/`
+- `apps/web/app/tenants/`
+
+---
+
+## Migrations à supprimer
+- `1737139066941_create_subscriptions_table.ts`
+- `1766488325080_create_bans_table.ts`
+- `1771245825038_create_newsletters_table.ts`
+- `1771245825039_create_user_subscriptions_table.ts`
+- `1772000000001_create_themes_table.ts`
+- `1772000000002_create_websites_table.ts`
+- `1772000000003_create_website_images_table.ts`
+- `1772000000004_create_domains_table.ts`
+- `1772000000005_alter_subscriptions_add_website_limits.ts`
+- `1772600000005_add_theme_config_to_websites.ts`
+
+---
+
+## Fichiers individuels à supprimer
+**Module users (ban system) :**
+- `apps/web/app/users/models/ban.ts`
+- `apps/web/app/users/controllers/bans_controller.ts`
+- `apps/web/app/users/dtos/ban.ts`
+- `apps/web/app/users/ui/pages/moderation/banned.tsx`
+
+**Module dashboard (ban + impersonation) :**
+- `apps/web/app/dashboard/controllers/impersonates_controller.ts`
+- `apps/web/app/dashboard/ui/components/users/dialogs/users_ban_dialog.tsx`
+- `apps/web/app/dashboard/ui/components/users/dialogs/users_unban_dialog.tsx`
+- `apps/web/app/dashboard/ui/components/users/dialogs/users_impersonate_dialog.tsx`
+
+---
+
+## Fichiers à modifier
+
+### 1. `apps/web/adonisrc.ts`
+Supprimer des preloads :
+- `() => import("#billing/routes")`
+- `() => import("#billing/start/event")`
+- `() => import("#newsletter/start/view")`
+- `() => import("#newsletter/routes")`
+- `() => import("#tenants/routes")`
+
+Supprimer des providers :
+- `() => import("@adonisjs/ally/ally_provider")` *(social/OAuth auth)*
+- `() => import("@vbusatta/adonis-stripe/provider")`
+
+### 2. `apps/web/start/kernel.ts`
+Du `router.use([...])`, retirer :
+- `() => import('#core/middleware/ban_middleware')`
+- `() => import('#tenants/middlewares/website_onboarding_middleware')`
+
+Des named middleware, retirer :
+- `verifyStripeWebhook: () => import('#billing/middleware/verify_stripe_webhook_middleware')`
+- `origin: () => import('#tenants/middlewares/origin_middleware')`
+- `tenant: () => import('#tenants/middlewares/tenants_middleware')`
+- `websiteOnboarding: () => import('#tenants/middlewares/website_onboarding_middleware')`
+
+### 3. `apps/web/app/users/models/user.ts`
+- Retirer les imports : `Ban`, `Subscription`
+- Retirer les colonnes : `subscriptionUuid`, `isBanned`, `banUuid`
+- Retirer les relations : `ban`, `subscription`
+- Nettoyer les hooks `afterFind` / `afterFetch` (retirer le chargement de `subscription`)
+
+### 4. `apps/web/app/users/routes.ts`
+- Retirer l'import `BansController`
+- Retirer les routes : `POST /ban`, `DELETE /unban/:userUuid`, `GET /me/ban`
+
+### 5. `apps/web/app/dashboard/routes.ts`
+Retirer les imports et routes :
+- Tout ce qui concerne `AdminNewslettersController`
+- Tout ce qui concerne `AdminSubscriptionsController` / `AdminStatsSubscriptionsController`
+- Tout ce qui concerne `UserSubscriptionController` (billing dans le dashboard)
+- Route `POST /users/impersonate/:id` + import `ImpersonatesController`
+
+### 6. `apps/web/app/infrastructure/database/migrations/1737139066942_create_users_table.ts`
+Retirer du `createTable` :
+- `subscription_uuid` + sa référence FK vers `subscriptions`
+- `is_banned`
+- `ban_uuid`
+
+### 7. `apps/web/app/dashboard/ui/components/users/users_dialogs.tsx`
+Retirer les imports et usages des dialogs : `UsersBanDialog`, `UsersUnbanDialog`, `UsersImpersonateDialog`
+
+### 8. `apps/web/app/dashboard/ui/components/users/users_row_actions.tsx`
+Retirer les actions ban/unban/impersonate
+
+### 9. `apps/web/app/dashboard/ui/components/users/users_action_dialog.tsx`
+Retirer les types/cas liés à ban/unban/impersonate
+
+---
+
+## À garder intact
+- `apps/web/app/auth/` — complet (sauf éventuellement SocialController si ally est retiré)
+- `apps/web/app/home/` — complet
+- `apps/web/app/dashboard/` — partiellement nettoyé (voir ci-dessus)
+- `apps/web/app/users/` — partiellement nettoyé (ban supprimé)
+- `apps/web/app/core/` — complet
+- `apps/web/app/common/` — complet
+- Migrations restantes : roles, users, reset_password_tokens, access_tokens, rate_limits, verification_tokens, notifications, website_settings
+
+---
+
+## Vérification
+1. `node ace migration:run --dry-run` — doit passer sans erreur
+2. `node ace build` — pas d'erreurs TypeScript
+3. Naviguer vers `/`, `/auth/start`, `/dashboard` — pages s'affichent correctement
+4. Naviguer vers `/dashboard/admin/roles` — gestion des rôles fonctionne
+
+
+If you need specific details from before exiting plan mode (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/panda/.REDACTED.jsonl
+
+---
+
+Contexte :
+Je construis une application web avec AdonisJS v6 (backend) et Inertia.js avec React (frontend).
+ATTENTION : Mon backend AdonisJS utilise une architecture modulaire / microservice par domaine. Ne génère pas les fichiers dans les dossiers par défaut (app/Models, app/Controllers, etc.). Tout ce qui concerne le jeu doit aller dans le dossier app/game/.
+
+Objectif :
+Implémenter le système de jeu de la page principale : la structure de la base de données, la logique backend et les composants UI (avec un style Glassmorphism et une scène 3D).
+
+1. Backend : Modèles et Base de données (AdonisJS v6 - Structure Modulaire)
+Génère les migrations et les modèles Lucid pour gérer la session de jeu et l'historique de conversation.
+
+Model Discussion :
+
+Chemin exact : app/game/models/discussion.ts
+
+Sert de conteneur pour la session de jeu.
+
+Relation : hasMany vers le modèle Message.
+
+Model Message (renommé depuis "text" pour éviter les conflits SQL) :
+
+Chemin exact : app/game/models/message.ts
+
+Champs : id, discussionId (Foreign Key), userInput (Text), aiResponse (Text), timestamps.
+
+Relation : belongsTo vers le modèle Discussion.
+
+Action requise pour Claude : Crée les migrations correspondantes. Crée les modèles strictement dans les chemins indiqués. Si tu dois ajouter des routes, ajoute-les dans app/game/routes.ts.
+
+2. Frontend : Dépendances et Layout (Inertia + React)
+Dépendances 3D : Assure-toi que @react-three/fiber et @react-three/drei sont installés pour gérer la 3D.
+
+Structure de la page (inertia/pages/game/home.tsx - ou le dossier frontend équivalent selon mon repo) :
+
+La page doit prendre 100% de l'écran (100vh, 100vw, overflow-hidden).
+
+Elle doit contenir deux couches superposées :
+
+Background (z-0) : Le <Canvas> 3D.
+
+Foreground/UI (z-10) : L'interface avec les composants flottants et l'input de chat, positionnés en absolute par-dessus le Canvas.
+
+3. Frontend : Composants UI & Glassmorphism
+Crée les composants suivants (dans inertia/components/game/ ou dossier équivalent). Utilise Tailwind CSS pour l'effet "Glassmorphism" (ex: bg-white/10 backdrop-blur-md border border-white/20 shadow-lg text-white).
+
+GlassContainer.tsx : Un wrapper (HOC) qui applique le style glassmorphism et accepte des children.
+
+TimeRemainingWidget.tsx : Utilise GlassContainer. Affiche un temps statique pour l'instant (ex: "05:00"). Positionné en haut.
+
+GuiltyScoreWidget.tsx : Utilise GlassContainer. Affiche une jauge circulaire avec un pourcentage (ex: "75% Guilty"). Positionné en haut à droite.
+
+DefenseInput.tsx : Utilise le style glassmorphism. Positionné en bas de l'écran. Contient un <input type="text"> pour la défense du joueur et un bouton d'envoi.
+
+4. Frontend : La scène 3D (React Three Fiber)
+Crée un composant Scene3D.tsx qui sera appelé dans la page en background :
+
+Environnement : Ajoute des lumières (ambientLight, directionalLight).
+
+Avatar (Placeholder) : Ajoute une forme simple (ex: <Capsule> via @react-three/drei) centrée. Fais-la tourner légèrement dans un useFrame.
+
+Éléments flottants 3D : Ajoute des petites géométries flottant doucement autour de l'avatar pour créer de la profondeur.
+
+Consigne finale pour Claude :
+Procéde étape par étape. Commence par les migrations et les modèles dans le dossier app/game/models/. Demande-moi mon accord avant de passer à l'étape suivante (Frontend).
+
+---
+
+[Request interrupted by user for tool use]

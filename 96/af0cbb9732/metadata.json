@@ -5,7 +5,17 @@
   "branch": "fix/ui-ux",
   "checkpoints_count": 1,
   "files_touched": [
+    "apps/web/adonisrc.ts",
+    "apps/web/app/common/ui/components/app_footer.tsx",
     "apps/web/app/common/ui/components/app_lang_changer.tsx",
+    "apps/web/app/common/ui/components/nav_user.tsx",
+    "apps/web/app/core/policies/main.ts",
+    "apps/web/app/dashboard/policies/user_policy.ts",
+    "apps/web/app/dashboard/routes.ts",
+    "apps/web/app/dashboard/ui/components/users/users_dialogs.tsx",
+    "apps/web/app/dashboard/ui/components/users/users_row_actions.tsx",
+    "apps/web/app/dashboard/ui/components/users/users_table.tsx",
+    "apps/web/app/dashboard/ui/pages/index.tsx",
     "apps/web/app/game/controllers/files_controller.ts",
     "apps/web/app/game/controllers/games_controller.ts",
     "apps/web/app/game/models/discussion.ts",
@@ -17,10 +27,20 @@
     "apps/web/app/game/ui/components/Scene3D.tsx",
     "apps/web/app/game/ui/components/TimerWidget.tsx",
     "apps/web/app/game/ui/pages/home.tsx",
+    "apps/web/app/home/ui/pages/index.tsx",
+    "apps/web/app/home/ui/pages/maintenance.tsx",
+    "apps/web/app/infrastructure/database/migrations/1737139066942_create_users_table.ts",
     "apps/web/app/infrastructure/database/migrations/1772450032402_create_games_table.ts",
     "apps/web/app/infrastructure/database/migrations/1772450170177_create_files_table.ts",
     "apps/web/app/infrastructure/database/migrations/1772700000001_create_discussions_table.ts",
-    "apps/web/app/infrastructure/database/migrations/1772700000002_create_messages_table.ts"
+    "apps/web/app/infrastructure/database/migrations/1772700000002_create_messages_table.ts",
+    "apps/web/app/users/dtos/user.ts",
+    "apps/web/app/users/models/user.ts",
+    "apps/web/app/users/routes.ts",
+    "apps/web/app/users/ui/context/users_context.tsx",
+    "apps/web/config/inertia.ts",
+    "apps/web/package.json",
+    "apps/web/start/kernel.ts"
   ],
   "sessions": [
     {
@@ -29,13 +49,20 @@
       "context": "/96/af0cbb9732/0/context.md",
       "content_hash": "/96/af0cbb9732/0/content_hash.txt",
       "prompt": "/96/af0cbb9732/0/prompt.txt"
+    },
+    {
+      "metadata": "/96/af0cbb9732/1/metadata.json",
+      "transcript": "/96/af0cbb9732/1/full.jsonl",
+      "context": "/96/af0cbb9732/1/context.md",
+      "content_hash": "/96/af0cbb9732/1/content_hash.txt",
+      "prompt": "/96/af0cbb9732/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 2178,
-    "cache_creation_tokens": 91755,
-    "cache_read_tokens": 2196384,
-    "output_tokens": 11187,
-    "api_call_count": 46
+    "input_tokens": 2289,
+    "cache_creation_tokens": 267148,
+    "cache_read_tokens": 9630207,
+    "output_tokens": 41616,
+    "api_call_count": 153
   }
 }

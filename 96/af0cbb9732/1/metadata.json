@@ -1,0 +1,50 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "96af0cbb9732",
+  "session_id": "a47ecf4b-d0c5-4e37-9979-bb2b610f250b",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-02T13:23:55.955164Z",
+  "branch": "fix/ui-ux",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/web/adonisrc.ts",
+    "apps/web/app/common/ui/components/app_footer.tsx",
+    "apps/web/app/common/ui/components/app_lang_changer.tsx",
+    "apps/web/app/common/ui/components/nav_user.tsx",
+    "apps/web/app/core/policies/main.ts",
+    "apps/web/app/dashboard/policies/user_policy.ts",
+    "apps/web/app/dashboard/routes.ts",
+    "apps/web/app/dashboard/ui/components/users/users_dialogs.tsx",
+    "apps/web/app/dashboard/ui/components/users/users_row_actions.tsx",
+    "apps/web/app/dashboard/ui/components/users/users_table.tsx",
+    "apps/web/app/dashboard/ui/pages/index.tsx",
+    "apps/web/app/home/ui/pages/index.tsx",
+    "apps/web/app/home/ui/pages/maintenance.tsx",
+    "apps/web/app/infrastructure/database/migrations/1737139066942_create_users_table.ts",
+    "apps/web/app/users/dtos/user.ts",
+    "apps/web/app/users/models/user.ts",
+    "apps/web/app/users/routes.ts",
+    "apps/web/app/users/ui/context/users_context.tsx",
+    "apps/web/config/inertia.ts",
+    "apps/web/package.json",
+    "apps/web/start/kernel.ts"
+  ],
+  "agent": "Claude Code",
+  "token_usage": {
+    "input_tokens": 111,
+    "cache_creation_tokens": 175393,
+    "cache_read_tokens": 7433823,
+    "output_tokens": 30429,
+    "api_call_count": 107
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-02T13:23:55.775275Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 1293,
+    "total_committed": 12,
+    "agent_percentage": 0
+  },
+  "transcript_path": ".claude/projects/-Users-panda-WebstormProjects-projetiakid/a47ecf4b-d0c5-4e37-9979-bb2b610f250b.jsonl"
+}
