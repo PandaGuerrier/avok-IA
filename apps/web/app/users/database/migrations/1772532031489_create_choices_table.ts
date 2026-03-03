@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.uuid('uuid').primary()
       table.uuid('game_uuid').references('uuid').inTable('games').onDelete('CASCADE')
       table.json('data')
+      table.text('response')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

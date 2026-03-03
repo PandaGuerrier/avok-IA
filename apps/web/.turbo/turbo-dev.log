@@ -1,13 +1,1607 @@
-[?9001h[?1004h[?25l[2J[m[2;1H> web@0.0.0 dev C:\Users\nogue\OneDrive - Efrei\Bureau\Dev\WebStorm\avok-IA\apps\web
-> node ace serve --hmr[5;1H]0;C:\WINDOWS\system32\cmd.exe[?25hc[?9001h[?1004h[?25l[H[K
-[K
-[K
-[K
-[K
-[K
-[K
-[K
-[K
-[K[H[?25h[ [34minfo [m] starting HTTP server...
-[30m[41m ELIFECYCLE [m [31mCommand failed with exit code 1.
-[m[?9001l[?1004l
+
+> web@0.0.0 dev /Users/panda/WebstormProjects/avok-IA/apps/web
+> node ace serve --hmr
+
+c[ [34minfo[39m ] starting HTTP server...
+[2m╭[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╮[22m
+[2m│[22m                                                 [2m│[22m
+[2m│[22m    Server address: [36mhttp://localhost:3333[39m        [2m│[22m
+[2m│[22m    Watch Mode: [36mHMR[39m                              [2m│[22m
+[2m│[22m    Ready in: [36m443 ms[39m                             [2m│[22m
+[2m│[22m                                                 [2m│[22m
+[2m╰[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╯[22m
+[14:47:36.522] [32mINFO[39m (53967): [36mstarted HTTP server on localhost:3333[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m2:49:36 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/start.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772549429-uL3UCOdNvov2ecA7F1uL'[39m,
+  created: [33m1772549429[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1516[39m,
+    prompt_tokens: [33m509[39m,
+    total_tokens: [33m2025[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m659[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m508[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00047265[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00047265[39m,
+      upstream_inference_prompt_cost: [33m0.00001785[39m,
+      upstream_inference_completions_cost: [33m0.0004548[39m
+    }
+  },
+  provider: [32m'Fireworks'[39m
+}
+Generated data: {"insta":{"conversations":[{"participants":["Jules","Sophie"],"text":"Trop cool la soirée d'hier soir ! On a dansé toute la nuit et on a rencontré plein de gens sympas à l’« L'Arc » ! Le DJ était top, surtout la musique électro de Max ! On s'est arrêtés au kiosque de la rue des Lilas pour prendre un milkshake, c'était vraiment bon."},{"participants":["Léa","Tom"],"text":"Vous pensez que la chasse au trésor à la bibliothèque du parc du Château sera vraiment difficile ? J’ai déjà vu les indices que l’on a trouvés dans le manuel scolaire. J’ai mis mon carnet de notes et une lampe torche. On se retrouve à 15h devant la porte d’enregistrement !"},{"participants":["Alex","Mia"],"text":"Hier, j’ai vu un chat noir au bord de la rivière près de la vieille grange ! Il semblait attendre quelqu’un. J’ai même trouvé un vieux carnet dans l’herbe, il était plein de dessins d’animaux. Je l’ai pris pour l’emmener à la galerie d’art !"},{"participants":["Jules","Paul"],"text":"Le test de maths d’hier était chaud ! Je pensais que je ne réussirais pas la section sur les fractions. Heureusement que j’avais un calculatrice à la main, et un cahier de cours de Mme Leblanc que j’avais copié dans ma trousse. J’ai passé 10 minutes à refaire les problèmes."}],"posts":[{"author":"Jules","caption":"Un coup de soleil à la plage, mais le vent est doux, et la musique des amis rend le temps magique! ☀️🕶️ @beachday","image":"https://example.com/photos/plage.jpg"},{"author":"Sophie","caption":"Les nouveaux sneakers sont arrivés! J’adore la couleur turquoise. #mode #adolescents","image":"https://example.com/photos/sneakers.jpg"},{"author":"Léa","caption":"Je viens d’organiser le club de lecture du mercredi. Venez tous lire “Le Livre de Poche” et discuter! 📚✨","image":"https://example.com/photos/lecture.jpg"}]},"mails":[{"sender":"support@votrebank.fr","subject":"Votre compte a été suspendu","date":"2026-02-28","content":"Bonjour Jules,\n\nSuite à une activité suspecte, votre compte a été suspendu. Pour le réactiver, veuillez cliquer sur le lien ci-dessous.\n\nhttps://votresite.com/reset","type":"spam"},{"sender":"lobby@collegeparis.fr","subject":"Réunion parents/enseignants - 12 mars","date":"2026-03-02","content":"Madame, Monsieur,\n\nNous vous invitons à la réunion parents/enseignants le 12 mars à 18h dans la salle polyvalente. Agenda: suivi académique, activités extrascolaires.\n\nCordialement,\nDirecteur","type":"usuel"},{"sender":"alice@friend.com","subject":"On se voit ce soir?","date":"2026-03-02","content":"Salut Jules,\n\nJ’ai une soirée chez Marie à 20h. Tu es dispo ? On pourra parler de notre projet de science.\n\nÀ+","type":"usuel"}],"notes":{"calendar":[{"date":"2026-03-12","title":"Réunion parents/enseignants","description":"Salle polyvalente, 18h"},{"date":"2026-04-01","title":"Examen de français","description":"École primaire, salle 3B, 08h30"},{"date":"2026-03-15","title":"Planning collégien","description":"Lundi 8h-17h; 8h-9h maths; 9h-10h français; 10h-11h pause café; 11h-12h géographie; 12h-13h midi; 13h-14h biologie; 14h-15h sport (football); 15h-16h musique (guitare); 16h-17h projet artistique; soirées : anniversaire de Mia le 20 mars; sortie cinéma 25 mars."}],"notes":[{"subject":"Maths - Fractions","score":16,"coefficient":2},{"subject":"Français - Rédaction","score":14,"coefficient":1},{"subject":"Sciences - Projet biologie","score":18,"coefficient":3}]}}
+{
+  id: [32m'gen-1772549442-z4p1DpoGXfqHZt3ah52A'[39m,
+  created: [33m1772549442[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m355[39m,
+    prompt_tokens: [33m1236[39m,
+    total_tokens: [33m1591[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m182[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00008678[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00008678[39m,
+      upstream_inference_prompt_cost: [33m0.00003708[39m,
+      upstream_inference_completions_cost: [33m0.0000497[39m
+    }
+  },
+  provider: [32m'DeepInfra'[39m
+}
+{
+  id: [32m'gen-1772549451-8cGpMBTsi5gFppGQJ2AO'[39m,
+  created: [33m1772549451[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  system_fingerprint: [32m'fp_8d13edce1d'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m944[39m,
+    prompt_tokens: [33m1315[39m,
+    total_tokens: [33m2259[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m601[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.000381825[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.000381825[39m,
+      upstream_inference_prompt_cost: [33m0.000098625[39m,
+      upstream_inference_completions_cost: [33m0.0002832[39m
+    }
+  },
+  provider: [32m'Groq'[39m
+}
+{
+  id: [32m'gen-1772549458-XEZJsZDxuDLZvkikRtsV'[39m,
+  created: [33m1772549458[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m489[39m,
+    prompt_tokens: [33m1531[39m,
+    total_tokens: [33m2020[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m148[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00013459[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00013459[39m,
+      upstream_inference_prompt_cost: [33m0.00006124[39m,
+      upstream_inference_completions_cost: [33m0.00007335[39m
+    }
+  },
+  provider: [32m'Novita'[39m
+}
+{
+  id: [32m'gen-1772549466-b8CNaVl6VUc5ntnMXNIb'[39m,
+  created: [33m1772549466[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m511[39m,
+    prompt_tokens: [33m1799[39m,
+    total_tokens: [33m2310[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m126[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00014861[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00014861[39m,
+      upstream_inference_prompt_cost: [33m0.00007196[39m,
+      upstream_inference_completions_cost: [33m0.00007665[39m
+    }
+  },
+  provider: [32m'Novita'[39m
+}
+{
+  id: [32m'gen-1772549480-zWXGgcnq4OEK8kIrZ0BN'[39m,
+  created: [33m1772549480[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m807[39m,
+    prompt_tokens: [33m2057[39m,
+    total_tokens: [33m2864[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m392[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00017469[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00017469[39m,
+      upstream_inference_prompt_cost: [33m0.00006171[39m,
+      upstream_inference_completions_cost: [33m0.00011298[39m
+    }
+  },
+  provider: [32m'DeepInfra'[39m
+}
+c[32mfull-reload[39m app/game/controllers/games_controller.ts
+[2m╭[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╮[22m
+[2m│[22m                                                 [2m│[22m
+[2m│[22m    Server address: [36mhttp://localhost:3333[39m        [2m│[22m
+[2m│[22m    Watch Mode: [36mHMR[39m                              [2m│[22m
+[2m│[22m    Ready in: [36m587 ms[39m                             [2m│[22m
+[2m│[22m                                                 [2m│[22m
+[2m╰[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╯[22m
+[14:53:49.039] [32mINFO[39m (55146): [36mstarted HTTP server on localhost:3333[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m2:54:19 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m2:54:28 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x2)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m2:54:33 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x3)[39m
+c[32mfull-reload[39m app/game/routes.ts
+[2m╭[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╮[22m
+[2m│[22m                                                 [2m│[22m
+[2m│[22m    Server address: [36mhttp://localhost:3333[39m        [2m│[22m
+[2m│[22m    Watch Mode: [36mHMR[39m                              [2m│[22m
+[2m│[22m    Ready in: [36m439 ms[39m                             [2m│[22m
+[2m│[22m                                                 [2m│[22m
+[2m╰[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╯[22m
+[14:54:50.478] [32mINFO[39m (55386): [36mstarted HTTP server on localhost:3333[39m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772549692-BqMvrFnHoRMPrTGhLDdC'[39m,
+  created: [33m1772549692[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m2067[39m,
+    prompt_tokens: [33m509[39m,
+    total_tokens: [33m2576[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m706[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m508[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00063795[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00063795[39m,
+      upstream_inference_prompt_cost: [33m0.00001785[39m,
+      upstream_inference_completions_cost: [33m0.0006201[39m
+    }
+  },
+  provider: [32m'Fireworks'[39m
+}
+Generated data: ```json
+{
+  "insta": {
+    "conversations": [
+      {
+        "participants": ["Léa (12)", "Tom (13)"],
+        "messages": [
+          "Léa : T'as vu la nouvelle casquette de Max au parc ? 😎",
+          "Tom : Oui, la couleur rose pastel ! Et il a mis un sticker de l'emoji '🤖' sur son sac.",
+          "Léa : Je crois qu'il a caché une petite photo de la soirée de l'école dans le sac. On devrait le regarder plus tard.",
+          "Tom : D'accord, j'attends l'anniversaire de Lucas le samedi après l'école. On pourra voir s'il a un nouveau jeu vidéo à montrer."
+        ]
+      },
+      {
+        "participants": ["Mia (15)", "Noah (14)"],
+        "messages": [
+          "Mia : Tu as vu le flyer du concert du groupe 'Echo' qui se fera au centre commercial ?",
+          "Noah : Oui, il y aura un stand de pizza à côté.",
+          "Mia : J'ai pris un ticket via l'appli. J'ai reçu une confirmation par mail, tu devras vérifier qu'il y ait bien un numéro de siège.",
+          "Noah : Je te note l'adresse : 23 Rue des Fleurs, Paris 75012."
+        ]
+      },
+      {
+        "participants": ["Sofia (10)", "Lucas (11)"],
+        "messages": [
+          "Sofia : On joue à cache-cache au lac de la ville ?",
+          "Lucas : Oui, je suis dans l'arbre du vieux chêne.",
+          "Sofia : J'ai laissé mon cahier de dessin sur la pierre rouge, j'espère pas qu'il le trouve.",
+          "Lucas : On peut se retrouver à la maison du voisin après, il n'y a rien d'intéressant à l'intérieur."
+        ]
+      }
+    ],
+    "posts": [
+      {
+        "text": "🌟 La soirée d'anniversaire de Lucas a été épique! 🎉 J'ai capturé un super moment où nous avons tous dansé sous les étoiles. #FriendshipGoals"
+      },
+      {
+        "text": "🎮 Grosse victoire au nouveau jeu vidéo de Max! Il a gagné 1.000 points, c'est incroyable! #GamingLife"
+      },
+      {
+        "text": "💡 J'ai trouvé une astuce pour économiser de l'énergie: mettre la lampe de bureau hors prise pendant les nuits sans sommeil. #SmartHome"
+      },
+      {
+        "text": "📸 Le parc est magnifique en ce printemps! On a vu de nombreuses oiseaux colorés. #NatureLovers"
+      },
+      {
+        "text": "🕺 La première fois que j'ai essayé le breakdance lors du club de danse. J'ai presque perdu l'équilibre! 😂 #DanceFail"
+      }
+    ]
+  },
+  "mails": [
+    {
+      "from": "promo@superdeal.com",
+      "to": "panda@gmail.com",
+      "subject": "Offre exclusive : 50% de réduction sur tous les produits!",
+      "body": "Chère cliente, profitez de notre vente spéciale! Cliquez ici pour bénéficier de l’offre avant minuit."
+    },
+    {
+      "from": "ticketing@concerts.fr",
+      "to": "panda@gmail.com",
+      "subject": "Confirmation de votre ticket - Echo Concert",
+      "body": "Bonjour Jules, votre billet pour le concert de Echo le 15/03/2026 à 20h est confirmé. Siège 15, Section B. Veuillez imprimer ce mail pour l'entrée."
+    },
+    {
+      "from": "moi@panda.com",
+      "to": "amis@panda.com",
+      "subject": "On se retrouve demain après l'école?",
+      "body": "Salut tout le monde! On se voit à 16h15 à la salle de musique? Au plaisir!"
+    },
+    {
+      "from": "phishing@bank-secure.com",
+      "to": "panda@gmail.com",
+      "subject": "Alerte de sécurité: vérification de votre compte",
+      "body": "Votre compte a été bloqué, veuillez cliquer ici pour confirmer vos informations."
+    },
+    {
+      "from": "school@ecole-livres.fr",
+      "to": "panda@gmail.com",
+      "subject": "Annulation de la séance de laboratoire aujourd'hui",
+      "body": "La séance de laboratoire d'aujourd'hui est annulée pour cause de maintenance. Veuillez vérifier votre agenda."
+    }
+  ],
+  "notes": {
+    "calendar": [
+      {
+        "date": "2026-03-07",
+        "timeStart": "08:00",
+        "timeEnd": "09:30",
+        "activity": "Cours de mathématiques",
+        "location": "Salle 2A"
+      },
+      {
+        "date": "2026-03-07",
+        "timeStart": "09:45",
+        "timeEnd": "11:15",
+        "activity": "Cours d'histoire",
+        "location": "Salle 3B"
+      },
+      {
+        "date": "2026-03-07",
+        "timeStart": "11:30",
+        "timeEnd": "13:00",
+        "activity": "Cours de français",
+        "location": "Salle 1C"
+      },
+      {
+        "date": "2026-03-07",
+        "timeStart": "14:00",
+        "timeEnd": "15:30",
+        "activity": "Événement sportif: Basket-ball",
+        "location": "Gymnase"
+      },
+      {
+        "date": "2026-03-07",
+        "timeStart": "16:00",
+        "timeEnd": "17:00",
+        "activity": "Réunion de l'association d'échecs",
+        "location": "Salle 4D"
+      }
+    ],
+    "notes": [
+      {
+        "subject": "Mathématiques - Trigonométrie",
+        "note": 16,
+        "coef": 2
+      },
+      {
+        "subject": "Histoire - Renaissance",
+        "note": 13,
+        "coef": 1.5
+      },
+      {
+        "subject": "Français - Analyse de texte",
+        "note": 14,
+        "coef": 2
+      },
+      {
+        "subject": "Éducation Physique - Techniques de basket",
+        "note": 15,
+        "coef": 1
+      },
+      {
+        "subject": "Échec et Mathématiques - Stratégies combinatoires",
+        "note": 12,
+        "coef": 1
+      }
+    ]
+  }
+}
+```
+[14:55:10.394] [31mERROR[39m (55386): [36mUnexpected token '`', "```json
+{
+"... is not valid JSON[39m
+    [35mrequest_id[39m: "ngp232sbbltrz9r08387ctrn"
+    [35mx-request-id[39m: "ngp232sbbltrz9r08387ctrn"
+    err: {
+      "type": "SyntaxError",
+      "message": "Unexpected token '`', \"```json\n{\n\"... is not valid JSON",
+      "stack":
+          SyntaxError: Unexpected token '`', "```json
+          {
+          "... is not valid JSON
+              at JSON.parse (<anonymous>)
+              at GameService.init (/Users/panda/WebstormProjects/avok-IA/apps/web/app/game/services/game_service.ts:13:17)
+              at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+              at async GamesController.store (/Users/panda/WebstormProjects/avok-IA/apps/web/app/game/controllers/games_controller.ts:33:25)
+              at async ShieldMiddleware.handle (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/@adonisjs+shield@8.2.0_@adonisjs+core@6.19.1_@adonisjs+assembler@7.8.2_typescript@5.9.3_8f6994fb40f4752fe88697728f0ac5cc/node_modules/@adonisjs/shield/build/chunk-2UDO3ZLM.js:28:5)
+              at async SessionMiddleware.handle (/Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/@adonisjs+session@7.5.1_@adonisjs+core@6.19.1_@adonisjs+assembler@7.8.2_typescript@5.9._85ee4176fa0600378f25ef459fe144e8/node_modules/@adonisjs/session/src/session_middleware.ts:81:22)
+              at async InertiaMiddleware.handle (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/@adonisjs+inertia@3.1.1_5898e96c4d280e74621c430438d37d32/node_modules/@adonisjs/inertia/build/chunk-W7TVEB4V.js:393:5)
+              at async ViteMiddleware.handle (/Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/@adonisjs+vite@4.0.0_@adonisjs+core@6.19.1_@adonisjs+assembler@7.8.2_typescript@5.9.3___0c889d3cf0909f8b7b6366a85734836e/node_modules/@adonisjs/vite/src/vite_middleware.ts:42:5)
+              at async <anonymous> (/Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/@adonisjs+static@1.1.1_@adonisjs+core@6.19.1_@adonisjs+assembler@7.8.2_typescript@5.9.3_1c143d8b5b977d159fa1985e6e9f8692/node_modules/@adonisjs/static/src/static_middleware.ts:74:11)
+      "status": 500
+    }
+c[32mfull-reload[39m app/ia/services/ia_service.ts
+[2m╭[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╮[22m
+[2m│[22m                                                 [2m│[22m
+[2m│[22m    Server address: [36mhttp://localhost:3333[39m        [2m│[22m
+[2m│[22m    Watch Mode: [36mHMR[39m                              [2m│[22m
+[2m│[22m    Ready in: [36m620 ms[39m                             [2m│[22m
+[2m│[22m                                                 [2m│[22m
+[2m╰[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╯[22m
+[14:57:31.369] [32mINFO[39m (55915): [36mstarted HTTP server on localhost:3333[39m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772549857-HwppZtTSRUDupZmnnMJl'[39m,
+  created: [33m1772549857[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1251[39m,
+    prompt_tokens: [33m522[39m,
+    total_tokens: [33m1773[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m327[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m4[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.0004117[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.0004117[39m,
+      upstream_inference_prompt_cost: [33m0.0000364[39m,
+      upstream_inference_completions_cost: [33m0.0003753[39m
+    }
+  },
+  provider: [32m'Fireworks'[39m
+}
+Generated data: {"insta":{"conversations":[{"date":"2026-02-28","participants":["panda","lila","toto","mimi"],"text":"Trop cool la soirée d'hier soir ! On a dansé toute la nuit, on a rencontré plein de gens sympas ! Le skatepark de la rue des Lilas était lit, j'ai trouvé une casquette rouge qui me rappelle mon père."},{"date":"2026-02-27","participants":["panda","lila"],"text":"Hier on a fait la visite du musée d'art moderne, j'ai pris une photo du tableau « L'Écho des Ombres » qui pourrait être utile pour le projet de français."},{"date":"2026-02-26","participants":["panda","coco","toto"],"text":"On a trouvé un ancien jeu vidéo « RetroRunner 99 » dans la vieille boutique du 3° étage, ça pourrait être la preuve qu'on a bien passé la chasse au trésor samedi."}] ,"posts":[{"date":"2026-02-28","text":"Vieux souvenir du skatepark, les murs sont couverts de graffitis colorés, je me suis fait un selfie devant le mur bleu, j'ai même trouvé une photo de mon frère dans le coin. #skatepark #rueDesLilas","media":["photo1.jpg"]},{"date":"2026-02-27","text":"Visite du musée d'art moderne, j'ai capturé cette image incroyable d’un tableau en plein éclairage : « L'Écho des Ombres ». #museum #art","media":["museumpic.jpg"]}]},"mails":[{"date":"2026-02-28","from":"support@fakecompany.com","subject":"Vous avez gagné un iPhone 15 Pro !","body":"Félicitations ! Vous avez été sélectionné comme vainqueur de notre grande loterie. Cliquez ici pour récupérer votre prix."},{"date":"2026-02-27","from":"tickets@concert.com","subject":"Votre ticket confirmé : Le Zénith - 30/02/2026","body":"Bonjour Jules,\n\nVous avez bien un ticket pour le concert de \"The Echo\" au Zénith.\n\nLieu : Salle 3, Le Zénith, 123 Boulevard du Palais\nDate : 30/02/2026\nHeure : 20h30\nVotre numéro de siège : 42C\n\nÀ bientôt!","attachments":["ticket.pdf"]},{"date":"2026-02-26","from":"mylittlesister@school.com","subject":"Fête d'anniversaire chez moi !","body":"Salut Panda! \n\nJ'ai organisé une petite fête chez moi demain soir à 19h pour fêter ma 14ème. J'espère que tu peux venir !\n\nBisous,\nLily","attachment":"invite.ics"}],"notes":{"calendar":[{"date":"2026-02-20","event":"Cours de mathématiques, 9h-10h30","type":"school"},{"date":"2026-02-20","event":"Cours d'histoire, 10h45-12h15","type":"school"},{"date":"2026-02-20","event":"Déjeuner","type":"break"},{"date":"2026-02-20","event":"Cours de physique, 13h-14h30","type":"school"},{"date":"2026-02-20","event":"Éducation physique, 15h-16h","type":"extracurricular","activity":"Football"},{"date":"2026-02-20","event":"Cours de musique, 16h15-17h","type":"extracurricular","activity":"Guitar"},{"date":"2026-02-22","event":"Anniversaire de Lucas, 18h à l'arcade","type":"social"},{"date":"2026-02-27","event":"Concert \"The Echo\" au Zénith, 20h30","type":"social","location":"Le Zénith"}],"notes":[{"subject":"Maths","score":17,"max":20,"coef":2,"comment":"Bon travail sur les équations quadratiques."},{"subject":"Français","score":14,"max":20,"coef":1,"comment":"À améliorer la compréhension des textes."},{"subject":"Physique","score":19,"max":20,"coef":1.5,"comment":"Excellente explication des lois de Newton."}]} }
+
+
+
+
+
+
+
+
+[1;1H[0J[2m2:59:04 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772549949-homBUS1LZv4JPTZgxddT'[39m,
+  created: [33m1772549949[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1987[39m,
+    prompt_tokens: [33m522[39m,
+    total_tokens: [33m2509[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m710[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m521[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.000614405[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.000614405[39m,
+      upstream_inference_prompt_cost: [33m0.000018305[39m,
+      upstream_inference_completions_cost: [33m0.0005961[39m
+    }
+  },
+  provider: [32m'Fireworks'[39m
+}
+Generated data: {"insta":{"conversations":[{"participants":["Luna","Jules"],"message":"Trop cool la soirée d'hier soir ! On a dansé toute la nuit et on a rencontré plein de gens sympas, notamment le nouveau de l’info qui porte des baskets rouges."},{"participants":["Mickaël","Jules"],"message":"Yo, tu t’es fait tatouer le bras gauche ? Je voulais le faire aussi, mais j’ai peur du résultat."},{"participants":["Clara","Jules"],"message":"Hey, j’ai vu un nouveau skateboard à la boutique du coin. Tu veux qu’on y aille après l’école, ça pourrait être fun !"}],"posts":[{"title":"Nouveau défi TikTok!","content":"Je viens de finir le challenge #BalletBizarre! Vous avez vu la vidéo?","timestamp":"2026-03-02T20:15:00Z"}]},"mails":[{"id":"mail1","from":"info@espritdelsport.com","subject":"Invitation à la compétition de football","body":"Bonjour Jules,\n\nTu es invité à participer à la compétition inter-écoles de football de la région. Le match aura lieu le 10 mars à 14h00, salle 202.\n\nCordialement,\nL’équipe Sport","date":"2026-02-28T12:30:00Z"},{"id":"mail2","from":"spam@lottery.com","subject":"Vous avez gagné 1 000 000€ !","body":"Félicitations ! Vous êtes le gagnant d’une grosse somme d’argent. Cliquez ici pour réclamer votre prix.\n\nCordialement,\nLotterie","date":"2026-03-01T08:45:00Z"},{"id":"mail3","from":"tante-marie@famille.com","subject":"Petit déjeuner le samedi","body":"Salut mon petit! On vous invite à venir chez moi le samedi 12 mars pour un petit déjeuner entre cousins.\n\nBisous,\nMamie","date":"2026-03-02T16:00:00Z"},{"id":"mail4","from":"eleves@collège.fr","subject":"Ticket de présence pour le 3 mars","body":"Cher Jules,\n\nVous avez été absent le 3 mars, votre ticket de présence est joint.\n\nCordialement,\nLe bureau du collège","date":"2026-03-03T09:00:00Z"}],"notes":{"calendar":[{"date":"2026-03-06","start":"08:00","end":"09:00","activity":"Mathematics","location":"Salle 101"},{"date":"2026-03-06","start":"09:00","end":"10:00","activity":"French","location":"Salle 102"},{"date":"2026-03-06","start":"10:00","end":"11:00","activity":"Physics","location":"Laboratoire"},{"date":"2026-03-06","start":"11:00","end":"11:15","activity":"Break","location":"Cour"},{"date":"2026-03-06","start":"11:15","end":"12:15","activity":"History","location":"Salle 103"},{"date":"2026-03-06","start":"12:15","end":"13:15","activity":"Lunch","location":"Cantine"},{"date":"2026-03-06","start":"13:15","end":"14:15","activity":"Biology","location":"Salle 104"},{"date":"2026-03-06","start":"14:15","end":"15:15","activity":"PE","location":"Gym"},{"date":"2026-03-06","start":"15:15","end":"16:15","activity":"Chemistry","location":"Laboratoire"},{"date":"2026-03-06","start":"16:15","end":"17:00","activity":"Review","location":"Salle 105"},{"date":"2026-03-06","start":"18:00","end":"19:30","activity":"Football","location":"Stadium"},{"date":"2026-03-06","start":"20:00","end":"22:00","activity":"Birthday Party","location":"Home","event":"Friend's Birthday"},{"date":"2026-03-07","start":"08:00","end":"09:00","activity":"Literature","location":"Salle 106"},{"date":"2026-03-07","start":"09:00","end":"10:00","activity":"Geography","location":"Salle 107"},{"date":"2026-03-07","start":"10:00","end":"11:00","activity":"Math","location":"Salle 101"},{"date":"2026-03-07","start":"11:00","end":"11:15","activity":"Break","location":"Cour"},{"date":"2026-03-07","start":"11:15","end":"12:15","activity":"French","location":"Salle 102"},{"date":"2026-03-07","start":"12:15","end":"13:15","activity":"Lunch","location":"Cantine"},{"date":"2026-03-07","start":"13:15","end":"14:15","activity":"Computer Science","location":"Lab 1"},{"date":"2026-03-07","start":"14:15","end":"15:15","activity":"PE","location":"Gym"},{"date":"2026-03-07","start":"15:15","end":"16:15","activity":"History","location":"Salle 103"},{"date":"2026-03-07","start":"16:15","end":"17:00","activity":"Group Project","location":"Salle 105"},{"date":"2026-03-07","start":"18:00","end":"19:30","activity":"Music","location":"School Hall"}],"notes":[{"subject":"Math","grade":15,"coef":2,"comment":"Bonne participation"},{"subject":"Physics","grade":12,"coef":1.5,"comment":"À améliorer la compréhension"},{"subject":"French","grade":18,"coef":2,"comment":"Excellent rédaction"},{"subject":"PE","grade":10,"coef":1,"comment":"Manque d’effort"},{"subject":"Chemistry","grade":14,"coef":1.5,"comment":"Projet solide"}]}}
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:00:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x2)[39m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772550030-Zpt5gig5a9Jcz9dj1n1j'[39m,
+  created: [33m1772550030[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1256[39m,
+    prompt_tokens: [33m522[39m,
+    total_tokens: [33m1778[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m602[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m4[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.0004132[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.0004132[39m,
+      upstream_inference_prompt_cost: [33m0.0000364[39m,
+      upstream_inference_completions_cost: [33m0.0003768[39m
+    }
+  },
+  provider: [32m'Fireworks'[39m
+}
+Generated data: {"insta":{"conversations":["Trop cool la soirée d’hier soir ! On a dansé jusqu’à 3h du matin au club de la rue de la République, Alex a fait la gueule parce qu’il a perdu son smartphone dans le parc derrière le lycée. On a vu aussi Léo qui portait le nouveau casque audio de marque X – il l’a vendu en ligne !","Hier, j’ai trouvé un ticket de métro dans la poche de mon manteau, ça me fait penser que ma sœur était dans le métro à 8h30, même si elle dit qu’elle était encore à la maison.","On se fait un after school à la piscine municipale le samedi, on a prévu de tester le nouveau jeu de réalité virtuelle, ça pourrait nous donner des idées pour le projet de l’info. J’ai vu la nouvelle salle de jeu dans le centre commercial."]},"posts":[{"type":"post","content":"🎉 Hier soir était top ! Club, danse, et de nouvelles rencontres. #SoiréeInoubliable","media":["photo1.jpg"]},{"type":"post","content":"🎬 Le projet de jeu VR est en cours. Des idées ? #Tech #Gaming","media":["screenshot1.png"]}] ,"mails":[{"type":"spam","from":"promo@grandbaiser.com","subject":"Gagnez 1M$ maintenant!","body":"Cher utilisateur, vous avez été sélectionné pour un tirage au sort... Cliquez ici pour réclamer votre prix."},{"type":"spam","from":"noreply@freecredit.ru","subject":"Votre solde de crédit a augmenté!","body":"Vous avez maintenant 10,000$ de crédit gratuit, validez votre compte pour l'utiliser."},{"type":"util","from":"service-gestion@lycee-lyon.fr","subject":"Ticket d'entrée à l'atelier musique","body":"Bonjour Jules,\n\nVous avez bien validé votre présence à l'atelier musique le 12 mars à 15h30.\n\nCordialement\nService de gestion des sorties.\n\nTicket : <ticket12345>"}],"notes":{"calendar":[{"date":"2026-03-12","day":"Monday","start":"08:00","end":"09:40","activity":"Cours de Maths","subject":"Mathématiques"},{"date":"2026-03-12","day":"Monday","start":"10:00","end":"11:40","activity":"Physique","subject":"Physique"},{"date":"2026-03-12","day":"Monday","start":"13:00","end":"14:40","activity":"Français","subject":"Français"},{"date":"2026-03-12","day":"Monday","start":"15:00","end":"16:40","activity":"Sport","subject":"Football"},{"date":"2026-03-12","day":"Monday","start":"17:00","end":"17:30","activity":"Débriefing & devoir","subject":"Général"}],"notes":[{"subject":"Mathématiques","grade":14,"coef":3},{"subject":"Physique","grade":12,"coef":2},{"subject":"Français","grade":15,"coef":2},{"subject":"Football","grade":17,"coef":1}]}}
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:00:41 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x3)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:01:25 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x4)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:01:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x5)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:02:32 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x6)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:02:38 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x7)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:02:44 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x8)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:02:49 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x9)[39m
+[15:03:05.319] [31mERROR[39m (55915): [36mselect * from "games" where "uuid" = $1 limit $2 - invalid input syntax for type uuid: "create"[39m
+    [35mrequest_id[39m: "s26qj2241rwbaz19bch8i3sx"
+    [35mx-request-id[39m: "s26qj2241rwbaz19bch8i3sx"
+    err: {
+      "type": "DatabaseError",
+      "message": "select * from \"games\" where \"uuid\" = $1 limit $2 - invalid input syntax for type uuid: \"create\"",
+      "stack":
+          error: select * from "games" where "uuid" = $1 limit $2 - invalid input syntax for type uuid: "create"
+              at Parser.parseErrorMessage (/Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/pg-protocol@1.10.3/node_modules/pg-protocol/src/parser.ts:369:69)
+              at Parser.handlePacket (/Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/pg-protocol@1.10.3/node_modules/pg-protocol/src/parser.ts:187:21)
+              at Parser.parse (/Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/pg-protocol@1.10.3/node_modules/pg-protocol/src/parser.ts:102:30)
+              at Socket.<anonymous> (/Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/pg-protocol@1.10.3/node_modules/pg-protocol/src/index.ts:7:48)
+              at Socket.emit (node:events:518:28)
+              at addChunk (node:internal/streams/readable:561:12)
+              at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+              at Readable.push (node:internal/streams/readable:392:5)
+              at TCP.onStreamRead (node:internal/stream_base_commons:189:23)
+      "length": 138,
+      "name": "error",
+      "severity": "ERROR",
+      "code": "22P02",
+      "where": "unnamed portal parameter $1 = '...'",
+      "file": "uuid.c",
+      "line": "138",
+      "routine": "string_to_uuid",
+      "status": 500
+    }
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:03:25 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x10)[39m
+c[32mfull-reload[39m app/game/controllers/games_controller.ts
+[2m╭[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╮[22m
+[2m│[22m                                                 [2m│[22m
+[2m│[22m    Server address: [36mhttp://localhost:3333[39m        [2m│[22m
+[2m│[22m    Watch Mode: [36mHMR[39m                              [2m│[22m
+[2m│[22m    Ready in: [36m558 ms[39m                             [2m│[22m
+[2m│[22m                                                 [2m│[22m
+[2m╰[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╯[22m
+[15:03:41.224] [32mINFO[39m (57129): [36mstarted HTTP server on localhost:3333[39m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772550239-GLxnI7INlzlJ35Yaxzpw'[39m,
+  created: [33m1772550239[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1273[39m,
+    prompt_tokens: [33m522[39m,
+    total_tokens: [33m1795[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m356[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m521[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.000400205[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.000400205[39m,
+      upstream_inference_prompt_cost: [33m0.000018305[39m,
+      upstream_inference_completions_cost: [33m0.0003819[39m
+    }
+  },
+  provider: [32m'Fireworks'[39m
+}
+Generated data: {"insta":{"conversations":[{"participants":["Alex","Luna"],"messages":[{"sender":"Alex","timestamp":"2026-02-27T22:12:00Z","text":"Trop cool la soirée d'hier soir ! On a dansé toute la nuit et on a rencontré plein de gens sympas !"},{"sender":"Luna","timestamp":"2026-02-27T22:18:00Z","text":"Oui, surtout le DJ Max qui crache tout le set de basses. On était au Night Owl, c'était dingue."},{"sender":"Alex","timestamp":"2026-02-27T22:20:00Z","text":"Il y avait aussi ce gars avec un skateboard qui faisait des figures près du bar. J'ai pris un selfie avec lui."},{"sender":"Luna","timestamp":"2026-02-27T22:22:00Z","text":"Cool, on doit y retourner l'été prochain. Et toi, tu vas à la compétition de foot dimanche ?"},{"sender":"Alex","timestamp":"2026-02-27T22:25:00Z","text":"Oui, la finale de la ligue junior. On se voit là !"}],"location":"Night Owl","objects":["DJ speakers","skateboard"]} ,{"participants":["Mia","Tom"],"messages":[{"sender":"Mia","timestamp":"2026-02-28T14:10:00Z","text":"Tu as fini le projet sur les volcans ?"},{"sender":"Tom","timestamp":"2026-02-28T14:15:00Z","text":"Pas encore, mais je suis sur l'analyse des données d'éruption. J'ai besoin du graphique que tu m'as envoyé."},{"sender":"Mia","timestamp":"2026-02-28T14:20:00Z","text":"Voici le lien Dropbox. J'espère que c'est suffisant. On se donne les 10 h de vendredi pour le rendre ?"},{"sender":"Tom","timestamp":"2026-02-28T14:25:00Z","text":"Parfait, je t'envoie le brouillon demain matin. À plus."}],"location":"Lycée","objects":["graphique","Dropbox"]} ] , "posts":[{"author":"Luna","timestamp":"2026-02-26T19:00:00Z","caption":"Coup de cœur pour ce skateboard vintage que j'ai déniché ce week-end. #skate #cool"},{"author":"Alex","timestamp":"2026-02-27T21:00:00Z","caption":"Encore un souvenir de la nuit où les étoiles ont brillé au Night Owl. #party"} ]} , "mails":[{"from":"service@example.com","subject":"Vous avez gagné !","body":"Félicitations, vous avez gagné un voyage à la plage. Cliquez ici pour récupérer votre prix!","type":"spam"},{"from":"bureau.sports@lycee.fr","subject":"Ticket de participation","body":"Ce mail certifie que vous, Jules, vous êtes présent à la séance de tennis du 05/03/2026.\n\nNom d'athlète : Jules Lofficial\nN° d'inscription : 12345","type":"utilise"},{"from":"amis@panda.net","subject":"Cinéma ce soir ?","body":"Hé Jules, ça te dit de voir le nouveau film d'action demain soir à 21h au ciné du centre ?","type":"amitié"} ] , "notes":{"calendar":[{"date":"2026-03-04","event":"Match de foot contre les Collège de Villiers","category":"sport"},{"date":"2026-03-05","event":"Séance de tennis","category":"sport"},{"date":"2026-03-06","event":"Anniversaire de Tom","category":"social"},{"date":"2026-03-07","event":"Concert de pop au parc","category":"social"},{"date":"2026-03-08","event":"Cours de musique - piano","category":"extra"},{"date":"2026-03-09","event":"Examen de mathématiques","category":"académique"}],"notes":[{"subject":"Mathématiques","grade":16.5,"coef":2},{"subject":"Français","grade":15,"coef":1},{"subject":"Anglais","grade":14.0,"coef":1.5},{"subject":"Sciences","grade":17,"coef":2},{"subject":"Histoire-Géo","grade":13.5,"coef":1}]}}
+{
+  id: [32m'gen-1772550250-MQz2wdXImluCHFw9fUyb'[39m,
+  created: [33m1772550250[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m341[39m,
+    prompt_tokens: [33m1213[39m,
+    total_tokens: [33m1554[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m140[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00009967[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00009967[39m,
+      upstream_inference_prompt_cost: [33m0.00004852[39m,
+      upstream_inference_completions_cost: [33m0.00005115[39m
+    }
+  },
+  provider: [32m'Novita'[39m
+}
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:05:58 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:06:56 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x2)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:07:16 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x3)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:07:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x4)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:08:55 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:08:58 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:09:49 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m [33m(x2)[39m
+[2m3:09:49 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "@workspace/ui/lib/utils.js" from "../../packages/ui/src/components/multi-loader.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m/Users/panda/WebstormProjects/avok-IA/packages/ui/src/components/multi-loader.tsx[39m:4:19
+[33m  4  |  import { AnimatePresence, motion } from "motion/react";
+  5  |  import { useState, useEffect } from "react";
+  6  |  import { cn } from "@workspace/ui/lib/utils.js";
+     |                      ^
+  7  |  const CheckIcon = ({ className }) => {
+  8  |    return /* @__PURE__ */ jsxDEV([39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:09:49 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@workspace/ui/lib/utils.js" from "../../packages/ui/src/components/multi-loader.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m/Users/panda/WebstormProjects/avok-IA/packages/ui/src/components/multi-loader.tsx[39m:4:19
+[33m  4  |  import { AnimatePresence, motion } from "motion/react";
+  5  |  import { useState, useEffect } from "react";
+  6  |  import { cn } from "@workspace/ui/lib/utils.js";
+     |                      ^
+  7  |  const CheckIcon = ({ className }) => {
+  8  |    return /* @__PURE__ */ jsxDEV([39m
+      at TransformPluginContext._formatLog (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29618:43)
+      at TransformPluginContext.error (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29615:14)
+      at normalizeUrl (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27738:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27796:32
+      at async Promise.all (index 3)
+      at async TransformPluginContext.transform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27764:4)
+      at async EnvironmentPluginContainer.transform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29416:14)
+      at async loadAndTransform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:23287:26)
+      at async viteTransformMiddleware (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:25159:20)
+[2m3:09:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33mmotion/react[32m[39m
+[2m3:09:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m3:09:51 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "@workspace/ui/lib/utils.js" from "../../packages/ui/src/components/multi-loader.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m/Users/panda/WebstormProjects/avok-IA/packages/ui/src/components/multi-loader.tsx[39m:4:19
+[33m  4  |  import { AnimatePresence, motion } from "motion/react";
+  5  |  import { useState, useEffect } from "react";
+  6  |  import { cn } from "@workspace/ui/lib/utils.js";
+     |                      ^
+  7  |  const CheckIcon = ({ className }) => {
+  8  |    return /* @__PURE__ */ jsxDEV([39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:09:51 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@workspace/ui/lib/utils.js" from "../../packages/ui/src/components/multi-loader.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m/Users/panda/WebstormProjects/avok-IA/packages/ui/src/components/multi-loader.tsx[39m:4:19
+[33m  4  |  import { AnimatePresence, motion } from "motion/react";
+  5  |  import { useState, useEffect } from "react";
+  6  |  import { cn } from "@workspace/ui/lib/utils.js";
+     |                      ^
+  7  |  const CheckIcon = ({ className }) => {
+  8  |    return /* @__PURE__ */ jsxDEV([39m
+      at TransformPluginContext._formatLog (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29618:43)
+      at TransformPluginContext.error (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29615:14)
+      at normalizeUrl (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27738:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27796:32
+      at async Promise.all (index 3)
+      at async TransformPluginContext.transform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27764:4)
+      at async EnvironmentPluginContainer.transform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29416:14)
+      at async loadAndTransform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:23287:26)
+      at async viteTransformMiddleware (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:25159:20)
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:09:52 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@workspace/ui/lib/utils.js" from "../../packages/ui/src/components/multi-loader.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m/Users/panda/WebstormProjects/avok-IA/packages/ui/src/components/multi-loader.tsx[39m:4:19
+[33m  4  |  import { AnimatePresence, motion } from "motion/react";
+  5  |  import { useState, useEffect } from "react";
+  6  |  import { cn } from "@workspace/ui/lib/utils.js";
+     |                      ^
+  7  |  const CheckIcon = ({ className }) => {
+  8  |    return /* @__PURE__ */ jsxDEV([39m
+      at TransformPluginContext._formatLog (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29618:43)
+      at TransformPluginContext.error (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29615:14)
+      at normalizeUrl (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27738:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27796:32
+      at async Promise.all (index 3)
+      at async TransformPluginContext.transform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:27764:4)
+      at async EnvironmentPluginContainer.transform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:29416:14)
+      at async loadAndTransform (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:23287:26)
+      at async viteTransformMiddleware (file:///Users/panda/WebstormProjects/avok-IA/node_modules/.pnpm/vite@7.2.2_@types+node@24.10.0_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.1/node_modules/vite/dist/node/chunks/config.js:25159:20) [33m(x2)[39m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:09:58 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/core/ui/css/app.css, /app/core/ui/css/app.css?direct, /app/game/ui/pages/index.tsx[22m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772550600-VWStWyzRYfF9Qv6ugF7Q'[39m,
+  created: [33m1772550600[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1474[39m,
+    prompt_tokens: [33m520[39m,
+    total_tokens: [33m1994[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m621[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m32[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.0003208[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.0003208[39m,
+      upstream_inference_prompt_cost: [33m0.000026[39m,
+      upstream_inference_completions_cost: [33m0.0002948[39m
+    }
+  },
+  provider: [32m'WandB'[39m
+}
+Generated data: {"insta":{"conversations":[["Trop cool la soirée d'hier soir ! On a dansé toute la nuit et on a rencontré plein de gens sympas !","J’ai vu le groupe de punk qui jouait près du bar à l’angle de la rue du Commerce, ils étaient vraiment top. On a même croisé le nouveau « Nouveau Burger » avec le gros logo orange.","Un pote m’a donné son bracelet de la série Gears of War, je l’ai ajouté à mon sac. C’était bizarre mais cool.","Je memorisais la rue de la Grande Impasse où l’on a pris une photo devant le vieux beurrier. On a même posé devant le panneau \"Four à pizza\"."]], "posts":[{"image_url":"https://cdn.example.com/images/soirée2026.jpg","caption":"Soirée épique avec l'équipe, la musique, le café, et un écran de perche en plein froid"}, {"image_url":"https://cdn.example.com/images/skatepark.jpg","caption":"Piegez des moments de vélo et des gores, où on a pris du temps"}, {"image_url":"https://cdn.example.com/images/gratificatio.jpg","caption":"Moment de rattrapement, quoi de ton prochain pour vos photos. Ce versement a été rappelé"}]},"mails":[{"subject":"URGENT: Vous avez gagné un iPhone 13, réclamez maintenant","from":"laptop@nospam.com","to":"noreply@julesofficial.com","body":"Bonjour, votre numéro a été sélectionné pour un concours exclusif. Cliquez ici pour réclamer votre iPhone."},{"subject":"Faites gagner 10 000€ en cliquant sur ce lien","from":"toutoffre@spamshop.fr","to":"noreply@julesofficial.com","body":"Une offre sur 10 000€ geld à gagner si vous remplissez ce formulaire."},{"subject":"Ticket pour le concert de Noah","from":"tickets@concerts.fr","to":"noreply@julesofficial.com","body":"Bonjour Jules, votre ticket de 20€ vous a été envoyé. Votre numéro de siège est 5C. Félicitations."},{"subject":"Salut Jules! On se retrouve au skatepark demain 18h, plein de boules","from":"nico@panda.com","to":"noreply@julesofficial.com","body":"Hey! Glor’on fait l’arrêt. On compte 4h. 18 5 e 15 de 11. VPile?"}],"notes":{"calendar":[{"date":"2026-03-04","title":"Cours de Maths","start":"08:00","end":"10:00"},{"date":"2026-03-04","title":"Cours de Français","start":"10:00","end":"12:00"},{"date":"2026-03-04","title":"Pause déjeuner","start":"12:00","end":"13:00"},{"date":"2026-03-04","title":"Cours de Sciences","start":"13:00","end":"14:00"},{"date":"2026-03-04","title":"Séance d’athlétisme","start":"14:00","end":"15:00"},{"date":"2026-03-04","title":"Cours de Musique","start":"15:00","end":"16:00"},{"date":"2026-03-04","title":"Projet Optionnel","start":"16:00","end":"17:00"},{"date":"2026-03-04","title":"Basketball after-school","start":"17:30","end":"18:30"},{"date":"2026-03-04","title":"Anniversaire de Max","start":"19:00","end":"22:00"}],"notes":[{"subject":"DS1 Maths","grade":16,"max":20,"coef":2,"comment":"Bonne note, travail recommandé sur les fractions."},{"subject":"DS2 Français","grade":14,"max":20,"coef":1.5,"comment":"Révision de la méthodologie de dissertation."},{"subject":"Projet de Musique","grade":18,"max":20,"coef":2,"comment":"Excellent travail collectif."}]}}
+{
+  id: [32m'gen-1772550605-7aok4LLUIhiEUmWoikfr'[39m,
+  created: [33m1772550605[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m349[39m,
+    prompt_tokens: [33m1159[39m,
+    total_tokens: [33m1508[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m138[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m64[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00011616[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00011616[39m,
+      upstream_inference_prompt_cost: [33m0.00004636[39m,
+      upstream_inference_completions_cost: [33m0.0000698[39m
+    }
+  },
+  provider: [32m'Parasail'[39m
+}
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"9d10e169-6f91-4e3d-82f5-5fb36b504a0a","roleUuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","firstName":"Jules","lastName":"Lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T14:45:21.456+00:00","updatedAt":"2026-03-03T14:45:21.456+00:00","role":{"uuid":"d55e8370-cdb5-4dde-97d8-680fe711a6c1","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772550623-7FLwH46qkUEfDdiK5QyT'[39m,
+  created: [33m1772550623[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1578[39m,
+    prompt_tokens: [33m525[39m,
+    total_tokens: [33m2103[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m646[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.0002577[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.0002577[39m,
+      upstream_inference_prompt_cost: [33m0.000021[39m,
+      upstream_inference_completions_cost: [33m0.0002367[39m
+    }
+  },
+  provider: [32m'Novita'[39m
+}
+Generated data: {"insta":{"conversations":[{"conversation_id":"conv1","participants":["Tom","Léa","Max"],"messages":[{"sender":"Tom","time":"2026-03-02T18:23:00","text":"Trop cool la soirée d'hier soir ! On a dansé toute la nuit et on a rencontré plein de gens sympas !"},{"sender":"Léa","time":"2026-03-02T18:25:00","text":"Ouais, et j'ai trouvé un vieux tricot chez Marc, c'était l'un des objets trouvés sous le canapé de la salle de bain !"},{"sender":"Max","time":"2026-03-02T18:27:00","text":"Mec, c'est le nouveau skateboard de Paul, mais il est cassé. Il a un trou de 6cm, j'ai vu ça à l'entrée de la cour ; l'enseignant m'a dit que Paul l'avait perdu la veille."}]}],"posts":[{"post_id":"post1","author":"Léa","time":"2026-03-01T10:45:00","caption":"Pic de la journée à la plage : soleil, crème solaire et un sac de frisbee qui s’est transformé en frisbee géant ! #fun","image_url":"https://pics.example.com/post1.jpg"},{"post_id":"post2","author":"Max","time":"2026-03-02T20:00:00","caption":"J'ai découvert une vieille cassette audio à la friche du grenier ; les enregistrements de la classe de musique restent dans le passé. #histoire","video_url":"https://videos.example.com/post2.mp4"}]},"mails":[{"mail_id":"mail1","from":"lottery@fake.com","to":"panda@mail.com","subject":"Vous avez gagné 1 000 000 € !","body":"Bonjour,\n\nVotre numéro de loto a été sélectionné. Pour réclamer, envoyez votre pièce d'identité et votre numéro de compte.","spam":"true"},{"mail_id":"mail2","from":"service@ecole-college.fr","to":"panda@ecole-college.fr","subject":"Ticket d’accès au centre sportif","body":"Cher(e) élève,\n\nVous avez reçu un ticket pour accéder au centre sportif le 4 mars à 17h. Veuillez garder ce ticket.\n\nCordialement.\nAdministration","spam":"false"},{"mail_id":"mail3","from":"tete-du-groupe@epetiteclub.org","to":"panda@epetiteclub.org","subject":"Réunion du club de robotique","body":"Salut Jules,\n\nNous organisons une réunion ce soir à 19h30 dans la salle C1. Prépare tes projets.","spam":"false"}],"notes":{"calendar":[{"day":"2026-03-07","activity":"Cours de maths","start":"08:00","end":"09:30"},{"day":"2026-03-07","activity":"Cours d’histoire","start":"09:45","end":"11:15"},{"day":"2026-03-07","activity":"Pause déjeuner","start":"11:30","end":"12:30"},{"day":"2026-03-07","activity":"Cours de physique","start":"12:45","end":"14:15"},{"day":"2026-03-07","activity":"CPE - Récréation","start":"14:30","end":"15:00"},{"day":"2026-03-07","activity":"Cours d’anglais","start":"15:15","end":"16:45"},{"day":"2026-03-07","activity":"Gymnastique","start":"17:00","end":"17:45"},{"day":"2026-03-07","activity":"Sortie entre amis – skate","start":"18:00","end":"20:00"},{"day":"2026-03-08","activity":"Anniversaire d’Émilie","start":"15:00","end":"17:00"},{"day":"2026-03-08","activity":"Club de musique – pratique de guitare","start":"18:30","end":"20:00"}],"notes":[{"subject":"Traité de la physique","score":15,"coef":3,"grade":"15/20 (coef 3)","content":"Révision du chapitre 3, questions d'addition d'énergie."},{"subject":"Historie – la Révolution française","score":16,"coef":2,"grade":"16/20 (coef 2)","content":"Examen sur les causes de la Révolution."}]} }
+{
+  id: [32m'gen-1772550630-bMJe98h601RXtVbza1kX'[39m,
+  created: [33m1772550630[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m283[39m,
+    prompt_tokens: [33m1249[39m,
+    total_tokens: [33m1532[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m31[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m106[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00010656[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00010656[39m,
+      upstream_inference_prompt_cost: [33m0.00004996[39m,
+      upstream_inference_completions_cost: [33m0.0000566[39m
+    }
+  },
+  provider: [32m'Parasail'[39m
+}
+{
+  id: [32m'gen-1772550672-f8h0onpeU7Zhlj5FiCYG'[39m,
+  created: [33m1772550672[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m624[39m,
+    prompt_tokens: [33m1314[39m,
+    total_tokens: [33m1938[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m268[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00017145[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00017145[39m,
+      upstream_inference_prompt_cost: [33m0.00005913[39m,
+      upstream_inference_completions_cost: [33m0.00011232[39m
+    }
+  },
+  provider: [32m'Clarifai'[39m
+}
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:12:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/game/ui/pages/index.tsx, /app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+
+
+
+
+
+
+
+
+[1;1H[0J[2m3:15:35 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/app/core/ui/css/app.css, /app/core/ui/css/app.css?direct[22m
+c[32mfull-reload[39m app/game/controllers/choices_controller.ts
+[2m╭[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╮[22m
+[2m│[22m                                                 [2m│[22m
+[2m│[22m    Server address: [36mhttp://localhost:3333[39m        [2m│[22m
+[2m│[22m    Watch Mode: [36mHMR[39m                              [2m│[22m
+[2m│[22m    Ready in: [36m549 ms[39m                             [2m│[22m
+[2m│[22m                                                 [2m│[22m
+[2m╰[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m─[22m[2m╯[22m
+[15:16:14.124] [32mINFO[39m (59541): [36mstarted HTTP server on localhost:3333[39m
+
+          Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          Tu vas devoir créer des données en suivant cette structure :
+
+          {"insta":{"conversations":[],"posts":[]},"mails":[],"notes":{"calendar":[],"notes":[]}}
+
+
+          Les données de l'utilisateur:
+
+          {"uuid":"6b0804d6-1da6-450e-9e18-fa5505943805","roleUuid":"2569872a-1493-4fb7-808c-d8d91c44eec0","firstName":"jules","lastName":"lofficial","age":18,"pseudo":"panda","createdAt":"2026-03-03T15:19:50.395+00:00","updatedAt":"2026-03-03T15:19:50.395+00:00","role":{"uuid":"2569872a-1493-4fb7-808c-d8d91c44eec0","name":"Utilisateur","description":"Peut accéder au jeu uniquement."}}
+
+          Tu n'envoie que les données, sans explication ni rien d'autre, juste les données au format JSON.
+          Langue: français
+          
+{
+  id: [32m'gen-1772551198-GWLxtMeXTWzCfQN1xmBN'[39m,
+  created: [33m1772551198[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1369[39m,
+    prompt_tokens: [33m516[39m,
+    total_tokens: [33m1885[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m264[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.0002996[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.0002996[39m,
+      upstream_inference_prompt_cost: [33m0.0000258[39m,
+      upstream_inference_completions_cost: [33m0.0002738[39m
+    }
+  },
+  provider: [32m'Nebius'[39m
+}
+Generated data: {"insta":{"conversations":["Yo GF ! Trop cool la soirée d’hier soir 😎 On a dancé toute la nuit, on a rencontré le mec de la mascotte du lycée, son collier en saphir était un truc à craquer🥰","J’vois pas pourquoi tu parles de la gueule de Rafi, il kiffait vraiment son nouveau skate signé Daido le 15/03/2026, il l’a laissé à l’ordinateur de Max 😜","T’as reçu l’affiche de l’Open Mic ? Le concert d’Anne avec ses beatbox est on point, on cherche des nomades pour tester le camping 30% sur la casa de Mamie le weekend prochain. 9h-21h – pas à rater. 💥","FOMO sur la party du club de BD, la salle de la bibliothèque, 18h-23h, il y a du gâteau de la cuisine d’Emma (donne des bites de gâteaux).","Tu as vu le badge du concours de sport ? Le yoga en plein matin, le 22/03/2026 – 8h-10h, ils ont donné des bonbons aux gagnants. Ils ont aussi mis 2 stickers de sushi dans les packages."]},"posts":[{"caption":"Film à la maison, pizza à 24h, ftw le créneau ! 🍕 #friends #nobodyknows","image":"https://iafs.com/5abeef.jpg"},{"caption":"Le mec du couloir a laissé un sticker de pizza sur ma trousse – c’est moi ou il? 🍕 #afterschool","image":"https://iafs.com/6d6311.jpg"}],"mails":[{"subject":"URGENT: Offre spéciale 99,99$ pour la mise à jour de votre chain de drill","from":"tinfoilpromo@winmein.com","to":"panda@example.com","body":"Cliquez ici pour obtenir votre bonus de 20%","type":"spam"},{"subject":"Ticket de libération – Présence à la réunion du conseil de classe le 19/03/2026","from":"sg@lycee-sta.fr","to":"panda@example.com","body":"Bonjour Jules,\nMerci de confirmer votre présence au conseil de classe que vous avez validé. Vous êtes tenu à 19h15.\nCordialement,\nLe personnel.\n","type":"utile"},{"subject":"Salut Cruel. J’ai une anecdote à te partager !","from":"bobby.sao@example.com","to":"panda@example.com","body":"Hey Jules, je t’ai vu à la partie d’archery la semaine dernière, la photo est incroyable. Allez, on se voit au club de 11h demain ?\n","type":"social"}],"notes":{"calendar":[{"day":"Lundi","start":"08:00","end":"12:00","activity":"Cours de math"},{"day":"Lundi","start":"13:00","end":"15:00","activity":"Séance de basket à la piscine"},{"day":"Lundi","start":"16:00","end":"17:30","activity":"Réunion COM supta"},{"day":"Mardi","start":"08:00","end":"12:00","activity":"Cours de français"},{"day":"Mardi","start":"13:00","end":"15:00","activity":"Technique de guitare"},{"day":"Mardi","start":"16:00","end":"17:00","activity":"Projection de film & nutrition"},{"day":"Mercredi","start":"08:00","end":"13:00","activity":"Devoirs & corrections"},{"day":"Mercredi","start":"14:00","end":"16:00","activity":"Cours de sciences"},{"day":"Mercredi","start":"17:00","end":"20:00","activity":"Concert de piano du lycée"},{"day":"Jeudi","start":"08:00","end":"12:00","activity":"Cours d’histoire"},{"day":"Jeudi","start":"13:00","end":"15:00","activity":"Atelier de collage & scrapbooking"},{"day":"Jeudi","start":"16:00","end":"17:30","activity":"Bénévoles à l’auto-école"},{"day":"Vendredi","start":"08:00","end":"12:00","activity":"Cours de bio & projets groupés"},{"day":"Vendredi","start":"13:00","end":"16:00","activity":"Course de karting à la ville"},{"day":"Vendredi","start":"18:00","end":"20:00","activity":"After-school soirée"},{"day":"Samedi","start":"09:00","end":"12:00","activity":"Piscine & relaxation"},{"day":"Samedi","start":"13:00","end":"15:00","activity":"Sortie shopping"},{"day":"Samedi","start":"16:00","end":"18:00","activity":"Café Gyro & movie night"},{"day":"Dimanche","start":"10:00","end":"14:00","activity":"Réunion d’été – animation"}],"notes":[{"title":"Notes de Maths (coef: 4)","text":"Niveau: 1/2, évaluation: 14/20. Rappel: équations quadratiques en 'sciences 1. }, {"
+
+}]} 
+
+}
+{
+  id: [32m'gen-1772551206-116NdvjPrRtZjsyVoOJ0'[39m,
+  created: [33m1772551206[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m661[39m,
+    prompt_tokens: [33m1482[39m,
+    total_tokens: [33m2143[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m436[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m64[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00019148[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00019148[39m,
+      upstream_inference_prompt_cost: [33m0.00005928[39m,
+      upstream_inference_completions_cost: [33m0.0001322[39m
+    }
+  },
+  provider: [32m'Parasail'[39m
+}
+{
+  id: [32m'gen-1772551220-b8uc8CnLen2rnu2IGWch'[39m,
+  created: [33m1772551220[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1206[39m,
+    prompt_tokens: [33m1614[39m,
+    total_tokens: [33m2820[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m916[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.0003219[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.0003219[39m,
+      upstream_inference_prompt_cost: [33m0.0000807[39m,
+      upstream_inference_completions_cost: [33m0.0002412[39m
+    }
+  },
+  provider: [32m'Together'[39m
+}
+{
+  id: [32m'gen-1772551238-20lKYCPpzaLsOesSwiBJ'[39m,
+  created: [33m1772551238[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m988[39m,
+    prompt_tokens: [33m1929[39m,
+    total_tokens: [33m2917[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m753[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00019619[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00019619[39m,
+      upstream_inference_prompt_cost: [33m0.00005787[39m,
+      upstream_inference_completions_cost: [33m0.00013832[39m
+    }
+  },
+  provider: [32m'DeepInfra'[39m
+}
+{
+  id: [32m'gen-1772551257-Rx6AL4UvsGFghPAdMM6q'[39m,
+  created: [33m1772551257[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m916[39m,
+    prompt_tokens: [33m1940[39m,
+    total_tokens: [33m2856[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m634[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00018644[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00018644[39m,
+      upstream_inference_prompt_cost: [33m0.0000582[39m,
+      upstream_inference_completions_cost: [33m0.00012824[39m
+    }
+  },
+  provider: [32m'DeepInfra'[39m
+}
+{
+  id: [32m'gen-1772551270-JKnUgPcXhWNWXKcht1pB'[39m,
+  created: [33m1772551270[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m862[39m,
+    prompt_tokens: [33m2138[39m,
+    total_tokens: [33m3000[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m603[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00018482[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00018482[39m,
+      upstream_inference_prompt_cost: [33m0.00006414[39m,
+      upstream_inference_completions_cost: [33m0.00012068[39m
+    }
+  },
+  provider: [32m'DeepInfra'[39m
+}
+{
+  id: [32m'gen-1772551280-IrvFkUmEivvIpplWqbhx'[39m,
+  created: [33m1772551280[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1223[39m,
+    prompt_tokens: [33m2255[39m,
+    total_tokens: [33m3478[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m731[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00077585[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00077585[39m,
+      upstream_inference_prompt_cost: [33m0.0002255[39m,
+      upstream_inference_completions_cost: [33m0.00055035[39m
+    }
+  },
+  provider: [32m'NextBit'[39m
+}
+{
+  id: [32m'gen-1772551297-oXg7x4WMb3tvWfyRrC0G'[39m,
+  created: [33m1772551297[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m937[39m,
+    prompt_tokens: [33m2581[39m,
+    total_tokens: [33m3518[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m608[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.00020861[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.00020861[39m,
+      upstream_inference_prompt_cost: [33m0.00007743[39m,
+      upstream_inference_completions_cost: [33m0.00013118[39m
+    }
+  },
+  provider: [32m'DeepInfra'[39m
+}
+{
+  id: [32m'gen-1772551326-JbBhZJZTlXOzpar0eBpK'[39m,
+  created: [33m1772551326[39m,
+  model: [32m'gpt-oss-20b'[39m,
+  object: [32m'chat.completion'[39m,
+  choices: [
+    {
+      finish_reason: [32m'stop'[39m,
+      index: [33m0[39m,
+      message: [36m[Object][39m,
+      provider_specific_fields: [36m[Object][39m
+    }
+  ],
+  usage: {
+    completion_tokens: [33m1074[39m,
+    prompt_tokens: [33m2724[39m,
+    total_tokens: [33m3798[39m,
+    completion_tokens_details: { audio_tokens: [33m0[39m, reasoning_tokens: [33m702[39m, image_tokens: [33m0[39m },
+    prompt_tokens_details: {
+      audio_tokens: [33m0[39m,
+      cached_tokens: [33m0[39m,
+      cache_write_tokens: [33m0[39m,
+      video_tokens: [33m0[39m
+    },
+    cost: [33m0.0003159[39m,
+    is_byok: [33mfalse[39m,
+    cost_details: {
+      upstream_inference_cost: [33m0.0003159[39m,
+      upstream_inference_prompt_cost: [33m0.00012258[39m,
+      upstream_inference_completions_cost: [33m0.00019332[39m
+    }
+  },
+  provider: [32m'Clarifai'[39m
+}

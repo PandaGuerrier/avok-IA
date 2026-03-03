@@ -5,6 +5,8 @@ import i18nManager from '@adonisjs/i18n/services/main'
 import { isSSREnableForPage } from '#config/ssr'
 
 import UserDto from '#users/dtos/user'
+import GameDto from '#game/dtos/game'
+import Game from '#game/models/game'
 import env from '#start/env'
 
 const inertiaConfig = defineConfig({
@@ -31,6 +33,17 @@ const inertiaConfig = defineConfig({
       }
     },
     flashMessages: (ctx) => ctx.session?.flashMessages.all(),
+    game: async ({ auth, params }: any) => {
+      if (auth?.user && params?.uuid) {
+        const game = await Game.findBy('uuid', params.uuid)
+        if (game && game.userUuid === auth.user.uuid) {
+          await game.load('choices')
+          await game.load('proofs')
+          await game.load('user')
+          return new GameDto(game)
+        }
+      }
+    },
   },
 
   /**

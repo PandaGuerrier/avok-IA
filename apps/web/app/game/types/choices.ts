@@ -3,4 +3,5 @@ export default interface ChoiceData {
   title: string
   description: string
   choosen: boolean
+  isTrap?: boolean
 }

@@ -46,6 +46,9 @@ export default class IAService {
 
     const response = await this.httpService.post<IAResponse>('/chat/completions', {
       model: this.model,
+      response_format: {
+        type: 'json_object',
+      },
       messages: [
         {
           role: 'system',

@@ -1,0 +1,39 @@
+import UserDto from '#users/dtos/user'
+import type DataGameType from '#game/types/data'
+import { DateTime } from 'luxon'
+import Game from '#game/models/game'
+import ChoiceDto from '#game/dtos/choice'
+import ProofDto from '#game/dtos/proof'
+import { BaseModelDto } from '@adocasts.com/dto/base'
+
+export default class GameDto extends BaseModelDto {
+  declare uuid: string
+  declare isFinished: boolean
+  declare user: UserDto
+  declare guiltyPourcentage: number
+  declare data: DataGameType
+
+  declare choices: ChoiceDto[]
+  declare proofs: ProofDto[]
+
+  declare createdAt: DateTime
+  declare updatedAt: DateTime
+  declare finishedAt: DateTime | null
+
+  constructor(game: Game) {
+    super()
+    this.uuid = game.uuid
+    this.isFinished = game.isFinished
+
+    this.user = new UserDto(game.user)
+    this.guiltyPourcentage = game.guiltyPourcentage
+    this.data = game.data
+
+    this.choices = game.choices ? game.choices.map((choice) => new ChoiceDto(choice)) : []
+    this.proofs = game.proofs ? game.proofs.map((proof) => new ProofDto(proof)) : []
+
+    this.createdAt = game.createdAt
+    this.updatedAt = game.updatedAt
+    this.finishedAt = game.finishedAt
+  }
+}

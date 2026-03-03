@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type DataGameType from '#game/types/data'
 import Proof from '#game/models/proof'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Choice from '#game/models/choice'
+import User from '#users/models/user'
 
 export default class Game extends BaseModel {
   @column({ isPrimary: true })
@@ -20,7 +21,6 @@ export default class Game extends BaseModel {
 
   @column({
     prepare: (value: DataGameType) => JSON.stringify(value),
-    consume: (value: string) => JSON.parse(value),
   })
   declare data: DataGameType
 
@@ -30,11 +30,17 @@ export default class Game extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
+  @column.dateTime()
+  declare finishedAt: DateTime | null
+
   @hasMany(() => Proof)
   declare proofs: HasMany<typeof Proof>
 
   @hasMany(() => Choice)
   declare choices: HasMany<typeof Choice> // en gros c'est des choix
+
+  @belongsTo(() => User)
+  declare user: BelongsTo<typeof User>
 
   @beforeCreate()
   static generateUuid(model: Game) {
