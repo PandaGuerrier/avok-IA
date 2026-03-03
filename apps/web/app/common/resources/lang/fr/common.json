@@ -1,0 +1,50 @@
+{
+  "home": {
+    "footer": {
+      "rights": "Tous droits réservés.",
+      "made_with": "Fait avec <3 par Jules.",
+      "links": {
+        "legal_notice": "Mentions légales",
+        "privacy_policy": "Politique de confidentialité",
+        "terms_of_service": "Conditions générales d'utilisation"
+      }
+    }
+  },
+  "layout": {
+    "navMain": {
+      "dashboard": "Accueil",
+      "posts": "Articles",
+      "administration": "Administration",
+      "users": "Utilisateurs",
+      "client": "Espace client"
+    },
+    "navHome": {},
+    "navUser": {
+      "settings": "Paramètres",
+      "logout": "Se déconnecter"
+    }
+  },
+  "table": {
+    "filters": {
+      "clear_filters": "Effacer les filtres",
+      "no_results": "Aucun résultat trouvé.",
+      "nb_selected": "sélectionné(s)"
+    },
+    "row_actions": {
+      "clear": "Effacer"
+    },
+    "no_results": "Aucun résultat trouvé.",
+    "pagination": {
+      "rows_per_page": "Nombre de lignes par page",
+      "go_first_page": "Aller à la première page",
+      "go_previous_page": "Aller à la page précédente",
+      "go_next_page": "Aller à la page suivante",
+      "go_last_page": "Aller à la dernière page",
+      "page_of": "Page {current} sur {total}"
+    }
+  },
+  "logo": {
+    "title": "Expr'Efrei",
+    "description": "La plateforme pour vous exprimer."
+  }
+}

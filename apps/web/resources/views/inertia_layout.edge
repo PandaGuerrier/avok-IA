@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="{{ asset('resources/images/favicon.png')}}">
+
+    <!-- SEO -->
+    <meta name="description" content="Le site pour s'exprimer" />
+    <meta name="keywords" content="Efrei, Expr'efrei, exp'efrei, expression efrei, efrei expression, expression, ecole d'ingenieur, Jules Lofficial, loff, LOFF" />
+    <meta name="author" content="Jules LOFFICIAL" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://exprefrei.juleslofficial.fr" />
+    <meta property="og:title" content="Expr'Efrei" />
+    <meta property="og:description" content="Le site pour s'exprimer" />
+
+    <!-- Twitter -->
+    <meta name="twitter:title" content="Jules Lofficial" />
+    <meta name="twitter:description" content="My personnal website." />
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="28a815a2-e5ac-41a3-a3dc-b6ff6547e312"></script>
+    <title inertia>
+      Expr'Efrei
+    </title>
+
+    @stack('dumper')
+    @viteReactRefresh()
+    @inertiaHead()
+    @vite([
+    'resources/js/app.js',
+    'app/core/ui/app/app.tsx'
+    ])
+  </head>
+
+  <body class="min-h-screen w-screen font-sans">
+    @inertia()
+  </body>
+
+</html>
