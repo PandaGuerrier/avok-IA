@@ -2,6 +2,12 @@
 node_modules/
 */node_modules
 
+apps/*/node_modules
+apps/web/.turbo
+apps/web/.entire
+apps/web/.env
+
+
 
 # Logs
 logs
