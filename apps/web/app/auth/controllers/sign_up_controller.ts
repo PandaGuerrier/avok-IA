@@ -1,10 +1,10 @@
+import app from '@adonisjs/core/services/app'
 import { HttpContext } from '@adonisjs/core/http'
-import { afterAuthRedirectRoute } from '#config/auth'
-
-import User from '#users/models/user'
+import { randomUUID } from 'crypto'
 
 import { signUpValidator } from '#auth/validators'
-import emitter from '@adonisjs/core/services/emitter'
+import User from '#users/models/user'
+import Role from '#users/models/role'
 
 export default class SignUpController {
   async show({ inertia }: HttpContext) {
@@ -12,21 +12,35 @@ export default class SignUpController {
   }
 
   async handle({ auth, request, response }: HttpContext) {
-    console.log('SignUpController.handle called', request.raw())
-    const { email, password } = await request.validateUsing(signUpValidator)
-    const fullName = this.#formatFullname(email)
+    const { avatar, ...data } = await request.validateUsing(signUpValidator)
+    const userExist = await User.query()
+      .where('first_name', data.firstName)
+      .where('last_name', data.lastName)
+      .first()
 
-    const user = await User.create({ fullName, email, password })
+    if (userExist) {
+      await auth.use('web').login(userExist)
+      return response.redirect().toRoute('/')
+    }
+
+    let avatarPath: string | null = null
+
+    if (avatar) {
+      const fileName = `${randomUUID()}.png`
+      await avatar.move(app.publicPath('uploads/avatars'), { name: fileName })
+      avatarPath = `uploads/avatars/${fileName}`
+    }
+
+    const userRole = await Role.findByOrFail('name', 'Utilisateur')
+
+    const user = await User.create({
+      ...data,
+      avatarPath,
+      roleUuid: userRole.uuid,
+    })
+
     await auth.use('web').login(user)
 
-    await emitter.emit('user:registered', { user })
-
-    return response.redirect().toRoute(afterAuthRedirectRoute)
-  }
-
-  #formatFullname(email: string): string {
-    const namePart = email.split('@')[0]
-    const nameSegments = namePart.split('.').map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
-    return nameSegments.join(' ')
+    return response.redirect().toRoute('/')
   }
 }

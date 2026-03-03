@@ -5,36 +5,21 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('uuid').notNullable().primary()
+      table.uuid('uuid').primary()
       table
         .uuid('role_uuid')
         .unsigned()
         .references('uuid')
         .inTable('roles')
-        .nullable()
-      table.string('full_name').nullable()
-      table.string('email', 254).notNullable().unique()
-      table.boolean('is_email_verified').notNullable().defaultTo(false)
-      table.string('password').nullable()
-      table.string('avatar_url').nullable().defaultTo(null)
-      table.json('avatar').nullable()
-      table.json('preferences').defaultTo(
-        JSON.stringify({
-          anonyme_rules_view: false,
-          onboarding_completed: false,
-        })
-      )
+        .notNullable()
+      table.string('first_name', 100).notNullable()
+      table.string('last_name', 100).notNullable()
+      table.string('pseudo', 50).notNullable()
+      table.integer('age').notNullable()
+      table.string('avatar_path', 255).nullable().defaultTo(null)
 
-      table.integer('year').nullable()
-      table.string('program').nullable()
-      table.string('track').nullable()
-      table.string('campus').nullable()
-
-      table.boolean('is_banned').notNullable().defaultTo(false)
-      table.uuid('ban_uuid').nullable().defaultTo(null)
-
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').nullable()
+      table.timestamp('created_at')
+      table.timestamp('updated_at')
     })
   }
 

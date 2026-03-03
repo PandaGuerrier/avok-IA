@@ -12,17 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@workspace/ui/components/dropdown-menu'
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@workspace/ui/components/sidebar'
 import { ChevronsUpDown, LogOut, Sparkles } from 'lucide-react'
 import { ConfirmDialog } from '#common/ui/components/confirm_dialog'
+import { Button } from '@workspace/ui/components/button'
 
 export function NavUser({ user, options }: NavUserProps) {
-  const { isMobile } = useSidebar()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
@@ -36,25 +30,24 @@ export function NavUser({ user, options }: NavUserProps) {
         destructive={true}
         confirmText={'Me déconnecter'}
       />
-      <SidebarMenu>
-        <SidebarMenuItem>
+      <div>
+        <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
+              <Button
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <UserAvatar className="h-8 w-8 rounded-lg" user={user} />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.fullName}</span>
+                  <span className="truncate font-semibold">{user.pseudo ?? user.firstName}</span>
                   <span className="truncate text-xs hidden md:block">{user.email}</span>
                 </div>
                 <ChevronsUpDown className="ml-auto size-4" />
-              </SidebarMenuButton>
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-              side={isMobile ? 'bottom' : 'right'}
               align="end"
               sideOffset={4}
             >
@@ -62,7 +55,7 @@ export function NavUser({ user, options }: NavUserProps) {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <UserAvatar className="h-8 w-8 rounded-lg" user={user} />
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{user.fullName}</span>
+                    <span className="truncate font-semibold">{user.pseudo ?? user.firstName}</span>
                     <span className="truncate text-xs">{user.email}</span>
                   </div>
                 </div>
@@ -103,8 +96,8 @@ export function NavUser({ user, options }: NavUserProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </SidebarMenuItem>
-      </SidebarMenu>
+        </div>
+      </div>
     </>
   )
 }

@@ -7,14 +7,13 @@ export default class UserDto extends BaseModelDto {
   declare uuid: string
   declare roleUuid: string
   declare role: RoleDto
-  declare fullName: string | null
+  declare firstName: string | null
+  declare lastName: string | null
+  declare age: number | null
+  declare pseudo: string | null
   declare email: string
   declare avatarUrl: string | null
   declare avatar: any | null
-  declare year: number | null
-  declare program: string | null
-  declare track: string | null
-  declare campus: string | null
   declare preferences: object | null
   declare isEmailVerified: boolean | null
 
@@ -28,14 +27,13 @@ export default class UserDto extends BaseModelDto {
 
     this.uuid = user.uuid
     this.roleUuid = user.roleUuid
-    this.fullName = user.fullName
+    this.firstName = user.firstName
+    this.lastName = user.lastName
+    this.age = user.age
+    this.pseudo = user.pseudo
     this.email = user.email
     this.createdAt = user.createdAt.toISO()!
     this.updatedAt = user.updatedAt ? user.updatedAt.toISO()! : ''
-    this.year = user.year
-    this.program = user.program
-    this.track = user.track
-    this.campus = user.campus
     this.preferences = user.preferences
     this.role = new RoleDto(user.role)
     this.isEmailVerified = user.isEmailVerified

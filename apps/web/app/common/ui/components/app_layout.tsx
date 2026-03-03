@@ -51,16 +51,7 @@ export default function AppLayout({
             {children}
           </AppHeaderLayout>
         ) : (
-          <AppSidebarLayout
-            user={user}
-            navMain={navMain}
-            navUser={navUser}
-            breadcrumbs={breadcrumbs}
-            mobileLeftElement={mobileLeftElement}
-            removePadding={removePadding}
-          >
-            {children}
-          </AppSidebarLayout>
+          <></>
         )}
     </ThemeProvider>
   )

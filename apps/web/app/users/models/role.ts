@@ -15,32 +15,6 @@ export default class Role extends BaseModel {
   @column()
   declare description: string
 
-  @column({
-    prepare: (value: string[]) => {
-      if (!value || !Array.isArray(value)) return JSON.stringify([])
-      return JSON.stringify([...new Set(value)])
-    },
-
-    consume: (value: any): string[] => {
-      if (!value) return []
-      if (Array.isArray(value)) {
-        return value
-      }
-      try {
-        return typeof value === 'string' ? JSON.parse(value) : value
-      } catch (e) {
-        return typeof value === 'string' ? [value] : []
-      }
-    },
-  })
-  declare permissions: string[]
-
-  @column()
-  declare tag: string | null
-
-  @column()
-  declare tagColor: string | null
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
