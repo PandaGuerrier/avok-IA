@@ -1,28 +1,16 @@
-# Dependencies and AdonisJS build
-node_modules
-build
-tmp
+# AdonisJS
+node_modules/
+build/
+tmp/
+ace
 
-# Secrets
+# Environment
 .env
 .env.local
-.env.production.local
-.env.development.local
+.env.*.local
 
-# Frontend assets compiled code
-public/assets
+# Frontend compiled assets
+public/assets/
 
-# Build tools specific
-npm-debug.log
-yarn-error.log
-
-# Editors specific
-.fleet
-.idea
-.vscode
-
-# Platform specific
-.DS_Store
-
-# Mailpit files
+# Mailpit
 mailpit*.*

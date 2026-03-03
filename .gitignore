@@ -1,21 +1,9 @@
 # Dependencies
-node_modules/
-*/node_modules
-
-apps/*/node_modules
-apps/web/.turbo
-apps/web/.entire
-apps/web/.env
-
-
+**/node_modules/
 
 # Logs
-logs
-*.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+**/*.log
+logs/
 
 # Operating System
 .DS_Store
@@ -29,12 +17,7 @@ Thumbs.db
 *~
 
 # TurboRepo
-.turbo/
-
-# AdonisJS
-build/
-ace
-tmp/
+**/.turbo/
 
 # Environment variables
 .env
@@ -47,6 +30,7 @@ docker-compose.override.yml
 
 # Build outputs
 dist/
+build/
 
 # Coverage
 coverage/
