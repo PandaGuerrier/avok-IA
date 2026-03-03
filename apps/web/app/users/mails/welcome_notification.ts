@@ -30,7 +30,7 @@ export default class WelcomeNotification extends BaseMail {
     this.message.to(this.user.email).subject(this.subject)
 
     this.message.htmlView('users::emails/welcome', {
-      username: this.user.fullName,
+      username: this.user.firstName,
       verificationUrl,
     })
   }

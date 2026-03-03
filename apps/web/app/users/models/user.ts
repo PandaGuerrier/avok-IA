@@ -1,30 +1,11 @@
-import hash from '@adonisjs/core/services/hash'
-import { compose } from '@adonisjs/core/helpers'
-import {
-  afterCreate,
-  afterFetch,
-  afterFind,
-  beforeCreate,
-  belongsTo,
-  column,
-} from '@adonisjs/lucid/orm'
-import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import { DateTime } from 'luxon'
+import { afterFetch, afterFind, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-
-import { attachment, attachmentManager } from '@jrmc/adonis-attachment'
-import type { Attachment } from '@jrmc/adonis-attachment/types/attachment'
 
 import BaseModel from '#common/models/base_model'
 import Role from '#users/models/role'
 
-import { randomUUID } from 'crypto'
-
-const AuthFinder = withAuthFinder(() => hash.use('argon'), {
-  uids: ['email'],
-  passwordColumnName: 'password',
-})
-
-export default class User extends compose(BaseModel, AuthFinder) {
+export default class User extends BaseModel {
   public static primaryKey = 'uuid'
   public static selfAssignPrimaryKey = true
 
@@ -35,58 +16,31 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare roleUuid: string
 
   @column()
-  declare fullName: string | null
+  declare firstName: string
 
   @column()
-  declare email: string
+  declare lastName: string
 
   @column()
-  declare isEmailVerified: boolean
-
-  @column({ serializeAs: null })
-  declare password: string | null
-
-  @attachment({ preComputeUrl: false, variants: ['thumbnail'] })
-  declare avatar: Attachment
+  declare pseudo: string
 
   @column()
-  declare avatarUrl: string | null
+  declare age: number
+
+  @column()
+  declare avatarPath: string | null
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
 
   @belongsTo(() => Role)
   declare role: BelongsTo<typeof Role>
 
-  @column()
-  declare year: number | null
-
-  @column()
-  declare program: string | null
-
-  @column()
-  declare track: string | null
-
-  @column()
-  declare campus: string | null
-
-  @column({
-    consume: (value) => value,
-    prepare: (value) => JSON.stringify(value),
-  })
-  declare preferences: object
-
   public get id() {
     return this.uuid
-  }
-
-  public static async computeAvatarUrl(user: User) {
-    if (!user.avatar) {
-      return
-    }
-
-    const thumbnail = user.avatar.getVariant('thumbnail')
-
-    if (thumbnail) {
-      await attachmentManager.computeUrl(thumbnail)
-    }
   }
 
   @afterFind()
@@ -94,35 +48,21 @@ export default class User extends compose(BaseModel, AuthFinder) {
     if (user.roleUuid) {
       await user.load('role')
     }
-    await this.computeAvatarUrl(user)
   }
 
   @afterFetch()
   public static async runAfterFetch(users: User[]) {
     await Promise.all(
       users.map((user) => {
-        const promises = [this.computeAvatarUrl(user)]
         if (user.roleUuid) {
-          promises.push(user.load('role'))
+          return user.load('role')
         }
-        return Promise.all(promises)
       })
     )
   }
 
-  @afterCreate()
-  public static async assignDefault(user: User) {
-    const userRole = await Role.findByOrFail('name', 'Utilisateur')
-    await user.related('role').associate(userRole)
-  }
-
   @beforeCreate()
-  static generateUuid(model: User) {
-    model.uuid = randomUUID()
-
-    model.preferences = {
-      anonyme_rules_view: false,
-      onboarding_completed: false,
-    }
+  public static assignUuid(user: User) {
+    user.uuid = crypto.randomUUID()
   }
 }
