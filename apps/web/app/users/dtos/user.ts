@@ -11,11 +11,8 @@ export default class UserDto extends BaseModelDto {
   declare lastName: string | null
   declare age: number | null
   declare pseudo: string | null
-  declare email: string
   declare avatarUrl: string | null
   declare avatar: any | null
-  declare preferences: object | null
-  declare isEmailVerified: boolean | null
 
   declare createdAt: string
   declare updatedAt: string
@@ -31,17 +28,9 @@ export default class UserDto extends BaseModelDto {
     this.lastName = user.lastName
     this.age = user.age
     this.pseudo = user.pseudo
-    this.email = user.email
     this.createdAt = user.createdAt.toISO()!
     this.updatedAt = user.updatedAt ? user.updatedAt.toISO()! : ''
-    this.preferences = user.preferences
     this.role = new RoleDto(user.role)
-    this.isEmailVerified = user.isEmailVerified
-
-    const thumbnail = user.avatar?.getVariant('thumbnail')?.url
-    this.avatarUrl = thumbnail ? thumbnail : user.avatarUrl
-
-    this.avatar = user.avatar
   }
 
   toJSON(): any {

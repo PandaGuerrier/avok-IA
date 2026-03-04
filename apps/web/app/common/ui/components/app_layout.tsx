@@ -21,6 +21,7 @@ interface AppLayoutProps extends React.PropsWithChildren {
   layout?: 'sidebar' | 'header'
   mobileLeftElement?: ReactNode
   removePadding?: boolean
+  hideBottomNav?: boolean
 }
 
 export default function AppLayout({
@@ -29,6 +30,7 @@ export default function AppLayout({
   layout = 'header',
   mobileLeftElement,
   removePadding = false,
+  hideBottomNav = false,
 }: AppLayoutProps) {
   const user = useUser()
   const { t } = useTranslation()
@@ -51,7 +53,17 @@ export default function AppLayout({
             {children}
           </AppHeaderLayout>
         ) : (
-          <></>
+          <AppSidebarLayout
+            user={user}
+            navMain={navMain}
+            navUser={navUser}
+            breadcrumbs={breadcrumbs}
+            mobileLeftElement={mobileLeftElement}
+            removePadding={removePadding}
+            hideBottomNav={hideBottomNav}
+          >
+            {children}
+          </AppSidebarLayout>
         )}
     </ThemeProvider>
   )

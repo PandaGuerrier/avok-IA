@@ -9,6 +9,8 @@ ace
 .env.local
 .env.*.local
 
+.turbo/
+
 # Frontend compiled assets
 public/assets/
 

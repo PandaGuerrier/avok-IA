@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { ToggleTheme } from '#common/ui/components/toggle_theme'
-import { NavUser } from '#common/ui/components/nav_user'
 import { AppSidebar } from '#common/ui/components/app_sidebar'
 import Breadcrumb from '#common/ui/components/breadcrumbs'
 import { BottomNavBar } from '#common/ui/components/bottom_nav_bar'
@@ -25,6 +24,7 @@ interface AppLayoutProps extends React.PropsWithChildren {
   user: UserDto
   mobileLeftElement?: React.ReactNode
   removePadding?: boolean
+  hideBottomNav?: boolean
 }
 
 export default function AppLayout({
@@ -32,9 +32,9 @@ export default function AppLayout({
   breadcrumbs = [],
   navMain,
   navUser,
-  user,
   mobileLeftElement,
   removePadding = false,
+  hideBottomNav = false,
 }: AppLayoutProps) {
   return (
     <SidebarProvider>
@@ -52,21 +52,19 @@ export default function AppLayout({
 
           <div className="flex flex-row items-center gap-2 space-x-2 w-full  justify-end">
             <ToggleTheme />
-            <div className="md:hidden">
-              <NavUser user={user} options={navUser} />
-            </div>
           </div>
         </header>
         <div
           className={
-            'flex flex-1 flex-col min-h-0 overflow-auto pb-16 md:pb-0 ' +
+            'flex flex-1 flex-col min-h-0 overflow-auto ' +
+            (hideBottomNav ? '' : 'pb-16 md:pb-0 ') +
             (removePadding ? '' : ' pt-12')
           }
         >
           {children}
         </div>
       </SidebarInset>
-      <BottomNavBar />
+      {!hideBottomNav && <BottomNavBar />}
     </SidebarProvider>
   )
 }

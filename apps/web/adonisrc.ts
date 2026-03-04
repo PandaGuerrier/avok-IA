@@ -78,6 +78,9 @@ export default defineConfig({
 
     //users
     () => import('#users/start/events'),
+
+    // game
+    () => import('#game/routes'),
   ],
 
   /*
