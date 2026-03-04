@@ -13,13 +13,12 @@ export function ToggleTheme() {
   }
 
   const user = useUser()
+  const permissions: string[] = user?.role?.permissions ?? []
 
-  if (user && user.role.permissions.includes('theme:access')) {
-
-
+  if (user && permissions.includes('theme:access')) {
     const visibleThemes = themes.filter((thm) => {
       if (!thm.default) {
-        return user.role.permissions.includes('theme:' + thm.id)
+        return permissions.includes('theme:' + thm.id)
       }
       return true
     })

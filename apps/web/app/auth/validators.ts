@@ -1,8 +1,18 @@
 import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 
 import i18nManager from '@adonisjs/i18n/services/main'
+import db from '@adonisjs/lucid/services/db'
 const i18n = i18nManager.locale('fr')
 vine.messagesProvider = i18n.createMessagesProvider()
+
+const isNickNameUnique = vine.createRule(async (value: unknown, _, field) => {
+  if (typeof value !== 'string') return
+
+  const nickName = await db.from('users').where('pseudo', value).first()
+  if (nickName) {
+    field.report('Ce pseudo est déjà utilisée', 'isNickNameUnique', field)
+  }
+})
 
 const signUpValidatorMessages = new SimpleMessagesProvider({
   required: 'Le champ {{ field }} est obligatoire.',
@@ -33,7 +43,7 @@ export const signUpValidator = vine.compile(
 
     lastName: vine.string().minLength(1).maxLength(100),
 
-    pseudo: vine.string().minLength(1).maxLength(50),
+    pseudo: vine.string().minLength(1).maxLength(50).use(isNickNameUnique()),
 
     age: vine.number().min(1).max(120),
 

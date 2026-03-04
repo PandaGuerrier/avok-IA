@@ -18,7 +18,7 @@ interface BreadcrumbItemProps {
 
 interface AppLayoutProps extends React.PropsWithChildren {
   breadcrumbs?: BreadcrumbItemProps[]
-  layout?: 'sidebar' | 'header'
+  layout?: 'sidebar' | 'header' | 'none'
   mobileLeftElement?: ReactNode
   removePadding?: boolean
 }
@@ -27,8 +27,6 @@ export default function AppLayout({
   children,
   breadcrumbs = [],
   layout = 'header',
-  mobileLeftElement,
-  removePadding = false,
 }: AppLayoutProps) {
   const user = useUser()
   const { t } = useTranslation()
@@ -39,20 +37,17 @@ export default function AppLayout({
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Toaster />
-        <PostHogTracker />
-        {layout === 'header' ? (
-          <AppHeaderLayout
-            user={user}
-            navMain={navHome}
-            navUser={navUser}
-            breadcrumbs={breadcrumbs}
-          >
-            {children}
-          </AppHeaderLayout>
-        ) : (
-          <></>
-        )}
+      <Toaster />
+      <PostHogTracker />
+      {layout === 'header' ? (
+        <AppHeaderLayout user={user} navMain={navHome} navUser={navUser} breadcrumbs={breadcrumbs}>
+          {children}
+        </AppHeaderLayout>
+      ) : layout === 'none' ? (
+        <>{children}</>
+      ) : (
+        <></>
+      )}
     </ThemeProvider>
   )
 }
