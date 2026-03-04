@@ -81,6 +81,9 @@ export default defineConfig({
 
     // game
     () => import('#game/routes'),
+
+    // external
+    () => import('#external/routes'),
   ],
 
   /*

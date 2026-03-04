@@ -18,7 +18,7 @@ interface BreadcrumbItemProps {
 
 interface AppLayoutProps extends React.PropsWithChildren {
   breadcrumbs?: BreadcrumbItemProps[]
-  layout?: 'sidebar' | 'header'
+  layout?: 'sidebar' | 'header' | 'none'
   mobileLeftElement?: ReactNode
   removePadding?: boolean
   hideBottomNav?: boolean
@@ -30,7 +30,6 @@ export default function AppLayout({
   layout = 'header',
   mobileLeftElement,
   removePadding = false,
-  hideBottomNav = false,
 }: AppLayoutProps) {
   const user = useUser()
   const { t } = useTranslation()
@@ -60,7 +59,6 @@ export default function AppLayout({
             breadcrumbs={breadcrumbs}
             mobileLeftElement={mobileLeftElement}
             removePadding={removePadding}
-            hideBottomNav={hideBottomNav}
           >
             {children}
           </AppSidebarLayout>

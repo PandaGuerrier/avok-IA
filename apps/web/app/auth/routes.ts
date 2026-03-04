@@ -14,7 +14,7 @@ const SignUpController = () => import('#auth/controllers/sign_up_controller')
 
 router.get('/logout', [SignOutController]).as('auth.sign_out.show')
 
-router.get('/sign-up', [SignUpController, 'show']).use(middleware.guest()).as('auth.sign_up.show')
-router.post('/sign-up', [SignUpController]).use(middleware.guest()).as('auth.sign_up.handle')
+router.get('/ready', [SignUpController, 'show']).use(middleware.auth()).as('auth.sign_up.show')
+router.post('/sign-up', [SignUpController]).as('auth.sign_up.handle')
 
 router.get('/switch/:locale', () => {}).use(middleware.switchLocale())
