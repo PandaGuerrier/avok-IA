@@ -3,6 +3,7 @@ import env from '#start/env'
 import User from '#users/models/user'
 import { GameSchema } from '#game/types/data'
 import UserDto from '#users/dtos/user'
+import type { HistoryScript } from '#game/config/histories'
 
 export interface IAResponse extends Response {
   choices: {
@@ -41,7 +42,7 @@ export default class IAService {
     return response.choices[0].message.content
   }
 
-  async generateData(user: User) {
+  async generateData(user: User, script: HistoryScript) {
     const emptyData = GameSchema.parse({})
 
     const response = await this.httpService.post<IAResponse>('/chat/completions', {
@@ -54,6 +55,9 @@ export default class IAService {
           role: 'system',
           content: `
           Tu es un assistant pour créer des données de jeu pour un jeu de déduction policière.
+
+          L'affaire est la suivante : ${script.content}
+          Génère des données numériques cohérentes avec cette histoire.
 
           Tu vas devoir créer des données en suivant cette structure :
 
