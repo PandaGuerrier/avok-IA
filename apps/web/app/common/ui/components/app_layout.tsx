@@ -59,7 +59,6 @@ export default function AppLayout({
             breadcrumbs={breadcrumbs}
             mobileLeftElement={mobileLeftElement}
             removePadding={removePadding}
-            hideBottomNav={hideBottomNav}
           >
             {children}
           </AppSidebarLayout>

@@ -21,7 +21,7 @@ Thumbs.db
 **/.entire
 
 # Environment variables
-.env
+apps/web/.env
 .env.local
 .env.*.local
 

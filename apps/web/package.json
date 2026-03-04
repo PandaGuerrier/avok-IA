@@ -24,7 +24,8 @@
     "#tests/*": "./tests/*.js",
     "#home/*": "./app/home/*.js",
     "#game/*": "./app/game/*.js",
-    "#ia/*": "./app/ia/*.js"
+    "#ia/*": "./app/ia/*.js",
+    "#external/*": "./app/external/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.2",

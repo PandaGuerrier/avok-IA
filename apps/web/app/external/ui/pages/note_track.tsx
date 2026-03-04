@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Navbar } from './navbar'
-import { Dashboard } from './dashboard'
-import { GradesPage } from './grades_page'
-import { AttendancePage } from './attendance_page'
-import { IncidentsPage } from './incidents_page'
+import { Navbar } from '../components/navbar'
+import { Dashboard } from '../components/dashboard'
+import { GradesPage } from '../components/grade_page'
+import { AttendancePage } from '../components/attendancePage'
+import { IncidentsPage } from '../components/incidents_page'
 
-export default function NoteTrack() {
+export default function Note_track() {
   const [currentPage, setCurrentPage] = useState('dashboard')
 
   return (

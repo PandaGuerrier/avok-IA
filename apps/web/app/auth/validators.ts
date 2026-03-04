@@ -5,12 +5,52 @@ import db from '@adonisjs/lucid/services/db'
 const i18n = i18nManager.locale('fr')
 vine.messagesProvider = i18n.createMessagesProvider()
 
+const BANNED_PSEUDOS = [
+  // Sexuel
+  'zizi', 'z!z!', 'bite', 'b1te', 'bitte', 'couille', 'couilles', 'cul',
+  'salope', 'sal0pe', 'putain', 'pute', 'p*te', 'sexe', 'penis', 'vagin',
+  'nichon', 'nichons', 'enculé', 'encule', '3ncule', 'branleur', 'branl3ur',
+  'pd', 'pédé', 'pede', 'leche', 'sodomie',
+
+  // Insultes
+  'con', 'conn', 'conne', 'connard', 'connasse', 'merde', 'm3rde', 'merd3',
+  'idiot', 'imbecile', 'abruti', 'cretin', 'debile', 'attardé', 'attarde',
+  'batard', 'bâtard', 'fils de pute', 'fdp', 'tg', 'ta gueule', 'nique',
+  'niquer', 'ntm', 'nique ta mere', 'baise', 'baiser',
+
+  // Raciste / discriminatoire
+  'nazi', 'hitler', 'nigger', 'nigga', 'negro', 'nègre', 'negre',
+  'youpin', 'youpine', 'arabe', 'bounty', 'bicot', 'bougnoule',
+  'chinetoque', 'feuj', 'juif', 'islamiste', 'terroriste',
+
+  // Rôles réservés
+  'admin', 'administrateur', 'moderateur', 'modérateur', 'modo',
+  'root', 'superuser', 'super_user', 'staff', 'support', 'system',
+  'bot', 'robot', 'anonymous', 'anonyme',
+]
+
+function isBannedPseudo(value: string): boolean {
+  const normalized = value.toLowerCase().replace(/[^a-z0-9]/g, '')
+  return BANNED_PSEUDOS.some((banned) => {
+    const normalizedBanned = banned.toLowerCase().replace(/[^a-z0-9]/g, '')
+    return normalized.includes(normalizedBanned)
+  })
+}
+
 const isNickNameUnique = vine.createRule(async (value: unknown, _, field) => {
   if (typeof value !== 'string') return
 
   const nickName = await db.from('users').where('pseudo', value).first()
   if (nickName) {
-    field.report('Ce pseudo est déjà utilisée', 'isNickNameUnique', field)
+    field.report('Ce pseudo est déjà utilisé.', 'isNickNameUnique', field)
+  }
+})
+
+const isBannedPseudoRule = vine.createRule((value: unknown, _, field) => {
+  if (typeof value !== 'string') return
+
+  if (isBannedPseudo(value)) {
+    field.report('Ce pseudo est interdit.', 'isBannedPseudo', field)
   }
 })
 
@@ -43,7 +83,12 @@ export const signUpValidator = vine.compile(
 
     lastName: vine.string().minLength(1).maxLength(100),
 
-    pseudo: vine.string().minLength(1).maxLength(50).use(isNickNameUnique()),
+    pseudo: vine
+      .string()
+      .minLength(1)
+      .maxLength(30)
+      .use(isBannedPseudoRule())
+      .use(isNickNameUnique()),
 
     age: vine.number().min(1).max(120),
 
