@@ -6,7 +6,6 @@ import Game from '#game/models/game'
 import Choice from '#game/models/choice'
 import Proof from '#game/models/proof'
 import ChoiceDto from '#game/dtos/choice'
-import ProofDto from '#game/dtos/proof'
 
 @inject()
 export default class ChoicesController {
@@ -87,8 +86,6 @@ Génère une réponse narrative et 3 nouveaux choix. EXACTEMENT 1 des 3 choix do
 
 Le guiltyDelta doit être entre -15 et +15 (négatif = preuve d'innocence, positif = preuve de culpabilité). Si l'enquêteur utilisait de bonnes preuves et a fait un bon choix, le delta peut être plus négatif.
 
-Génère également 0 à 2 nouvelles preuves trouvées lors de cette étape.
-
 Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
 {
   "message": "Réponse narrative (en français)",
@@ -97,9 +94,6 @@ Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
     {"id": 1, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false},
     {"id": 2, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": true},
     {"id": 3, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false}
-  ],
-  "newProofs": [
-    {"title": "Titre de la preuve", "content": "Contenu détaillé de la preuve", "type": "instagram|mail|note|calendar"}
   ]
 }
 Langue: français
@@ -108,7 +102,6 @@ Langue: français
     let iaMessage = ''
     let guiltyDelta = 0
     let nextChoices: any[] = []
-    let newProofs: { title: string; content: string; type: string }[] = []
 
     try {
       const raw = await this.iaService.chat(prompt)
@@ -116,7 +109,6 @@ Langue: français
       iaMessage = parsed.message || ''
       guiltyDelta = parsed.guiltyDelta || 0
       nextChoices = parsed.nextChoices || []
-      newProofs = parsed.newProofs || []
     } catch {
       iaMessage = "L'enquête continue. Analysez les prochains indices."
       guiltyDelta = 0
@@ -127,17 +119,6 @@ Langue: français
       ]
     }
 
-    // Créer les nouvelles preuves en DB
-    const savedProofs: Proof[] = []
-    for (const p of newProofs) {
-      const proof = await Proof.create({
-        gameUuid: game.uuid,
-        content: p.content,
-        data: { title: p.title, type: p.type },
-      })
-      savedProofs.push(proof)
-    }
-
     const choice = await Choice.create({
       gameUuid: game.uuid,
       data: { ...payload.data, choosen: true },
@@ -146,13 +127,13 @@ Langue: français
 
     const newGuilty = Math.max(0, Math.min(100, game.guiltyPourcentage + guiltyDelta))
     game.guiltyPourcentage = newGuilty
+    game.currentChoices = nextChoices
     await game.save()
 
     return response.ok({
       choice: new ChoiceDto(choice),
       guiltyPourcentage: game.guiltyPourcentage,
       nextChoices,
-      newProofs: savedProofs.map((p) => new ProofDto(p)),
     })
   }
 }

@@ -1,7 +1,0 @@
-
-
-> web@0.0.0 build /Users/panda/WebstormProjects/ExprEfrei/apps/web
-> node ace build
-
-[ [34minfo[39m ] cleaning up output directory [2m[33m(build)[22m[39m
-[ [34minfo[39m ] building assets with vite

@@ -5,6 +5,8 @@ import Proof from '#game/models/proof'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Choice from '#game/models/choice'
 import User from '#users/models/user'
+import Alibi from '#game/models/alibi'
+import type ChoiceData from '#game/types/choices'
 
 export default class Game extends BaseModel {
   @column({ isPrimary: true })
@@ -33,11 +35,31 @@ export default class Game extends BaseModel {
   @column.dateTime()
   declare finishedAt: DateTime | null
 
+  @column.dateTime()
+  declare startTime: DateTime | null
+
+  @column()
+  declare isPaused: boolean
+
+  @column.dateTime()
+  declare pausedAt: DateTime | null
+
+  @column()
+  declare totalPausedMs: number
+
+  @column({
+    prepare: (value: ChoiceData[] | null) => (value ? JSON.stringify(value) : null),
+  })
+  declare currentChoices: ChoiceData[] | null
+
   @hasMany(() => Proof)
   declare proofs: HasMany<typeof Proof>
 
   @hasMany(() => Choice)
-  declare choices: HasMany<typeof Choice> // en gros c'est des choix
+  declare choices: HasMany<typeof Choice>
+
+  @hasMany(() => Alibi)
+  declare alibis: HasMany<typeof Alibi>
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>

@@ -21,7 +21,7 @@ export default class IAService {
       Authorization: `Bearer ${env.get('IA_API_KEY')}`,
     })
 
-    this.model = 'gpt-oss-20b'
+    this.model = 'openai/gpt-oss-120b'
   }
 
   async chat(prompt: string) {
@@ -68,6 +68,8 @@ export default class IAService {
           Pour les notes: notes / 20, avec un coef.
 
           Pour le planning je veux un planning d'un collégien français (8h - 17h), avec des activités extrascolaires (sport, musique, etc.) et des événements sociaux (anniversaires, sorties entre amis, etc.)
+
+          Pour les contacts: génère 4 à 5 personnes de l'entourage de l'adolescent (amis proches, famille, professeurs, voisins). Ces personnes doivent apparaître dans les conversations Instagram ou les mails. Exemple : {"id": 1, "name": "Lucas Martin", "role": "meilleur ami"}.
 
           ${
             JSON.stringify(emptyData)

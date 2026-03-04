@@ -25,7 +25,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export function AppSidebar({ navMain, navUser, ...props }: AppSidebarProps) {
   const user = useUser()
   return (
-    <Sidebar {...props}>
+    <Sidebar {...props} variant={"floating"}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

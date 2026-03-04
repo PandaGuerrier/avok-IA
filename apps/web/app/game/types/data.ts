@@ -1,6 +1,12 @@
 import { DateTime } from 'luxon'
 import { z } from 'zod'
 
+export interface ContactData {
+  id: number
+  name: string
+  role: string
+}
+
 export default interface DataGameType {
   insta: {
     conversations: ConversationInstaData[],
@@ -11,6 +17,7 @@ export default interface DataGameType {
     calendar: CalendarData[]
     notes: NoteData[]
   }
+  contacts: ContactData[]
 }
 
 export const GameSchema = z.object({
@@ -39,6 +46,12 @@ export const GameSchema = z.object({
       })
     )
     .default([]),
+
+  contacts: z.array(z.object({
+    id: z.number().default(0),
+    name: z.string().default(''),
+    role: z.string().default(''),
+  })).default([]),
 
   notes: z
     .object({
