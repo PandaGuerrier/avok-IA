@@ -18,6 +18,7 @@ Thumbs.db
 
 # TurboRepo
 **/.turbo/
+**/.entire
 
 # Environment variables
 .env
