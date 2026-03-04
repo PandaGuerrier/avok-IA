@@ -5,6 +5,7 @@ import vine from '@vinejs/vine'
 import GameService from '#game/services/game_service'
 import IAService from '#ia/services/ia_service'
 import Game from '#game/models/game'
+import Proof from '#game/models/proof'
 import GameDto from '#game/dtos/game'
 
 @inject()
@@ -31,13 +32,30 @@ export default class GamesController {
   }
 
   async store({ auth, response }: HttpContext) {
-    const defaultData = await this.gameService.init(auth.user!)
+    const { data, script } = await this.gameService.init(auth.user!)
 
     const game = await Game.create({
-      data: defaultData,
+      data,
       userUuid: auth.user!.uuid,
       startTime: DateTime.now(),
     })
+
+    await Promise.all([
+      ...script.images.map((label, i) =>
+        Proof.create({
+          gameUuid: game.uuid,
+          imageUrl: `/images/histories/${script.id}/img-${i + 1}.png`,
+          data: { title: label, type: 'image' },
+        })
+      ),
+      ...script.pdf.map((pdfText, i) =>
+        Proof.create({
+          gameUuid: game.uuid,
+          content: pdfText,
+          data: { title: `Document ${i + 1}`, type: 'pdf' },
+        })
+      ),
+    ])
 
     return response.redirect().toRoute('game.start', { uuid: game.uuid })
   }
