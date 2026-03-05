@@ -55,6 +55,9 @@ export default class Game extends BaseModel {
   })
   declare currentChoices: ChoiceData[] | null
 
+  @column()
+  declare initialMessage: string
+
   @hasMany(() => Proof)
   declare proofs: HasMany<typeof Proof>
 

@@ -72,7 +72,7 @@ export default class GamesController {
     await game.load('user')
     await game.load('alibis')
 
-    let initialMessage = ''
+    let initialMessage = game.initialMessage || ''
     let currentChoices = game.currentChoices
 
     if (game.choices.length === 0 && !game.currentChoices) {
@@ -122,6 +122,7 @@ Langue: français
         currentChoices = parsed.nextChoices || []
 
         game.currentChoices = currentChoices
+        game.initialMessage = initialMessage
         await game.save()
 
         await game.load('proofs')
@@ -133,6 +134,7 @@ Langue: français
           { id: 3, title: 'Lire les mails', description: 'Consulter la boîte mail', choosen: false, isTrap: false },
         ]
         game.currentChoices = currentChoices
+        game.initialMessage = initialMessage
         await game.save()
       }
     }
