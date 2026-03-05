@@ -23,7 +23,8 @@ export default class GameDto extends BaseModelDto {
   declare updatedAt: DateTime
   declare finishedAt: DateTime | null
 
-  declare startTime: DateTime | null
+  declare startAt: DateTime | null
+  declare resumeAt: DateTime | null
   declare isPaused: boolean
   declare pausedAt: DateTime | null
   declare totalPausedMs: number
@@ -46,6 +47,8 @@ export default class GameDto extends BaseModelDto {
     this.updatedAt = game.updatedAt
     this.finishedAt = game.finishedAt
 
+    this.startAt = game.startAt ?? null
+    this.resumeAt = game.resumeAt ?? null
     this.isPaused = game.isPaused ?? false
     this.pausedAt = game.pausedAt ?? null
     this.totalPausedMs = game.totalPausedMs ?? 0
