@@ -1,3 +1,4 @@
+import GameStoreProvider from '#game/ui/components/GameStoreProvider'
 import AppSidebarLayout from '#common/ui/components/app_sidebar_layout'
 import { Main } from '#common/ui/components/main'
 import { Button } from '@workspace/ui/components/button'
@@ -21,6 +22,7 @@ export default function ResultPage() {
   const won = game.guiltyPourcentage <= 90
 
   return (
+    <GameStoreProvider game={game}>
     <AppSidebarLayout navMain={[]} navUser={navUser} user={user}>
       <Main>
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
@@ -49,5 +51,6 @@ export default function ResultPage() {
         </div>
       </Main>
     </AppSidebarLayout>
+    </GameStoreProvider>
   )
 }

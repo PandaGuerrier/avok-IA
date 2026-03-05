@@ -10,6 +10,7 @@ import type { ContactData } from '#game/types/data'
 import type { ChatMessage } from '#game/ui/utils/types'
 import { buildInitialMessages, getXsrfToken } from '#game/ui/utils/utils'
 import { useGameStore } from '#game/ui/store/gameStore'
+import GameStoreProvider from '#game/ui/components/GameStoreProvider'
 import GameHeader from '#game/ui/components/GameHeader'
 import ChatArea from '#game/ui/components/ChatArea'
 import ChoicesBar from '#game/ui/components/ChoicesBar'
@@ -28,24 +29,7 @@ export default function StartPage() {
   const { game, initialMessage, currentChoices: initialChoices } = usePageProps<Props>()
 
   // ── Zustand store ──────────────────────────────────────────────────────────
-  const { isPaused, init: initStore, pause: storeP, resume: storeR, updateGuilt } = useGameStore()
-
-  // Initialise the store synchronously on first render with server data
-  useState(() => {
-    initStore({
-      gameUuid: game.uuid,
-      startTimeMs: game.startTime
-        ? new Date(game.startTime as unknown as string).getTime()
-        : null,
-      totalPausedMs: game.totalPausedMs ?? 0,
-      pausedAtMs:
-        game.isPaused && game.pausedAt
-          ? new Date(game.pausedAt as unknown as string).getTime()
-          : null,
-      isPaused: game.isPaused ?? false,
-      guiltyPercentage: game.guiltyPourcentage ?? 50,
-    })
-  })
+  const { isPaused, pause: storeP, resume: storeR, updateGuilt } = useGameStore()
 
   // ── Local state ────────────────────────────────────────────────────────────
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
@@ -151,6 +135,7 @@ export default function StartPage() {
   const contacts: ContactData[] = (game.data as any)?.contacts ?? []
 
   return (
+    <GameStoreProvider game={game}>
     <AppLayout layout="sidebar" hideBottomNav removePadding>
       <div className="relative flex h-[calc(100vh-4rem)] overflow-hidden bg-[#050510] text-white">
         {/* Background glow */}
@@ -233,5 +218,6 @@ export default function StartPage() {
         )}
       </div>
     </AppLayout>
+    </GameStoreProvider>
   )
 }
