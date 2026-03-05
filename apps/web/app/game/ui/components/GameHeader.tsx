@@ -1,5 +1,4 @@
-import { FileSearch, StickyNote, Users, Pause, Play, ShieldX } from 'lucide-react'
-import { useGameStore } from '#game/ui/store/gameStore'
+import { FileSearch, StickyNote, Users, Pause, ShieldX } from 'lucide-react'
 import GuiltyWidget from './GuiltyWidget'
 import TimerWidget from './TimerWidget'
 
@@ -11,7 +10,6 @@ interface GameHeaderProps {
   onAlibisToggle: () => void
   onInterrogateClick: () => void
   onPause: () => void
-  onResume: () => void
 }
 
 export default function GameHeader({
@@ -22,10 +20,7 @@ export default function GameHeader({
   onAlibisToggle,
   onInterrogateClick,
   onPause,
-  onResume,
 }: GameHeaderProps) {
-  const isPaused = useGameStore((s) => s.isPaused)
-
   return (
     <div className="shrink-0 flex items-center justify-between gap-4 px-4 py-2 border-b border-white/10 bg-white/3 backdrop-blur-sm">
       {/* Left */}
@@ -78,23 +73,13 @@ export default function GameHeader({
           <span>Interroger</span>
         </button>
 
-        {isPaused ? (
-          <button
-            onClick={onResume}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-xs text-cyan-400 hover:bg-cyan-500/25 transition-all"
-          >
-            <Play className="w-3.5 h-3.5" />
-            <span>Reprendre</span>
-          </button>
-        ) : (
-          <button
-            onClick={onPause}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white/50 hover:text-white/80 transition-all"
-          >
-            <Pause className="w-3.5 h-3.5" />
-            <span>Pause</span>
-          </button>
-        )}
+        <button
+          onClick={onPause}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white/50 hover:text-white/80 transition-all"
+        >
+          <Pause className="w-3.5 h-3.5" />
+          <span>Pause</span>
+        </button>
       </div>
     </div>
   )

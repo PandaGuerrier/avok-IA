@@ -17,7 +17,6 @@ import ChoicesBar from '#game/ui/components/ChoicesBar'
 import AlibisPanel from '#game/ui/components/AlibisPanel'
 import ProofsModal from '#game/ui/components/ProofsModal'
 import InterrogateModal from '#game/ui/components/InterrogateModal'
-import PauseOverlay from '#game/ui/components/PauseOverlay'
 
 export interface Props {
   game: GameDto
@@ -29,7 +28,7 @@ export default function StartPage() {
   const { game, initialMessage, currentChoices: initialChoices } = usePageProps<Props>()
 
   // ── Zustand store ──────────────────────────────────────────────────────────
-  const { isPaused, pause: storeP, resume: storeR, updateGuilt } = useGameStore()
+  const { isPaused, pause: storeP, updateGuilt } = useGameStore()
 
   // ── Local state ────────────────────────────────────────────────────────────
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
@@ -79,21 +78,6 @@ export default function StartPage() {
         method: 'POST',
         headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-XSRF-TOKEN': getXsrfToken() },
       })
-    } catch {
-      // silent
-    }
-  }
-
-  async function handleResume() {
-    try {
-      const res = await fetch(`/game/${game.uuid}/resume`, {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-XSRF-TOKEN': getXsrfToken() },
-      })
-      if (res.ok) {
-        const json = await res.json()
-        storeR(json.totalPausedMs ?? 0)
-      }
     } catch {
       // silent
     }
@@ -156,7 +140,6 @@ export default function StartPage() {
             onAlibisToggle={() => setAlibisPanelOpen((v) => !v)}
             onInterrogateClick={() => setInterrogateOpen(true)}
             onPause={handlePause}
-            onResume={handleResume}
           />
 
           <ChatArea messages={messages} loading={loading} chatEndRef={chatEndRef} />
@@ -188,9 +171,6 @@ export default function StartPage() {
             onClose={() => setAlibisPanelOpen(false)}
           />
         )}
-
-        {/* Overlays / modals */}
-        {isPaused && <PauseOverlay onResume={handleResume} />}
 
         {proofsOpen && (
           <ProofsModal

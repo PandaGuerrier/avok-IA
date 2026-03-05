@@ -8,6 +8,7 @@ import EmailList from '../components/EmailList'
 import EmailDetail from '../components/EmailDetail'
 import Toast from '../components/Toast'
 import AlibisModal from '../components/AlibisModal'
+import GameStoreProvider, { type GameStoreInfo } from '#game/ui/components/GameStoreProvider'
 import type { Email } from '../schema/mailSchema'
 
 interface MailData {
@@ -20,7 +21,7 @@ interface MailData {
 }
 
 interface Props {
-  gameUuid: string
+  game: GameStoreInfo
   mails: MailData[]
 }
 
@@ -42,7 +43,8 @@ function mapMailsToEmails(mails: MailData[]): Email[] {
 }
 
 export default function Jaimail() {
-  const { gameUuid, mails } = usePageProps<Props>()
+  const { game, mails } = usePageProps<Props>()
+  const gameUuid = game.uuid
 
   const [emails, setEmails] = useState<Email[]>(() => mapMailsToEmails(mails))
   const [activeTab, setActiveTab] = useState('inbox')
@@ -131,6 +133,7 @@ export default function Jaimail() {
   const toggleSelectEmail = () => {}
 
   return (
+    <GameStoreProvider game={game}>
     <AppLayout layout="sidebar" removePadding hideBottomNav>
     <GamePauseBanner gameUuid={gameUuid} />
     <div
@@ -199,5 +202,6 @@ export default function Jaimail() {
       )}
     </div>
     </AppLayout>
+    </GameStoreProvider>
   )
 }

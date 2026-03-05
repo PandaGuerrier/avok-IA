@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { useGameStore } from '#game/ui/store/gameStore'
+import PauseOverlay from '#game/ui/components/PauseOverlay'
+import { getXsrfToken } from '#game/ui/utils/utils'
 
 export interface GameStoreInfo {
   uuid: string
-  startTime: unknown
-  totalPausedMs: number | null
+  startAt: unknown
+  resumeAt: unknown | null
   pausedAt: unknown | null
   isPaused: boolean | null
   guiltyPourcentage: number | null
@@ -19,20 +21,35 @@ export default function GameStoreProvider({
   children: ReactNode
 }) {
   const init = useGameStore((s) => s.init)
+  const isPaused = useGameStore((s) => s.isPaused)
+  const resume = useGameStore((s) => s.resume)
 
-  useState(() => {
+  useEffect(() => {
     init({
       gameUuid: game.uuid,
-      startTimeMs: game.startTime ? new Date(game.startTime as string).getTime() : null,
-      totalPausedMs: game.totalPausedMs ?? 0,
+      startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
+      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
       pausedAtMs:
-        game.isPaused && game.pausedAt
-          ? new Date(game.pausedAt as string).getTime()
-          : null,
+        game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
       isPaused: game.isPaused ?? false,
       guiltyPercentage: game.guiltyPourcentage ?? 50,
     })
-  })
+  }, [init, game])
 
-  return <>{children}</>
+  async function handleResume() {
+    try {
+      const res = await fetch(`/game/${game.uuid}/resume`, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-XSRF-TOKEN': getXsrfToken() },
+      })
+      if (res.ok) {
+        const json = await res.json()
+        resume(json.resumeAtMs ?? null)
+      }
+    } catch {
+      // silent
+    }
+  }
+
+  return <>{isPaused ? <PauseOverlay onResume={handleResume} /> : children}</>
 }

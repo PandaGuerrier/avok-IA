@@ -8,7 +8,14 @@ export default class NoteTrackController {
 
     const data = game.data as any
     return inertia.render('external/note_track', {
-      gameUuid: game.uuid,
+      game: {
+        uuid: game.uuid,
+        startAt: game.startAt,
+        resumeAt: game.resumeAt,
+        pausedAt: game.pausedAt,
+        isPaused: game.isPaused ?? false,
+        guiltyPourcentage: game.guiltyPourcentage ?? 50,
+      },
       notes: data.notes ?? { calendar: [], notes: [] },
     })
   }

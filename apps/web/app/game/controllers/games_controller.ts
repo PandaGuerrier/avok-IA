@@ -37,7 +37,7 @@ export default class GamesController {
     const game = await Game.create({
       data,
       userUuid: auth.user!.uuid,
-      startTime: DateTime.now(),
+      startAt: DateTime.now(),
     })
 
     await Promise.all([
@@ -192,16 +192,22 @@ Langue: français
       return response.unauthorized()
     }
 
-    if (game.pausedAt) {
-      const additionalMs = DateTime.now().diff(game.pausedAt).milliseconds
-      game.totalPausedMs = (game.totalPausedMs ?? 0) + additionalMs
+    let resumeAtMs: number | null = null
+
+    if (game.pausedAt && (game.startAt || game.resumeAt)) {
+      const nowMs = Date.now()
+      const pausedAtMs = game.pausedAt.toMillis()
+      const baseMs = game.resumeAt?.toMillis() ?? game.startAt!.toMillis()
+      const pauseDuration = Math.max(0, nowMs - pausedAtMs)
+      resumeAtMs = baseMs + pauseDuration
+      game.resumeAt = DateTime.fromMillis(resumeAtMs)
     }
 
     game.isPaused = false
     game.pausedAt = null
     await game.save()
 
-    return response.ok({ isPaused: game.isPaused, totalPausedMs: game.totalPausedMs })
+    return response.ok({ resumeAtMs })
   }
 
   async interrogate({ params, auth, request, response }: HttpContext) {

@@ -8,7 +8,14 @@ export default class JaimailController {
 
     const data = game.data as any
     return inertia.render('external/jaimail', {
-      gameUuid: game.uuid,
+      game: {
+        uuid: game.uuid,
+        startAt: game.startAt,
+        resumeAt: game.resumeAt,
+        pausedAt: game.pausedAt,
+        isPaused: game.isPaused ?? false,
+        guiltyPourcentage: game.guiltyPourcentage ?? 50,
+      },
       mails: data.mails ?? [],
     })
   }

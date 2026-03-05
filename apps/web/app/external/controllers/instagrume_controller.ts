@@ -8,7 +8,14 @@ export default class InstagrumeController {
 
     const data = game.data as any
     return inertia.render('external/instagrume', {
-      gameUuid: game.uuid,
+      game: {
+        uuid: game.uuid,
+        startAt: game.startAt,
+        resumeAt: game.resumeAt,
+        pausedAt: game.pausedAt,
+        isPaused: game.isPaused ?? false,
+        guiltyPourcentage: game.guiltyPourcentage ?? 50,
+      },
       insta: data.insta ?? { conversations: [], posts: [] },
       contacts: data.contacts ?? [],
     })
