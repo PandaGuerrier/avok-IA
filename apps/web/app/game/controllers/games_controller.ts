@@ -4,7 +4,6 @@ import { DateTime } from 'luxon'
 import vine from '@vinejs/vine'
 import GameService from '#game/services/game_service'
 import IAService from '#ia/services/ia_service'
-import IAImageService from '#ia/services/ia_image_service'
 import Game from '#game/models/game'
 import Proof from '#game/models/proof'
 import GameDto from '#game/dtos/game'
@@ -13,8 +12,7 @@ import GameDto from '#game/dtos/game'
 export default class GamesController {
   constructor(
     protected gameService: GameService,
-    protected iaService: IAService,
-    protected iaImageService: IAImageService
+    protected iaService: IAService
   ) {}
 
   async index({ auth, inertia }: HttpContext) {
@@ -42,15 +40,11 @@ export default class GamesController {
       startTime: DateTime.now(),
     })
 
-    const imageUrls = await Promise.all(
-      script.images.map((prompt) => this.iaImageService.generateImage(prompt).catch(() => ''))
-    )
-
     await Promise.all([
       ...script.images.map((label, i) =>
         Proof.create({
           gameUuid: game.uuid,
-          imageUrl: imageUrls[i] || '',
+          imageUrl: `/images/histories/${script.id}/img-${i + 1}.png`,
           data: { title: label, type: 'image' },
         })
       ),
@@ -85,7 +79,6 @@ export default class GamesController {
       const history = (game.data as any)?.history
       const contacts = (game.data as any)?.contacts ?? []
       const suspectName = contacts[0]?.name ?? 'le suspect'
-      const investigatorName = game.user.fullName ?? game.user.email
 
       const prompt = `
 Tu joues le rôle de la Juge Moreau, présidente du tribunal dans un jeu de déduction policière.
@@ -97,7 +90,7 @@ ${history?.content ?? JSON.stringify(game.data)}
 Données numériques saisies du suspect (Instagram, mails, agenda, notes) :
 ${JSON.stringify(game.data)}
 
-L'enquêteur s'appelle : ${investigatorName}
+L'enquêteur s'appelle : ${auth.user!.firstName}
 Le suspect principal : ${suspectName}
 
 Génère le message d'ouverture de la juge qui :
@@ -119,6 +112,7 @@ Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
     {"id": 3, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false}
   ]
 }
+Langue: français
       `.trim()
 
       try {
@@ -132,11 +126,11 @@ Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
 
         await game.load('proofs')
       } catch {
-        initialMessage = `Enquêteur ${investigatorName}, je suis la Juge Moreau. Vous êtes en charge du dossier concernant ${suspectName}. Vous trouverez les preuves matérielles dans le dossier preuves (en haut à gauche) et les données numériques du suspect dans la barre latérale. Commencez votre analyse.`
+        initialMessage = "Bienvenue dans l'enquête. Analysez les données pour déterminer la culpabilité."
         currentChoices = [
-          { id: 1, title: 'Analyser les messages Instagram', description: 'Examiner les conversations privées du suspect', choosen: false, isTrap: false },
-          { id: 2, title: 'Ignorer le dossier preuves', description: 'Se concentrer uniquement sur les témoignages', choosen: false, isTrap: true },
-          { id: 3, title: 'Consulter les mails', description: 'Éplucher la boîte mail du suspect', choosen: false, isTrap: false },
+          { id: 1, title: 'Analyser les messages', description: 'Examiner les conversations Instagram', choosen: false, isTrap: false },
+          { id: 2, title: 'Ignorer les alibis', description: 'Se concentrer uniquement sur les charges', choosen: false, isTrap: true },
+          { id: 3, title: 'Lire les mails', description: 'Consulter la boîte mail', choosen: false, isTrap: false },
         ]
         game.currentChoices = currentChoices
         await game.save()
@@ -199,7 +193,7 @@ Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
     }
 
     if (game.pausedAt) {
-      const additionalMs = Math.max(0, Date.now() - game.pausedAt.toMillis())
+      const additionalMs = DateTime.now().diff(game.pausedAt).milliseconds
       game.totalPausedMs = (game.totalPausedMs ?? 0) + additionalMs
     }
 
