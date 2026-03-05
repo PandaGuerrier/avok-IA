@@ -63,4 +63,6 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   IA_API_KEY: Env.schema.string(),
   IA_API_URL: Env.schema.string(),
+
+  OPENAI_API_KEY: Env.schema.string.optional(),
 })

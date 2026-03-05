@@ -44,7 +44,7 @@ export default function ResultPage() {
             <p className="text-4xl font-bold">{game.guiltyPourcentage}%</p>
           </div>
           <Button size="lg" asChild>
-            <a href="/game/create">Rejouer</a>
+            <a href="/game">Rejouer</a>
           </Button>
         </div>
       </Main>

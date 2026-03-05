@@ -1,45 +1,75 @@
-const gradesList = [
-  { subject: 'Mathématiques', grades: [15.5, 12.0, 14.2, 13.8], color: 'bg-green-100' },
-  { subject: 'Anglais', grades: [17.5, 16.2, 18.0, 15.8], color: 'bg-blue-100' },
-  { subject: 'Histoire', grades: [11.5, 8.0, 10.5, 8.2], color: 'bg-purple-100' },
-  { subject: 'Sciences', grades: [16.0, 14.5, 15.8, 13.2], color: 'bg-orange-100' },
-  { subject: 'Français', grades: [6.5, 4.0, 8.2, 4.5], color: 'bg-red-100' },
-]
+import { BookmarkPlus } from 'lucide-react'
 
-const calculateAverage = (grades: number[]) => {
-  return (grades.reduce((acc, g) => acc + g, 0) / grades.length).toFixed(2)
+interface Note {
+  coef: number
+  note: number
+  date: string
 }
 
-export function GradesPage() {
-  const allGrades = gradesList.flatMap((item) => item.grades)
-  const overallAverage = (allGrades.reduce((acc, g) => acc + g, 0) / allGrades.length).toFixed(2)
+interface GradesPageProps {
+  notes: Note[]
+  onAlibisClick: (content: string) => void
+}
+
+const getColor = (note: number) => {
+  if (note >= 14) return 'bg-green-100'
+  if (note >= 10) return 'bg-blue-100'
+  if (note >= 7) return 'bg-orange-100'
+  return 'bg-red-100'
+}
+
+const formatDate = (date: string) => {
+  try {
+    return new Date(date).toLocaleDateString('fr-FR')
+  } catch {
+    return date
+  }
+}
+
+const overallAverage = (notes: Note[]) => {
+  if (!notes.length) return '—'
+  const totalCoef = notes.reduce((sum, n) => sum + n.coef, 0)
+  const weighted = notes.reduce((sum, n) => sum + n.note * n.coef, 0)
+  return totalCoef > 0 ? (weighted / totalCoef).toFixed(2) : '—'
+}
+
+export function GradesPage({ notes, onAlibisClick }: GradesPageProps) {
+  const avg = overallAverage(notes)
 
   return (
     <div className="h-full overflow-auto">
       <div className="max-w-5xl mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Mes Notes</h2>
-          <div className="mb-8 text-lg font-semibold text-blue-600">
-            Moyenne générale: <span className="text-2xl text-blue-700">{overallAverage}/20</span>
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Mes Notes</h2>
+          <div className="mb-8 text-lg font-semibold text-blue-600 dark:text-blue-400">
+            Moyenne générale:{' '}
+            <span className="text-2xl text-blue-700 dark:text-blue-300">{avg}/20</span>
           </div>
-          <div className="space-y-6">
-            {gradesList.map((item, index) => (
-              <div key={index} className={`${item.color} rounded-lg p-6 shadow hover:shadow-lg transition`}>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-bold text-gray-800">{item.subject}</h3>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-600">Moyenne</p>
-                    <p className="text-2xl font-bold text-gray-800">{calculateAverage(item.grades)}/20</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {item.grades.map((grade, gradeIndex) => (
-                    <div key={gradeIndex} className="bg-white bg-opacity-70 rounded-lg p-3 text-center">
-                      <p className="text-xs text-gray-600 mb-1">Devoir {gradeIndex + 1}</p>
-                      <p className="text-lg font-bold text-gray-800">{grade}</p>
-                    </div>
-                  ))}
-                </div>
+
+          {notes.length === 0 && (
+            <p className="text-gray-400 dark:text-gray-500 text-sm">Aucune note disponible.</p>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {notes.map((n, i) => (
+              <div
+                key={i}
+                className={`${getColor(n.note)} rounded-xl p-5 shadow hover:shadow-lg transition relative group`}
+              >
+                <button
+                  onClick={() =>
+                    onAlibisClick(
+                      `[Note scolaire]\nNote: ${n.note}/20\nCoefficient: ${n.coef}\nDate: ${formatDate(n.date)}`
+                    )
+                  }
+                  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-blue-500"
+                  title="Utiliser comme alibi"
+                >
+                  <BookmarkPlus size={18} />
+                </button>
+                <p className="text-xs text-gray-500 mb-1">Devoir {i + 1} — {formatDate(n.date)}</p>
+                <p className="text-3xl font-bold text-gray-800">{n.note}<span className="text-base font-normal text-gray-500">/20</span></p>
+                <p className="text-xs text-gray-500 mt-1">Coefficient {n.coef}</p>
               </div>
             ))}
           </div>

@@ -1,102 +1,94 @@
-import React, { useState } from 'react';
-import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal } from 'lucide-react';
+import React, { useState } from 'react'
+import { Heart, MessageCircle, BookmarkPlus, MoreHorizontal } from 'lucide-react'
 
-interface PostProps {
-  user: string;
-  image: string;
-  caption: string;
+interface Comment {
+  id: number
+  content: string
+  author: string
 }
 
-const PostCard: React.FC<PostProps> = ({ user, image, caption }) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const [commentInput, setCommentInput] = useState('');
-  const [comments, setComments] = useState([
-    { id: 1, user: 'bobby_dev', text: 'Incroyable ce rendu ! 😍' },
-    { id: 2, user: 'react_fan', text: 'Tailwind c’est vraiment le futur.' }
-  ]);
+interface Post {
+  postId: number
+  content: string
+  imageUrl: string
+  comments: Comment[]
+}
 
-  const handleAddComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!commentInput.trim()) return;
+interface PostCardProps {
+  post: Post
+  onAlibisClick: (content: string) => void
+}
 
-    const newComment = {
-      id: Date.now(),
-      user: 'mon_pseudo',
-      text: commentInput
-    };
+const PostCard: React.FC<PostCardProps> = ({ post, onAlibisClick }) => {
+  const [isLiked, setIsLiked] = useState(false)
 
-    setComments([...comments, newComment]);
-    setCommentInput('');
-  };
+  const buildAlibisContent = () => {
+    const comments = post.comments ?? []
+    const lines = [`[Post Instagram #${post.postId}]`, post.content]
+    if (comments.length > 0) {
+      lines.push('', 'Commentaires:')
+      comments.forEach((c) => lines.push(`${c.author}: ${c.content}`))
+    }
+    return lines.join('\n')
+  }
 
   return (
-    <div className="flex bg-white border border-gray-300 rounded-sm mb-10 w-full max-w-[850px] min-h-[550px] overflow-hidden">
-      {/* Gauche : Image */}
+    <div className="flex bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-sm mb-10 w-full max-w-[850px] min-h-[500px] overflow-hidden">
+      {/* Image */}
       <div className="w-3/5 bg-black flex items-center justify-center">
-        <img 
-          src={image} 
-          alt="post" 
-          className="max-h-full w-full object-contain" 
-          onDoubleClick={() => setIsLiked(true)} 
-        />
+        {post.imageUrl ? (
+          <img src={post.imageUrl} alt="post" className="max-h-full w-full object-contain" onDoubleClick={() => setIsLiked(true)} />
+        ) : (
+          <div className="w-full h-full min-h-[400px] flex items-center justify-center text-gray-600 text-sm">Aucune image</div>
+        )}
       </div>
 
-      {/* Droite : Commentaires & Actions */}
-      <div className="w-2/5 flex flex-col bg-white">
-        <div className="p-4 border-b flex items-center justify-between">
-          <div className="flex items-center gap-3 font-bold text-sm">
-            <img src={`https://i.pravatar.cc/150?u=${user}`} className="h-8 w-8 rounded-full border" alt="" />
-            {user}
+      {/* Droite */}
+      <div className="w-2/5 flex flex-col bg-white dark:bg-gray-900">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <div className="flex items-center gap-3 font-bold text-sm text-gray-900 dark:text-white">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+              T
+            </div>
+            suspect
           </div>
-          <MoreHorizontal size={20} className="cursor-pointer text-gray-500" />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onAlibisClick(buildAlibisContent())}
+              title="Sauvegarder comme alibi"
+              className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-blue-500 transition-colors"
+            >
+              <BookmarkPlus size={18} />
+            </button>
+            <MoreHorizontal size={20} className="cursor-pointer text-gray-500 dark:text-gray-400" />
+          </div>
         </div>
-        
-        {/* Zone de texte scrollable */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 text-sm">
-          <p><span className="font-bold mr-2">{user}</span>{caption}</p>
-          {comments.map(c => (
+
+        <div className="flex-1 p-4 overflow-y-auto space-y-3 text-sm text-gray-900 dark:text-gray-100">
+          <p><span className="font-bold mr-2">suspect</span>{post.content}</p>
+          {(post.comments ?? []).map((c) => (
             <div key={c.id}>
-              <span className="font-bold mr-2">{c.user}</span>{c.text}
+              <span className="font-bold mr-2">{c.author}</span>{c.content}
             </div>
           ))}
         </div>
 
-        {/* Pied de la card */}
-        <div className="p-4 border-t">
-          <div className="flex justify-between mb-3">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-between mb-2">
             <div className="flex gap-4">
-              <Heart 
-                onClick={() => setIsLiked(!isLiked)} 
-                className={`cursor-pointer transition-colors ${isLiked ? 'text-red-500 fill-red-500' : 'text-black'}`} 
-                size={24} 
+              <Heart
+                onClick={() => setIsLiked(!isLiked)}
+                className={`cursor-pointer transition-colors ${isLiked ? 'text-red-500 fill-red-500' : 'text-black dark:text-white'}`}
+                size={24}
               />
-              <MessageCircle size={24} className="cursor-pointer" />
-              <Send size={24} className="cursor-pointer" />
+              <MessageCircle size={24} className="cursor-pointer text-gray-900 dark:text-white" />
             </div>
-            <Bookmark size={24} className="cursor-pointer" />
           </div>
-          <p className="font-bold text-sm mb-2">{isLiked ? '1,241' : '1,240'} J'aime</p>
-          
-          <form onSubmit={handleAddComment} className="flex gap-2 items-center border-t pt-3 mt-2">
-            <input 
-              type="text" 
-              placeholder="Ajouter un commentaire..." 
-              className="flex-1 text-sm outline-none"
-              value={commentInput}
-              onChange={(e) => setCommentInput(e.target.value)}
-            />
-            <button 
-              type="submit"
-              className={`text-blue-500 font-semibold text-sm ${!commentInput.trim() ? 'opacity-30' : ''}`}
-              disabled={!commentInput.trim()}
-            >
-              Publier
-            </button>
-          </form>
+          <p className="font-bold text-sm text-gray-900 dark:text-white">{isLiked ? '1 241' : '1 240'} J'aime</p>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PostCard;
+export default PostCard

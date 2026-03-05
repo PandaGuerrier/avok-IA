@@ -3,6 +3,13 @@ export interface HistoryScript {
   content: string
   /** Labels des images pré-stockées dans public/images/histories/{id}/img-N.png */
   images: string[]
+  instagrum?: {
+    posts: {
+      img: string
+      title: string
+      description: string
+    }[]
+  }
   pdf: string[]
 }
 
@@ -14,6 +21,14 @@ export const histories: HistoryScript[] = [
       'Enregistrement caméra de surveillance — couloir A, 18h42',
       'Photo du sac à dos retrouvé — preuve physique',
     ],
+    instagrum: {
+      posts:[
+        {
+        img: 'url',
+        title: 'Titre du post',
+        description: ' ',
+      }]
+    },
     pdf: [
       "Procès-verbal de constatation n°2024-0312 : Ordinateur portable HP EliteBook 840 G9 (SN: FR2024K789) disparu du casier 14B, couloir A, bâtiment principal. Dernier accès enregistré au système de contrôle d'accès le 12 mars 2024 à 18h42. Constaté par M. Dupont, agent de sécurité, le 13 mars à 07h15. Valeur estimée : 1 200 €. Plainte déposée par M. Delorme, professeur de mathématiques.",
     ],

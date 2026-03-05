@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import vine from '@vinejs/vine'
 import GameService from '#game/services/game_service'
 import IAService from '#ia/services/ia_service'
+import IAImageService from '#ia/services/ia_image_service'
 import Game from '#game/models/game'
 import Proof from '#game/models/proof'
 import GameDto from '#game/dtos/game'
@@ -12,7 +13,8 @@ import GameDto from '#game/dtos/game'
 export default class GamesController {
   constructor(
     protected gameService: GameService,
-    protected iaService: IAService
+    protected iaService: IAService,
+    protected iaImageService: IAImageService
   ) {}
 
   async index({ auth, inertia }: HttpContext) {
@@ -40,11 +42,15 @@ export default class GamesController {
       startTime: DateTime.now(),
     })
 
+    const imageUrls = await Promise.all(
+      script.images.map((prompt) => this.iaImageService.generateImage(prompt).catch(() => ''))
+    )
+
     await Promise.all([
       ...script.images.map((label, i) =>
         Proof.create({
           gameUuid: game.uuid,
-          imageUrl: `/images/histories/${script.id}/img-${i + 1}.png`,
+          imageUrl: imageUrls[i] || '',
           data: { title: label, type: 'image' },
         })
       ),
@@ -76,27 +82,43 @@ export default class GamesController {
     let currentChoices = game.currentChoices
 
     if (game.choices.length === 0 && !game.currentChoices) {
-      const prompt = `
-Tu es un enquêteur IA dans un jeu de déduction policière.
-Tu analyses les données numériques d'un adolescent pour déterminer sa culpabilité.
+      const history = (game.data as any)?.history
+      const contacts = (game.data as any)?.contacts ?? []
+      const suspectName = contacts[0]?.name ?? 'le suspect'
+      const investigatorName = game.user.fullName ?? game.user.email
 
-Voici les données du jeu :
+      const prompt = `
+Tu joues le rôle de la Juge Moreau, présidente du tribunal dans un jeu de déduction policière.
+Tu t'adresses directement à l'enquêteur chargé du dossier.
+
+Contexte de l'affaire :
+${history?.content ?? JSON.stringify(game.data)}
+
+Données numériques saisies du suspect (Instagram, mails, agenda, notes) :
 ${JSON.stringify(game.data)}
 
-C'est le début de l'enquête. Génère un message d'introduction et 3 choix d'action. EXACTEMENT 1 des 3 choix doit être un piège (isTrap: true) qui mènera l'enquêteur sur une fausse piste.
+L'enquêteur s'appelle : ${investigatorName}
+Le suspect principal : ${suspectName}
 
-Génère aussi 2 à 3 preuves initiales tirées des données.
+Génère le message d'ouverture de la juge qui :
+1. Salue l'enquêteur par son prénom de façon formelle
+2. Présente brièvement l'affaire : qui est le suspect, quel est le crime présumé
+3. Précise que les preuves matérielles sont disponibles dans le "dossier preuves" (bouton en haut à gauche)
+4. Mentionne que l'enquêteur peut consulter les réseaux sociaux et données du suspect dans la sidebar
+5. Invite à commencer l'analyse avec les 3 premières pistes proposées
+Style : formel, sérieux, ton judiciaire. 3-4 phrases. Commence directement par "Maître [prénom]," ou "Enquêteur [prénom],".
+
+Génère aussi 3 premiers choix d'action. EXACTEMENT 1 des 3 doit être un piège (isTrap: true).
 
 Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
 {
-  "message": "Message d'introduction (en français)",
+  "message": "Message de la juge en français",
   "nextChoices": [
     {"id": 1, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false},
     {"id": 2, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": true},
     {"id": 3, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false}
-  ],
+  ]
 }
-Langue: français
       `.trim()
 
       try {
@@ -110,11 +132,11 @@ Langue: français
 
         await game.load('proofs')
       } catch {
-        initialMessage = "Bienvenue dans l'enquête. Analysez les données pour déterminer la culpabilité."
+        initialMessage = `Enquêteur ${investigatorName}, je suis la Juge Moreau. Vous êtes en charge du dossier concernant ${suspectName}. Vous trouverez les preuves matérielles dans le dossier preuves (en haut à gauche) et les données numériques du suspect dans la barre latérale. Commencez votre analyse.`
         currentChoices = [
-          { id: 1, title: 'Analyser les messages', description: 'Examiner les conversations Instagram', choosen: false, isTrap: false },
-          { id: 2, title: 'Ignorer les alibis', description: 'Se concentrer uniquement sur les charges', choosen: false, isTrap: true },
-          { id: 3, title: 'Lire les mails', description: 'Consulter la boîte mail', choosen: false, isTrap: false },
+          { id: 1, title: 'Analyser les messages Instagram', description: 'Examiner les conversations privées du suspect', choosen: false, isTrap: false },
+          { id: 2, title: 'Ignorer le dossier preuves', description: 'Se concentrer uniquement sur les témoignages', choosen: false, isTrap: true },
+          { id: 3, title: 'Consulter les mails', description: 'Éplucher la boîte mail du suspect', choosen: false, isTrap: false },
         ]
         game.currentChoices = currentChoices
         await game.save()
@@ -177,7 +199,7 @@ Langue: français
     }
 
     if (game.pausedAt) {
-      const additionalMs = DateTime.now().diff(game.pausedAt).milliseconds
+      const additionalMs = Math.max(0, Date.now() - game.pausedAt.toMillis())
       game.totalPausedMs = (game.totalPausedMs ?? 0) + additionalMs
     }
 
