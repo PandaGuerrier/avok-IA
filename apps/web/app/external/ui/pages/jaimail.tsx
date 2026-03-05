@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import AppLayout from '#common/ui/components/app_layout'
-import GamePauseBanner from '#game/ui/components/GamePauseBanner'
+import { useGameStore } from '#game/ui/store/gameStore'
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
 import EmailList from '../components/EmailList'
 import EmailDetail from '../components/EmailDetail'
 import Toast from '../components/Toast'
 import AlibisModal from '../components/AlibisModal'
-import GameStoreProvider, { type GameStoreInfo } from '#game/ui/components/GameStoreProvider'
 import type { Email } from '../schema/mailSchema'
 
 interface MailData {
@@ -21,7 +20,14 @@ interface MailData {
 }
 
 interface Props {
-  game: GameStoreInfo
+  game: {
+    uuid: string
+    startAt: unknown
+    resumeAt: unknown | null
+    pausedAt: unknown | null
+    isPaused: boolean | null
+    guiltyPourcentage: number | null
+  }
   mails: MailData[]
 }
 
@@ -46,7 +52,21 @@ export default function Jaimail() {
   const { game, mails } = usePageProps<Props>()
   const gameUuid = game.uuid
 
+  const init = useGameStore((s) => s.init)
+
   const [emails, setEmails] = useState<Email[]>(() => mapMailsToEmails(mails))
+
+  // Initialize the game store without pausing
+  useEffect(() => {
+    init({
+      gameUuid: game.uuid,
+      startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
+      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
+      pausedAtMs: game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
+      isPaused: game.isPaused ?? false,
+      guiltyPercentage: game.guiltyPourcentage ?? 50,
+    })
+  }, [init, game])
   const [activeTab, setActiveTab] = useState('inbox')
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -133,9 +153,7 @@ export default function Jaimail() {
   const toggleSelectEmail = () => {}
 
   return (
-    <GameStoreProvider game={game}>
     <AppLayout layout="sidebar" removePadding hideBottomNav>
-    <GamePauseBanner gameUuid={gameUuid} />
     <div
       className={`flex flex-col h-[calc(100vh-4rem)] w-full font-sans relative overflow-hidden transition-colors duration-300 ${
         isDarkMode ? 'dark bg-slate-950 text-slate-200' : 'bg-slate-50 text-brand-dark'
@@ -202,6 +220,5 @@ export default function Jaimail() {
       )}
     </div>
     </AppLayout>
-    </GameStoreProvider>
   )
 }

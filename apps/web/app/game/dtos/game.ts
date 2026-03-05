@@ -46,7 +46,6 @@ export default class GameDto extends BaseModelDto {
     this.updatedAt = game.updatedAt
     this.finishedAt = game.finishedAt
 
-    this.startTime = game.startTime ?? null
     this.isPaused = game.isPaused ?? false
     this.pausedAt = game.pausedAt ?? null
     this.totalPausedMs = game.totalPausedMs ?? 0

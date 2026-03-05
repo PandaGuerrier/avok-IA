@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import type { ReactNode } from 'react'
+import { router } from '@inertiajs/react'
 import { useGameStore } from '#game/ui/store/gameStore'
 import PauseOverlay from '#game/ui/components/PauseOverlay'
 import { getXsrfToken } from '#game/ui/utils/utils'
@@ -45,9 +46,11 @@ export default function GameStoreProvider({
       if (res.ok) {
         const json = await res.json()
         resume(json.resumeAtMs ?? null)
+        // Reload the page to sync server state
+        router.reload()
       }
-    } catch {
-      // silent
+    } catch (error) {
+      console.error('Resume failed:', error)
     }
   }
 

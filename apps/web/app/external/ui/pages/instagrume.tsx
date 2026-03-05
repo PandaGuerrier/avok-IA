@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import AppLayout from '#common/ui/components/app_layout'
+import { useGameStore } from '#game/ui/store/gameStore'
 import Sidebar from '../components/layout/Sidebar'
 import PostCard from '../components/feed/PostCard'
 import ChatList from '../components/messages/ChatList'
 import ChatWindow from '../components/messages/ChatWindow'
 import AlibisModal from '../components/AlibisModal'
-import GameStoreProvider, { type GameStoreInfo } from '#game/ui/components/GameStoreProvider'
 
 interface Contact {
   id: number
@@ -33,7 +33,14 @@ interface Post {
 }
 
 interface Props {
-  game: GameStoreInfo
+  game: {
+    uuid: string
+    startAt: unknown
+    resumeAt: unknown | null
+    pausedAt: unknown | null
+    isPaused: boolean | null
+    guiltyPourcentage: number | null
+  }
   insta: { conversations: Conversation[]; posts: Post[] }
   contacts: Contact[]
 }
@@ -42,9 +49,23 @@ const Instagrume: React.FC = () => {
   const { game, insta, contacts } = usePageProps<Props>()
   const gameUuid = game.uuid
 
+  const init = useGameStore((s) => s.init)
+
   const [activeTab, setActiveTab] = useState<'feed' | 'messages' | 'profile' | 'search'>('feed')
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const [alibisModal, setAlibisModal] = useState<{ content: string } | null>(null)
+
+  // Initialize the game store without pausing
+  useEffect(() => {
+    init({
+      gameUuid: game.uuid,
+      startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
+      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
+      pausedAtMs: game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
+      isPaused: game.isPaused ?? false,
+      guiltyPercentage: game.guiltyPourcentage ?? 50,
+    })
+  }, [init, game])
 
   const normaliseMessages = (raw: any[]): Message[] =>
     (raw ?? []).map((m, i) => ({
@@ -61,9 +82,8 @@ const Instagrume: React.FC = () => {
   }
 
   return (
-    <GameStoreProvider game={game}>
-      <AppLayout layout="sidebar" removePadding hideBottomNav>
-        <div className="flex h-[calc(100vh-4rem)] bg-white dark:bg-gray-900 text-black dark:text-white font-sans overflow-hidden">
+    <AppLayout layout="sidebar" removePadding hideBottomNav>
+      <div className="flex h-[calc(100vh-4rem)] bg-white dark:bg-gray-900 text-black dark:text-white font-sans overflow-hidden">
           <Sidebar activeTab={activeTab} onNavigate={(tab: any) => setActiveTab(tab)} />
 
           <main
@@ -148,8 +168,7 @@ const Instagrume: React.FC = () => {
           )}
         </div>
       </AppLayout>
-    </GameStoreProvider>
-  )
+    )
 }
 
 export default Instagrume

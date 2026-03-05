@@ -28,7 +28,7 @@ export default function StartPage() {
   const { game, initialMessage, currentChoices: initialChoices } = usePageProps<Props>()
 
   // ── Zustand store ──────────────────────────────────────────────────────────
-  const { isPaused, pause: storeP, updateGuilt } = useGameStore()
+  const { isPaused, updateGuilt } = useGameStore()
 
   // ── Local state ────────────────────────────────────────────────────────────
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
@@ -69,19 +69,6 @@ export default function StartPage() {
   }, [isPaused, game.uuid])
 
   // ── Actions ────────────────────────────────────────────────────────────────
-
-  async function handlePause() {
-    const pausedAtMs = Date.now()
-    storeP(pausedAtMs)
-    try {
-      await fetch(`/game/${game.uuid}/pause`, {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-XSRF-TOKEN': getXsrfToken() },
-      })
-    } catch {
-      // silent
-    }
-  }
 
   async function handleChoice(choice: ChoiceData) {
     if (loading || isPaused) return
@@ -139,7 +126,6 @@ export default function StartPage() {
             onProofsClick={() => setProofsOpen(true)}
             onAlibisToggle={() => setAlibisPanelOpen((v) => !v)}
             onInterrogateClick={() => setInterrogateOpen(true)}
-            onPause={handlePause}
           />
 
           <ChatArea messages={messages} loading={loading} chatEndRef={chatEndRef} />

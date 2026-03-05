@@ -1,4 +1,4 @@
-import { FileSearch, StickyNote, Users, Pause, ShieldX } from 'lucide-react'
+import { FileSearch, StickyNote, Users, ShieldX } from 'lucide-react'
 import GuiltyWidget from './GuiltyWidget'
 import TimerWidget from './TimerWidget'
 
@@ -9,7 +9,6 @@ interface GameHeaderProps {
   onProofsClick: () => void
   onAlibisToggle: () => void
   onInterrogateClick: () => void
-  onPause: () => void
 }
 
 export default function GameHeader({
@@ -19,7 +18,6 @@ export default function GameHeader({
   onProofsClick,
   onAlibisToggle,
   onInterrogateClick,
-  onPause,
 }: GameHeaderProps) {
   return (
     <div className="shrink-0 flex items-center justify-between gap-4 px-4 py-2 border-b border-white/10 bg-white/3 backdrop-blur-sm">
@@ -71,14 +69,6 @@ export default function GameHeader({
         >
           <Users className="w-3.5 h-3.5" />
           <span>Interroger</span>
-        </button>
-
-        <button
-          onClick={onPause}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white/50 hover:text-white/80 transition-all"
-        >
-          <Pause className="w-3.5 h-3.5" />
-          <span>Pause</span>
         </button>
       </div>
     </div>

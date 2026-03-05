@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import AppLayout from '#common/ui/components/app_layout'
-import GamePauseBanner from '#game/ui/components/GamePauseBanner'
+import { useGameStore } from '#game/ui/store/gameStore'
 import { Navbar } from '../components/navbar'
 import { Dashboard } from '../components/dashboard'
 import { GradesPage } from '../components/grade_page'
 import { AttendancePage } from '../components/attendancePage'
 import { IncidentsPage } from '../components/incidents_page'
 import AlibisModal from '../components/AlibisModal'
-import GameStoreProvider, { type GameStoreInfo } from '#game/ui/components/GameStoreProvider'
 
 interface CalendarEvent {
   id: number
@@ -28,7 +27,14 @@ interface Note {
 }
 
 interface Props {
-  game: GameStoreInfo
+  game: {
+    uuid: string
+    startAt: unknown
+    resumeAt: unknown | null
+    pausedAt: unknown | null
+    isPaused: boolean | null
+    guiltyPourcentage: number | null
+  }
   notes: {
     calendar: CalendarDay[]
     notes: Note[]
@@ -39,13 +45,25 @@ export default function Note_track() {
   const { game, notes } = usePageProps<Props>()
   const gameUuid = game.uuid
 
+  const init = useGameStore((s) => s.init)
+
   const [currentPage, setCurrentPage] = useState('dashboard')
   const [alibisModal, setAlibisModal] = useState<{ content: string } | null>(null)
 
+  // Initialize the game store without pausing
+  useEffect(() => {
+    init({
+      gameUuid: game.uuid,
+      startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
+      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
+      pausedAtMs: game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
+      isPaused: game.isPaused ?? false,
+      guiltyPercentage: game.guiltyPourcentage ?? 50,
+    })
+  }, [init, game])
+
   return (
-    <GameStoreProvider game={game}>
     <AppLayout layout="sidebar" removePadding hideBottomNav>
-    <GamePauseBanner gameUuid={gameUuid} />
     <div className="flex h-[calc(100vh-4rem)] bg-gray-100 dark:bg-gray-950">
       <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
@@ -77,6 +95,5 @@ export default function Note_track() {
       )}
     </div>
     </AppLayout>
-    </GameStoreProvider>
   )
 }
