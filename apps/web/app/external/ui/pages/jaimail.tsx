@@ -216,6 +216,7 @@ export default function Jaimail() {
           gameUuid={gameUuid}
           defaultContent={alibisModal.content}
           onClose={() => setAlibisModal(null)}
+          isDarkMode={isDarkMode}
         />
       )}
     </div>

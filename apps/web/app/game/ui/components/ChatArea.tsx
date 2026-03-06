@@ -10,7 +10,7 @@ interface ChatAreaProps {
 
 export default function ChatArea({ messages, loading, chatEndRef }: ChatAreaProps) {
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
+    <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin scrollbar-track-transparent dark:scrollbar-thumb-white/10 scrollbar-thumb-black/10">
       {messages.map((msg, i) => (
         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           {msg.role === 'contact' ? (
@@ -24,8 +24,8 @@ export default function ChatArea({ messages, loading, chatEndRef }: ChatAreaProp
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed backdrop-blur-sm ${
                 msg.role === 'user'
-                  ? 'bg-cyan-500/15 border border-cyan-500/20 text-cyan-100 rounded-br-sm'
-                  : 'bg-white/5 border border-white/10 text-white/85 rounded-bl-sm'
+                  ? 'bg-cyan-500/20 dark:bg-cyan-500/15 border border-cyan-500/30 dark:border-cyan-500/20 text-cyan-700 dark:text-cyan-100 rounded-br-sm'
+                  : 'bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white/85 rounded-bl-sm'
               }`}
             >
               {msg.content}
@@ -36,7 +36,7 @@ export default function ChatArea({ messages, loading, chatEndRef }: ChatAreaProp
 
       {loading && (
         <div className="flex justify-start">
-          <div className="bg-white/5 border border-white/10 rounded-2xl rounded-bl-sm px-4 py-3">
+          <div className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl rounded-bl-sm px-4 py-3">
             <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
           </div>
         </div>

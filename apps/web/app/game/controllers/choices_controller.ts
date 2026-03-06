@@ -84,31 +84,46 @@ export default class ChoicesController {
     }))
 
     const prompt = `
-Tu es un enquêteur IA dans un jeu de déduction policière.
-Tu analyses les données numériques d'un adolescent pour déterminer sa culpabilité.
+RÔLE : Tu es la Juge Moreau. Tu réagis à la DÉFENSE de l'ACCUSÉ qui vient de présenter une piste/argument.
 
-Données du jeu :
-${JSON.stringify(game.data)}
+CONTEXTE : Tu juges l'accusé. Il essaie de se défendre en analysant les données accessibles dans la sidebar.
+DONNÉES COMPLÈTES : ${JSON.stringify(game.data)}
 
-Historique des choix précédents :
+HISTORIQUE DE LA DÉFENSE :
 ${JSON.stringify(previousChoices)}
 ${selectedProofsContext}${selectedAlibisContext}
 
-L'enquêteur vient de choisir : "${payload.data.title}" - ${payload.data.description}
-${payload.data.isTrap ? '(Ce choix était un piège — l\'enquêteur s\'est trompé de piste)' : ''}
+L'ACCUSÉ VIENT DE CHOISIR : "${payload.data.title}" - ${payload.data.description}
+${payload.data.isTrap ? '(⚠️ PIÈGE CHOISI - L\'accusé s\'est trompé)' : ''}
 
-Génère une réponse narrative et 3 nouveaux choix. EXACTEMENT 1 des 3 choix doit être un piège (isTrap: true) — une option qui semble logique mais qui va dans le mauvais sens et augmentera la culpabilité. Les autres sont des pistes valides.
+=== TA RÉACTION ===
+Tu dois JUGER sa défense et RÉPONDRE EN LE PIÉGEANT.
+Si sa défense tient bien = diminue sa culpabilité. Sinon = augmente-la.
 
-Le guiltyDelta doit être entre -15 et +15 (négatif = preuve d'innocence, positif = preuve de culpabilité). Si l'enquêteur utilisait de bonnes preuves et a fait un bon choix, le delta peut être plus négatif.
+MAX 250 caractères (compte chaque lettre, espace, ponctuation).
 
-Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
+Génère ta réaction + 3 nouveaux choix de défense pour l'accusé (1 piège, 2 valides).
+
+=== GUILTYΔELTA ===
+- Bonne défense présentée : -20 à -15 (innocence prouvée)
+- Défense ambiguë : -10 à -5
+- Neutre : 0
+- Mauvaise/PIÈGE choisi : +5 à +10 (preuve de culpabilité)
+Choix du piège ajoute +10 minimum.
+
+=== TITRES & PIÈGE ===
+Les titres DOIVENT être NEUTRES et NE PAS révéler le piège.
+Le piège DOIT être ALÉATOIRE : pas toujours id 2, peut être id 1, 2 ou 3.
+Les 3 titres doivent sembler également crédibles/défendables.
+
+Réponds UNIQUEMENT en JSON valide :
 {
-  "message": "Réponse narrative (en français)",
+  "message": "Réaction de la Juge (MAX 250 caractères)",
   "guiltyDelta": 0,
   "nextChoices": [
-    {"id": 1, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false},
-    {"id": 2, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": true},
-    {"id": 3, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false}
+    {"id": 1, "title": "Titre neutre et ambigu", "description": "...", "choosen": false, "isTrap": false},
+    {"id": 2, "title": "Titre neutre et ambigu", "description": "...", "choosen": false, "isTrap": true},
+    {"id": 3, "title": "Titre neutre et ambigu", "description": "...", "choosen": false, "isTrap": false}
   ]
 }
 Langue: français
@@ -122,15 +137,21 @@ Langue: français
       const raw = await this.iaService.chat(prompt)
       const parsed = JSON.parse(raw)
       iaMessage = parsed.message || ''
+      
+      // Valider et limiter le message à 250 caractères pour les messages suivants (pas le premier)
+      if (game.choices.length > 0 && iaMessage.length > 250) {
+        iaMessage = iaMessage.substring(0, 247) + '...'
+      }
+      
       guiltyDelta = parsed.guiltyDelta || 0
       nextChoices = parsed.nextChoices || []
-    } catch {
-      iaMessage = "L'enquête continue. Analysez les prochains indices."
+    } catch (error) {
+      iaMessage = "La cour demande à l'enquêteur de présenter des preuves tangibles. Quelle piste souhaitez-vous explorer?"
       guiltyDelta = 0
       nextChoices = [
-        { id: 1, title: "Continuer l'analyse", description: 'Approfondir les recherches', choosen: false, isTrap: false },
-        { id: 2, title: "Ignorer cet élément", description: 'Passer à autre chose', choosen: false, isTrap: true },
-        { id: 3, title: "Reconsidérer les preuves", description: 'Revoir les éléments collectés', choosen: false, isTrap: false },
+        { id: 1, title: "Examiner les données", description: 'Analyser les informations disponibles', choosen: false, isTrap: false },
+        { id: 2, title: "Accuser sans preuves", description: 'Présenter ses accusations', choosen: false, isTrap: true },
+        { id: 3, title: "Consulter les témoins", description: 'Vérifier les alibis', choosen: false, isTrap: false },
       ]
     }
 

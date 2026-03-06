@@ -10,6 +10,8 @@ const circumference = 2 * Math.PI * r
 
 export default function TimerWidget() {
   const isPaused = useGameStore((s) => s.isPaused)
+  const startAtMs = useGameStore((s) => s.startAtMs)
+  const resumeAtMs = useGameStore((s) => s.resumeAtMs)
   const computeTimeLeft = useGameStore((s) => s.computeTimeLeft)
 
   // Re-render every 500ms to keep the display accurate
@@ -18,7 +20,7 @@ export default function TimerWidget() {
     if (isPaused) return
     const id = setInterval(tick, 500)
     return () => clearInterval(id)
-  }, [isPaused])
+  }, [isPaused, startAtMs, resumeAtMs, tick])
 
   const seconds = computeTimeLeft()
   const offset = circumference * (1 - seconds / DURATION_S)
@@ -53,7 +55,7 @@ export default function TimerWidget() {
           {formatTime(seconds)}
         </text>
       </svg>
-      <span className="text-[10px] text-white/40 uppercase tracking-widest">
+      <span className="text-[10px] text-gray-600 dark:text-white/40 uppercase tracking-widest">
         {isPaused ? 'En pause' : 'Temps restant'}
       </span>
     </div>

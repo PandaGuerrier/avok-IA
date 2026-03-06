@@ -72,44 +72,81 @@ export default class GamesController {
     await game.load('user')
     await game.load('alibis')
 
-    let initialMessage = ''
+    let initialMessage = game.initialMessage || ''
     let currentChoices = game.currentChoices
 
     if (game.choices.length === 0 && !game.currentChoices) {
       const history = (game.data as any)?.history
       const contacts = (game.data as any)?.contacts ?? []
       const suspectName = contacts[0]?.name ?? 'le suspect'
+      const crimeContext = history?.content ? `Infraction: ${history.content.substring(0, 100)}...` : 'Infraction inconnue'
 
       const prompt = `
-Tu joues le rôle de la Juge Moreau, présidente du tribunal dans un jeu de déduction policière.
-Tu t'adresses directement à l'enquêteur chargé du dossier.
+RÔLE : Tu es la Juge Moreau, présidente du tribunal. Tu JUGES l'accusé (l'utilisateur).
 
-Contexte de l'affaire :
-${history?.content ?? JSON.stringify(game.data)}
+=== L'AFFAIRE ===
+CONTEXTE DU CRIME : ${history?.content ?? 'Une infraction a été commise'}
 
-Données numériques saisies du suspect (Instagram, mails, agenda, notes) :
+QUI EST ACCUSÉ : ${auth.user!.firstName} ${auth.user!.lastName || ''}
+SUSPECT PRINCIPAL DONT ON ANALYSE LES DONNÉES : ${suspectName}
+(L'utilisateur doit analyser les données de ${suspectName} pour prouver son innocence)
+
+DONNÉES À ANALYSER (accessibles dans la sidebar à gauche - réseaux sociaux) :
 ${JSON.stringify(game.data)}
 
-L'enquêteur s'appelle : ${auth.user!.firstName}
-Le suspect principal : ${suspectName}
+=== TON DE LA JUGE ===
+- Froide, impitoyable, procédurière
+- Tu soupçonnes l'accusé et tu l'accuses formellement
+- Formes judiciaires : "Maître ${auth.user!.firstName}...", "La cour estime...", "Les preuves montrent..."
+- Ton ton : accusateur et persuasif
 
-Génère le message d'ouverture de la juge qui :
-1. Salue l'enquêteur par son prénom de façon formelle
-2. Présente brièvement l'affaire : qui est le suspect, quel est le crime présumé
-3. Précise que les preuves matérielles sont disponibles dans le "dossier preuves" (bouton en haut à gauche)
-4. Mentionne que l'enquêteur peut consulter les réseaux sociaux et données du suspect dans la sidebar
-5. Invite à commencer l'analyse avec les 3 premières pistes proposées
-Style : formel, sérieux, ton judiciaire. 3-4 phrases. Commence directement par "Maître [prénom]," ou "Enquêteur [prénom],".
+=== RÔLES CLAIRS ===
+TOI (Juge) : Tu accuses l'utilisateur d'être impliqué dans l'infraction concernant ${suspectName}
+L'UTILISATEUR (Accusé) : Doit se DÉFENDRE en trouvant des preuves d'innocence dans les réseaux sociaux/données disponibles à gauche
 
-Génère aussi 3 premiers choix d'action. EXACTEMENT 1 des 3 doit être un piège (isTrap: true).
+=== PREMIER MESSAGE (OUVERTURE DU PROCÈS) ===
+OBLIGATOIRES :
+1. Rappelle clairement l'ACCUSATION (pourquoi il est au tribunal)
+2. Mentionne que ${suspectName} est impliqué(e) et que les données sont dans la SIDEBAR À GAUCHE
+3. Invite l'accusé à se DÉFENDRE en présentant des preuves
 
+NE MENTIONNE PAS "enquêteur" - il n'est qu'un ACCUSÉ qui doit prouver son innocence.
+
+=== MESSAGES SUIVANTS ===
+- Réponds à la DÉFENSE de l'utilisateur
+- Essaie de le PIÉGER avec de fausses accusations ou des interprétations des preuves
+- Propose 3 choix : 2 valides + 1 PIÈGE qui l'aggrave
+- MAX 250 caractères (compte espaces et ponctuation!)
+
+=== CHOIX D'ACTION ===
+Propose EXACTEMENT 3 réponses possibles pour l'accusé, dont 1 PIÈGE :
+- Choix 1 & 3 : Pistes de défense valides (isTrap: false)
+- Choix 2 : PIÈGE qui l'incrimine davantage (isTrap: true)
+
+EXEMPLES DE PIÈGES :
+- Avouer quelque chose sans preuve
+- Ignorer une incohérence dans sa défense
+- Se contredire
+- Faire confiance à un faux alibi
+
+=== TITRES DES CHOIX ===
+IMPORTANT : Les titres NE DOIVENT PAS révéler si c'est un piège.
+Les titres doivent être NEUTRES et AMBIGUS pour que le joueur ne puisse pas identifier le piège.
+Exemples de mauvais titres : "Mauvaise défense", "Option dangereuse"
+Exemples de bons titres : "Analyser les fichiers supprimés", "Chercher des témoins", "Vérifier les logs"
+
+=== POSITION DU PIÈGE ===
+Le piège DOIT être ALÉATOIRE : il peut être dans n'importe lequel des 3 choix (id 1, 2 ou 3).
+Pas toujours au même endroit!
+
+=== FORMAT JSON ===
 Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
 {
-  "message": "Message de la juge en français",
+  "message": "Message d'accusation du juge (sans limite pour le 1er, 250 MAX ensuite)",
   "nextChoices": [
-    {"id": 1, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false},
-    {"id": 2, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": true},
-    {"id": 3, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false}
+    {"id": 1, "title": "Titre neutre et ambigu", "description": "Courte description", "choosen": false, "isTrap": false},
+    {"id": 2, "title": "Titre neutre et ambigu", "description": "Courte description", "isTrap": true},
+    {"id": 3, "title": "Titre neutre et ambigu", "description": "Courte description", "choosen": false, "isTrap": false}
   ]
 }
 Langue: français
@@ -122,17 +159,19 @@ Langue: français
         currentChoices = parsed.nextChoices || []
 
         game.currentChoices = currentChoices
+        game.initialMessage = initialMessage
         await game.save()
 
         await game.load('proofs')
-      } catch {
-        initialMessage = "Bienvenue dans l'enquête. Analysez les données pour déterminer la culpabilité."
+      } catch (error) {
+        initialMessage = `Maître ${auth.user!.firstName}, vous comparaissez pour ${crimeContext}. Les preuves sont accessibles dans le dossier gauche. Présentez votre défense.`
         currentChoices = [
-          { id: 1, title: 'Analyser les messages', description: 'Examiner les conversations Instagram', choosen: false, isTrap: false },
-          { id: 2, title: 'Ignorer les alibis', description: 'Se concentrer uniquement sur les charges', choosen: false, isTrap: true },
-          { id: 3, title: 'Lire les mails', description: 'Consulter la boîte mail', choosen: false, isTrap: false },
+          { id: 1, title: 'Analyser les messages', description: 'Examiner les données du suspect', choosen: false, isTrap: false },
+          { id: 2, title: 'Ignorer les incohérences', description: 'Se concentrer uniquement sur les preuves évidentes', choosen: false, isTrap: true },
+          { id: 3, title: 'Consulter les alibis', description: 'Vérifier les déclarations du suspect', choosen: false, isTrap: false },
         ]
         game.currentChoices = currentChoices
+        game.initialMessage = initialMessage
         await game.save()
       }
     }

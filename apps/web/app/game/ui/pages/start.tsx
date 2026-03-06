@@ -113,15 +113,27 @@ export default function StartPage() {
 
   return (
     <GameStoreProvider game={game}>
-      <AppLayout layout="sidebar" hideBottomNav removePadding>
-        <div className="relative flex h-[calc(100vh-4rem)] overflow-hidden bg-[#050510] text-white">
-          {/* Background glow */}
-          <div
-            className="pointer-events-none absolute inset-0 z-0"
-            style={{
-              background:
-                'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6,182,212,0.06) 0%, transparent 70%)',
-            }}
+    <AppLayout layout="sidebar" hideBottomNav removePadding>
+      <div className="relative flex h-[calc(100vh-4rem)] overflow-hidden bg-white dark:bg-[#050510] text-black dark:text-white">
+        {/* Background glow */}
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background: window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6,182,212,0.06) 0%, transparent 70%)'
+              : 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6,182,212,0.03) 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Main column */}
+        <div className="relative z-10 flex flex-1 flex-col min-w-0">
+          <GameHeader
+            gameUuid={game.uuid}
+            proofsCount={proofs.length}
+            alibisCount={alibis.length}
+            onProofsClick={() => setProofsOpen(true)}
+            onAlibisToggle={() => setAlibisPanelOpen((v) => !v)}
+            onInterrogateClick={() => setInterrogateOpen(true)}
           />
 
           {/* Main column */}
