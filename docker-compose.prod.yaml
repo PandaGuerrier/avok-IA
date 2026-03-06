@@ -29,6 +29,10 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       VITE_API_URL: ${VITE_API_URL}
+      IA_API_KEY: ${IA_API_KEY}
+      IA_API_URL: ${IA_API_URL}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
     volumes:
       - 'web_uploads:/app/apps/web/build/tmp'
 
