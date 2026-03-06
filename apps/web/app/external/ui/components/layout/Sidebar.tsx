@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onNavigate }) => {
   ];
 
   return (
-    <aside className="shrink-0 h-full w-16 xl:w-64 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 flex flex-col transition-all overflow-y-auto">
+    <aside id="tour-insta-sidebar" className="shrink-0 h-full w-16 xl:w-64 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 flex flex-col transition-all overflow-y-auto">
       {/* SECTION LOGO */}
       <div className="my-8 flex items-center justify-center xl:justify-start px-2">
         <img src="/images/logo.png" alt="Logo" className="w-10 h-10 xl:hidden object-contain" />

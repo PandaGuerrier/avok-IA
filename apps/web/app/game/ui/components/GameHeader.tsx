@@ -31,13 +31,18 @@ export default function GameHeader({
 
       {/* Center — widgets self-connected to store */}
       <div className="flex items-center gap-6">
-        <GuiltyWidget />
-        <TimerWidget />
+        <div id="tour-guilty">
+          <GuiltyWidget />
+        </div>
+        <div id="tour-timer">
+          <TimerWidget />
+        </div>
       </div>
 
       {/* Right */}
       <div className="flex items-center gap-2">
         <button
+          id="tour-preuves"
           onClick={onProofsClick}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-600 dark:text-white/70 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
         >
@@ -51,6 +56,7 @@ export default function GameHeader({
         </button>
 
         <button
+          id="tour-alibis"
           onClick={onAlibisToggle}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-600 dark:text-white/70 hover:text-purple-600 dark:hover:text-purple-400 hover:border-purple-500/30 transition-all"
         >
@@ -64,6 +70,7 @@ export default function GameHeader({
         </button>
 
         <button
+          id="tour-interroger"
           onClick={onInterrogateClick}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-600 dark:text-white/70 hover:text-amber-600 dark:hover:text-amber-400 hover:border-amber-500/30 transition-all"
         >

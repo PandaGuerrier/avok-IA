@@ -7,7 +7,7 @@ interface NavbarProps {
 
 export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
   return (
-    <nav className="w-64 bg-gradient-to-b from-blue-600 to-blue-700 shadow-lg h-screen flex flex-col">
+    <nav id="tour-note-navbar" className="w-64 bg-gradient-to-b from-blue-600 to-blue-700 shadow-lg h-screen flex flex-col">
       <div className="p-6 flex flex-col items-center gap-4 border-b border-blue-500">
         <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center font-bold text-blue-600 text-lg">
           NT

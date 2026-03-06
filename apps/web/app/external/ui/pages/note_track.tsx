@@ -9,6 +9,7 @@ import { GradesPage } from '../components/grade_page'
 import { AttendancePage } from '../components/attendancePage'
 import { IncidentsPage } from '../components/incidents_page'
 import AlibisModal from '../components/AlibisModal'
+import GameTour from '#game/ui/components/GameTour'
 
 interface CalendarEvent {
   id: number
@@ -62,8 +63,8 @@ export default function Note_track() {
 
   return (
     <AppLayout layout="sidebar" removePadding hideBottomNav>
-    <AppsNavigation currentApp="note_track" />
-    <div className="flex h-[calc(100vh-8rem)] bg-gray-100 dark:bg-gray-950">
+    <GameTour gameUuid={gameUuid} page="notetrack" />
+    <div className="flex h-[calc(100vh-4rem)] bg-gray-100 dark:bg-gray-950">
       <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
       <div className="flex-1 overflow-auto">
