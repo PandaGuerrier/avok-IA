@@ -1,7 +1,6 @@
 import HttpService from '#core/services/http_service'
 import env from '#start/env'
 import User from '#users/models/user'
-import type { HistoryScript } from '#game/config/histories'
 
 export interface IAResponse extends Response {
   choices: {
@@ -37,7 +36,7 @@ export default class IAService {
     return response.choices[0].message.content
   }
 
-  async generateData(_user: User, script: HistoryScript) {
+  async generateData(_user: User, affaireContent: string, staticPosts?: { postId: number; content: string }[]) {
     const response = await this.httpService.post<IAResponse>('/chat/completions', {
       model: this.model,
       response_format: {
@@ -49,7 +48,7 @@ export default class IAService {
           content: `Tu es un générateur de données pour un jeu de déduction policière. Tu dois produire un objet JSON strictement conforme à la structure ci-dessous.
 
         ## AFFAIRE
-        ${script.content}
+        ${affaireContent}
 
         ## RÈGLES IMPORTANTES
         - La personne est ACCUSÉE, pas coupable. Les données doivent refléter cela (pas de preuve irréfutable de culpabilité, alibis possibles, etc.).
@@ -59,7 +58,7 @@ export default class IAService {
         - Chaque conversation doit contenir entre 6 et 10 messages (alternance isMine: true / false).
         - Les mails doivent mélanger spam et mails utiles (tickets de transport, confirmations de présence, messages d'amis).
         - Le calendrier utilise UNIQUEMENT les valeurs anglaises : "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday".
-        - imageUrl des posts Instagram : laisser une chaîne vide "".
+        ${staticPosts && staticPosts.length > 0 ? `- Les posts Instagram sont FIXES (fournis ci-dessous). Tu dois UNIQUEMENT générer les commentaires pour chaque post, en respectant les postId. Ne change pas le contenu des posts.\n        - POSTS FIXES :\n        ${staticPosts.map((p) => `  Post ${p.postId}: "${p.content}"`).join('\n        ')}` : '- imageUrl des posts Instagram : laisser une chaîne vide "".'}
 
         ## STRUCTURE JSON EXACTE À RESPECTER
 
@@ -150,7 +149,7 @@ export default class IAService {
         ## QUANTITÉS MINIMALES
         - contacts : 4 à 5 personnes
         - insta.conversations : 1 conversation par contact (même conversationId que l'id du contact), 6 à 10 messages chacune
-        - insta.posts : 2 à 3 posts
+        - insta.posts : ${staticPosts && staticPosts.length > 0 ? `exactement ${staticPosts.length} post(s) (les postId sont fixés, génère uniquement les commentaires)` : '2 à 3 posts'}
         - mails : 6 à 12 mails (mélange spam + utiles)
         - notes.calendar : 4 à 5 jours de la semaine avec 2 à 4 événements chacun
         - notes.notes : 4 à 6 notes

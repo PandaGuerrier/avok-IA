@@ -121,6 +121,7 @@ export interface PostInstaData {
   postId: number
   content: string
   imageUrl: string
+  username?: string
   comments: {
     id: number
     content: string

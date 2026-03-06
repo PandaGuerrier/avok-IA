@@ -251,9 +251,9 @@ export default function StartPage() {
             onClose={() => setAlibisPanelOpen(false)}
           />
         )}
-      </div>
     </AppLayout>
-    <style>{`
+
+  <style>{`
       /* Scrollbar styles for dark mode */
       .dark ::-webkit-scrollbar {
         width: 8px;
@@ -275,6 +275,7 @@ export default function StartPage() {
         scrollbar-width: thin;
       }
     `}</style>
+
     </GameStoreProvider>
   )
 }

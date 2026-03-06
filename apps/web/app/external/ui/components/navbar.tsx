@@ -1,5 +1,3 @@
-import { Link } from '@inertiajs/react'
-
 interface NavbarProps {
   currentPage: string
   setCurrentPage: (page: string) => void
@@ -14,7 +12,7 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
         </div>
         <h1 className="text-2xl font-bold text-white text-center">NoteTrack</h1>
       </div>
-      
+
       {/* Pages internes */}
       <div className="flex flex-col gap-4 p-6 flex-1">
         <p className="text-white text-sm font-semibold uppercase tracking-wider opacity-75">Naviguation</p>
@@ -34,23 +32,6 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
             {item.label}
           </button>
         ))}
-      </div>
-
-      {/* Applications externes */}
-      <div className="border-t border-blue-500 p-6 flex flex-col gap-3">
-        <p className="text-white text-sm font-semibold uppercase tracking-wider opacity-75">Applications</p>
-        <Link
-          href="/external/jaimail"
-          className="w-full py-3 px-4 rounded-lg font-medium transition text-left text-white hover:bg-blue-500 bg-blue-500 hover:bg-blue-400"
-        >
-          📧 J'ai Mail
-        </Link>
-        <Link
-          href="/external/instagrume"
-          className="w-full py-3 px-4 rounded-lg font-medium transition text-left text-white hover:bg-blue-500 bg-blue-500 hover:bg-blue-400"
-        >
-          📸 Instagrume
-        </Link>
       </div>
     </nav>
   )

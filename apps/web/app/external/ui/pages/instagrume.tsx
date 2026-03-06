@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import AppLayout from '#common/ui/components/app_layout'
 import { useGameStore } from '#game/ui/store/gameStore'
-import { AppsNavigation } from '../components/AppsNavigation'
 import Sidebar from '../components/layout/Sidebar'
 import PostCard from '../components/feed/PostCard'
 import ChatList from '../components/messages/ChatList'
@@ -31,6 +30,7 @@ interface Post {
   postId: number
   content: string
   imageUrl: string
+  username?: string
   comments: { id: number; content: string; author: string }[]
 }
 
@@ -62,9 +62,6 @@ const Instagrume: React.FC = () => {
     init({
       gameUuid: game.uuid,
       startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
-      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
-      pausedAtMs: game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
-      isPaused: game.isPaused ?? false,
       guiltyPercentage: game.guiltyPourcentage ?? 50,
     })
   }, [init, game])
@@ -83,6 +80,8 @@ const Instagrume: React.FC = () => {
     return normaliseMessages(insta.conversations[idx]?.messages)
   }
 
+  console.log(insta)
+
   return (
     <AppLayout layout="sidebar" removePadding hideBottomNav>
       <GameTour gameUuid={gameUuid} page="instagrume" />
@@ -99,10 +98,10 @@ const Instagrume: React.FC = () => {
             {/* FEED */}
             {activeTab === 'feed' && (
               <div className="max-w-[850px] w-full mt-4 flex flex-col items-center">
-                {insta.posts.length === 0 && (
+                {(insta.posts ?? []).length === 0 && (
                   <p className="text-gray-400 text-sm mt-8">Aucun post disponible.</p>
                 )}
-                {insta.posts.map((post, i) => (
+                {(insta.posts ?? []).map((post, i) => (
                   <PostCard
                     key={post.postId ?? i}
                     post={post}

@@ -1,0 +1,21 @@
+{
+      "id": "piratage_serveur_ecole",
+      "content": "HISTOIRE GÉNÉRALE :\nUn délit de nature cybercriminelle a frappé le lycée fin juin, juste avant la clôture des bulletins trimestriels et des délibérations pour le passage en classe supérieure[cite: 77]. L'administrateur réseau a détecté une intrusion sophistiquée dans le système de gestion scolaire \"Pronote\"[cite: 78]. Les moyennes de cinq élèves de 1ère S ont été artificiellement augmentées de 3 à 4 points[cite: 79], compromettant toute l'intégrité des dossiers scolaires.\n\nACCUSATION :\nAlexandre \"Alex\" Dupont, 16 ans, génie informatique mais élève moyen, est accusé d'intrusion frauduleuse dans un système de traitement automatisé de données (STAD) et de modification illicite des notes, un délit pénal grave.\n\nPOURQUOI IL EST INCRIMINÉ :\n- L'adresse IP de sa connexion internet familiale apparaît dans les logs du serveur à 2h45 du matin.\n- Il est l'un des cinq élèves bénéficiaires de cette manipulation[cite: 80].\n- Une clé USB lui appartenant a été retrouvée dans la salle informatique 102, contenant un script Python d'injection SQL[cite: 81].\n- Il s'était vanté sous pseudonyme sur un forum de hacking du dark web d'avoir trouvé une faille majeure dans un logiciel de gestion scolaire.",
+      "images": ["logs_serveur.png", "capture_forum_hack.png"],
+      "pdf": [
+        "Rapport d'expertise cyber (externe) : Détection d'une injection SQL sur le module de saisie des professeurs. Les identifiants de Mme Rousseau ont été utilisés via phishing[cite: 84].",
+        "Plainte officielle déposée au commissariat le 25 juin. Qualification pénale : Accès et maintien frauduleux dans un STAD, modification de données [cite: 85]."
+      ],
+      "instagram_posts": [
+        "@alex_dpt99 : Photo de son setup informatique avec des lignes de code vertes à l'écran[cite: 86]. Légende : « Accès autorisé. La magie de l'informatique résout tous les problèmes 💻🔓 Ne jamais sous-estimer une faille non patchée #coding #cyber #godmode » (Posté le 24 juin à 02h45)",
+        "@m_blanc : Selfie avec écran montrant les logs. Légende : « Quand tu découvres une modification de notes à 2h45... audit et intervention immédiate ! #cybersécurité #Pronote » (Posté le 25 juin à 08h30)",
+        "@m_pernet : Photo du bureau vide avec piles de dossiers. Légende : « Clôture des bulletins perturbée par une intrusion informatique 😤 #lycée #incident » (Posté le 25 juin à 09h00)"
+      ],
+      "proces_verbal": {
+        "date_heure": "Accès non autorisé à 2h45 du matin. Plainte officielle le 25 juin [cite: 79, 84, 85]",
+        "constatations": "Une injection SQL a été détectée sur le module de saisie des professeurs, utilisant des identifiants volés. Les moyennes de cinq élèves ont été modifiées artificiellement. Qualification pénale : Accès et maintien frauduleux dans un STAD et modification de données [cite: 78, 83, 84, 85].",
+        "interrogatoire_defense": "Alexandre Dupont prétend être victime d'une usurpation complexe, affirmant qu'un hacker externe aurait compromis son routeur domestique pour mener l'attaque [cite: 82].",
+        "indices_temoignages": "L'adresse IP de son domicile apparaît dans les journaux de connexion à l'heure de l'attaque. Une clé USB lui appartenant a été retrouvée avec un script Python d'injection SQL [cite: 79, 80, 81].",
+        "resultat": "Plainte officielle déposée au commissariat par le directeur. L'analyse technique est en cours pour confirmer la responsabilité et poursuivre les actions disciplinaires et judiciaires [cite: 82, 85]."
+      }
+    }

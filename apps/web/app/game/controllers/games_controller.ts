@@ -32,7 +32,7 @@ export default class GamesController {
   }
 
   async store({ auth, response }: HttpContext) {
-    const { data, script } = await this.gameService.init(auth.user!)
+    const { data, history } = await this.gameService.init(auth.user!)
 
     const game = await Game.create({
       data,
@@ -41,18 +41,18 @@ export default class GamesController {
     })
 
     await Promise.all([
-      ...script.images.map((label, i) =>
+      ...history.imageProofs.map((p) =>
         Proof.create({
           gameUuid: game.uuid,
-          imageUrl: `/images/histories/${script.id}/img-${i + 1}.png`,
-          data: { title: label, type: 'image' },
+          imageUrl: p.url,
+          data: { title: p.nom, type: 'image' },
         })
       ),
-      ...script.pdf.map((pdfText, i) =>
+      ...history.pdfProofs.map((p) =>
         Proof.create({
           gameUuid: game.uuid,
-          content: pdfText,
-          data: { title: `Document ${i + 1}`, type: 'pdf' },
+          content: p.texte,
+          data: { title: p.nom, type: 'pdf' },
         })
       ),
     ])

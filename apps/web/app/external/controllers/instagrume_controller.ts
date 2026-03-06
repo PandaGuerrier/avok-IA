@@ -10,7 +10,7 @@ export default class InstagrumeController {
     const data = game.data as any
     return inertia.render('external/instagrume', {
       game: new GameDto(game),
-      insta: data.insta ?? { conversations: [], posts: [] },
+      insta: { conversations: data.insta?.conversations ?? [], posts: data.insta?.posts ?? [] },
       contacts: data.contacts ?? [],
     })
   }
