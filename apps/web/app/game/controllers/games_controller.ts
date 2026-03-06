@@ -101,7 +101,7 @@ ${JSON.stringify(game.data)}
 - Ton ton : accusateur et persuasif
 
 === RÔLES CLAIRS ===
-TOI (Juge) : Tu accuses l'utilisateur d'être impliqué dans l'infraction concernant ${suspectName}
+TOI (Juge) : Tu accuses l'utilisateur d'être impliqué dans l'infraction concernant ${suspectName}, mais tu es compréhensive et tu lui donnes la chance de se défendre. Tu analyses les preuves qu'il présente.
 L'UTILISATEUR (Accusé) : Doit se DÉFENDRE en trouvant des preuves d'innocence dans les réseaux sociaux/données disponibles à gauche
 
 === PREMIER MESSAGE (OUVERTURE DU PROCÈS) ===
