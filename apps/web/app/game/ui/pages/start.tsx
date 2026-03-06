@@ -17,6 +17,7 @@ import AlibisPanel from '#game/ui/components/AlibisPanel'
 import ProofsModal from '#game/ui/components/ProofsModal'
 import InterrogateModal from '#game/ui/components/InterrogateModal'
 import GameTour from '#game/ui/components/GameTour'
+import { Button } from '@workspace/ui/components/button'
 
 export interface Props {
   game: GameDto
@@ -32,7 +33,7 @@ export default function StartPage() {
 
   // ── Local state ────────────────────────────────────────────────────────────
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
-    buildInitialMessages(game.choices || [], initialMessage)
+    buildInitialMessages(game, initialMessage)
   )
   const [choices, setChoices] = useState<ChoiceData[]>(initialChoices || [])
   const [loading, setLoading] = useState(false)
@@ -156,6 +157,30 @@ export default function StartPage() {
 
             {/* Chat + side panel */}
             <div className="flex flex-1 overflow-hidden min-w-0">
+              <div
+                className={
+                  'absolute top-28 right-4 flex flex-col gap-2 z-20 px-3 ' +
+                  (alibisPanelOpen ? 'right-72' : '')
+                }
+              >
+                <div className={"space-x-2"}>
+                  <Button variant={'outline'} onClick={() => setProofsOpen(true)}>
+                    Preuves{' '}
+                    <span className="ml-1 px-2 py-0.5 text-[10px] font-mono rounded bg-red-500/20 text-red-500">
+                      {proofs.length}
+                    </span>
+                  </Button>
+                  <Button variant={'outline'} onClick={() => setAlibisPanelOpen(!alibisPanelOpen)}>
+                    Alibi(s){' '}
+                    <span className="ml-1 px-2 py-0.5 text-[10px] font-mono rounded bg-blue-500/20 text-blue-500">
+                      {alibis.length}
+                    </span>
+                  </Button>
+                  <Button variant={'default'} onClick={() => setInterrogateOpen(true)}>
+                    Intérroger une personne
+                  </Button>
+                </div>
+              </div>
               <div className="flex flex-1 flex-col min-w-0">
                 <ChatArea messages={messages} loading={loading} chatEndRef={chatEndRef} />
 
@@ -220,9 +245,9 @@ export default function StartPage() {
             )}
           </div>
         </div>
-    </AppLayout>
+      </AppLayout>
 
-  <style>{`
+      <style>{`
       /* Scrollbar styles for dark mode */
       .dark ::-webkit-scrollbar {
         width: 8px;
@@ -244,7 +269,6 @@ export default function StartPage() {
         scrollbar-width: thin;
       }
     `}</style>
-
     </GameStoreProvider>
   )
 }

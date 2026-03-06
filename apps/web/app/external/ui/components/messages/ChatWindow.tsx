@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { BookmarkPlus, X } from 'lucide-react'
+import { Button } from '@workspace/ui/components/button'
 
 interface Message {
   id: number
@@ -61,13 +62,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ contact, messages, onAlibisClic
         {selected.size > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500 dark:text-gray-400">{selected.size} sélectionné(s)</span>
-            <button
+            <Button
               onClick={() => onAlibisClick(buildAlibisContent())}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-full transition-colors"
+              size="sm"
             >
               <BookmarkPlus size={14} />
               Créer un alibi
-            </button>
+            </Button>
             <button onClick={() => setSelected(new Set())} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
               <X size={16} />
             </button>
@@ -101,10 +102,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ contact, messages, onAlibisClic
           )
         })}
         <div ref={bottomRef} />
+        <p className="text-center text-md text-primary mt-2">
+          {messages.length > 0 && 'Clique sur un message pour le sélectionner comme alibi.'}
+        </p>
       </div>
 
       {selected.size === 0 && (
-        <p className="text-center text-[10px] text-gray-300 dark:text-gray-600 pb-3">Clique sur un message pour le sélectionner</p>
+        <p className="text-center text-[10px] text-primary-foreground pb-3">Clique sur un message pour le sélectionner</p>
       )}
     </div>
   )

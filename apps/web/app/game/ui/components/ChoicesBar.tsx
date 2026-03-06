@@ -26,43 +26,60 @@ export default function ChoicesBar({
   const disabled = loading || regenerating || isPaused
 
   return (
-    <div id="tour-choices" className="shrink-0 px-4 py-3 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/2 backdrop-blur-sm space-y-2">
+    <div
+      id="tour-choices"
+      className="shrink-0 px-4 py-3 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/2 backdrop-blur-sm space-y-2"
+    >
       <div className="flex items-center justify-between px-1 min-h-[18px]">
         {totalSelected > 0 ? (
           <p className="text-[11px] text-cyan-400 font-medium">
             {selectedProofUuids.length > 0 && (
-              <>{selectedProofUuids.length} preuve{selectedProofUuids.length > 1 ? 's' : ''}{selectedAlibiUuids.length > 0 ? ' + ' : ''}</>
+              <>
+                {selectedProofUuids.length} preuve{selectedProofUuids.length > 1 ? 's' : ''}
+                {selectedAlibiUuids.length > 0 ? ' + ' : ''}
+              </>
             )}
             {selectedAlibiUuids.length > 0 && (
-              <>{selectedAlibiUuids.length} alibi{selectedAlibiUuids.length > 1 ? 's' : ''}</>
-            )}
-            {' '}— inclus dans le prochain échange
+              <>
+                {selectedAlibiUuids.length} alibi{selectedAlibiUuids.length > 1 ? 's' : ''}
+              </>
+            )}{' '}
+            — inclus dans le prochain échange
           </p>
         ) : (
           <span />
         )}
-        <button
-          onClick={onRegenerate}
-          disabled={disabled}
-          title="Regénérer les choix"
-          className="flex items-center gap-1 text-[11px] text-gray-400 dark:text-white/30 hover:text-cyan-500 dark:hover:text-cyan-400 disabled:opacity-30 transition-colors"
-        >
-          <RefreshCw className={`w-3 h-3 ${regenerating ? 'animate-spin' : ''}`} />
-          <span>Autres options</span>
-        </button>
       </div>
 
-      {choices.map((choice) => (
+      <div>
+        <p className="text-xs text-gray-500 dark:text-white/40">
+          {choices.length === 0
+            ? "Aucun choix disponible pour le moment, essayez de régénérer ou de sélectionner d'autres preuves/alibis."
+            : "Sélectionnez une option pour continuer l'histoire."}
+        </p>
+      </div>
+      <div className={'flex gap-2 ' + (choices.length === 0 ? 'opacity-50' : '')}>
+        {choices.map((choice) => (
+          <button
+            key={choice.id}
+            disabled={disabled}
+            onClick={() => onChoice(choice)}
+            className="w-full text-left px-4 py-2.5 rounded-xl border transition-all text-sm backdrop-blur-sm disabled:opacity-40 bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:bg-cyan-50 dark:hover:bg-cyan-500/8 hover:border-cyan-500/25 text-gray-700 dark:text-white/80"
+          >
+            <p className="font-semibold text-sm text-gray-800 dark:text-white/90">{choice.title}</p>
+            <p className="text-xs mt-0.5 text-gray-500 dark:text-white/40">{choice.description}</p>
+          </button>
+        ))}
         <button
-          key={choice.id}
+          key={'regenerate'}
           disabled={disabled}
-          onClick={() => onChoice(choice)}
-          className="w-full text-left px-4 py-2.5 rounded-xl border transition-all text-sm backdrop-blur-sm disabled:opacity-40 bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:bg-cyan-50 dark:hover:bg-cyan-500/8 hover:border-cyan-500/25 text-gray-700 dark:text-white/80"
+          onClick={onRegenerate}
+          className="shrink-0 flex flex-col items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl border transition-all backdrop-blur-sm disabled:opacity-40 bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20 hover:border-cyan-400/60 text-cyan-500 dark:text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.15)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] group"
         >
-          <p className="font-semibold text-sm text-gray-800 dark:text-white/90">{choice.title}</p>
-          <p className="text-xs mt-0.5 text-gray-500 dark:text-white/40">{choice.description}</p>
+          <RefreshCw size={15} className={`transition-transform duration-500 ${regenerating ? 'animate-spin' : 'group-hover:rotate-180'}`} />
+          <span className="text-[10px] font-medium uppercase tracking-widest whitespace-nowrap">Régénérer</span>
         </button>
-      ))}
+      </div>
     </div>
   )
 }

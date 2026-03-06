@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { Link } from '@inertiajs/react'
+import { useState } from 'react'
 
 import { UserAvatar } from '#common/ui/components/user_avatar'
 import type { NavUserProps } from '#common/ui/types/navigation'
@@ -12,11 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@workspace/ui/components/dropdown-menu'
-import { ChevronsUpDown, LogOut, Sparkles } from 'lucide-react'
+import { LogOut, Sparkles } from 'lucide-react'
 import { ConfirmDialog } from '#common/ui/components/confirm_dialog'
 import { Button } from '@workspace/ui/components/button'
 
-export function NavUser({ user, options }: NavUserProps) {
+export function NavUser({ user }: NavUserProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
@@ -38,12 +37,10 @@ export function NavUser({ user, options }: NavUserProps) {
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <UserAvatar className="h-8 w-8 rounded-lg" user={user} />
+                <UserAvatar user={user} className="h-8 w-8 rounded-lg" />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.pseudo ?? user.firstName}</span>
-                  <span className="truncate text-xs hidden md:block">{user.email}</span>
                 </div>
-                <ChevronsUpDown className="ml-auto size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -56,7 +53,6 @@ export function NavUser({ user, options }: NavUserProps) {
                   <UserAvatar className="h-8 w-8 rounded-lg" user={user} />
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">{user.pseudo ?? user.firstName}</span>
-                    <span className="truncate text-xs">{user.email}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>
@@ -67,25 +63,9 @@ export function NavUser({ user, options }: NavUserProps) {
                 </div>
                 <div className={'flex flex-col gap-0.5 leading-none'}>
                   <span className="font-semibold">Rôle</span>
-                  <span className="">{user.role.tag ?? user.role.name}</span>
+                  <span className="">{user.role.name}</span>
                 </div>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {options.map((group, groupIndex) => (
-                <React.Fragment key={groupIndex}>
-                  {groupIndex > 0 && <DropdownMenuSeparator />}
-                  {group.map((option) => {
-                    return (
-                      <Link key={option.title} href={option.url} className={'w-full'}>
-                        <DropdownMenuItem className="gap-2 cursor-pointer">
-                          <option.icon className={'h-4 w-4'} />
-                          {option.title}
-                        </DropdownMenuItem>
-                      </Link>
-                    )
-                  })}
-                </React.Fragment>
-              ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer gap-2 text-destructive hover:text-primary "

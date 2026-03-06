@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { Grid3x3, Bookmark, Tag } from 'lucide-react'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import AppLayout from '#common/ui/components/app_layout'
 import { useGameStore } from '#game/ui/store/gameStore'
+import useUser from '#auth/ui/hooks/use_user'
 import Sidebar from '../components/layout/Sidebar'
 import PostCard from '../components/feed/PostCard'
 import ChatList from '../components/messages/ChatList'
@@ -49,6 +51,7 @@ interface Props {
 
 const Instagrume: React.FC = () => {
   const { game, insta, contacts } = usePageProps<Props>()
+  const user = useUser()
   const gameUuid = game.uuid
 
   const init = useGameStore((s) => s.init)
@@ -153,10 +156,96 @@ const Instagrume: React.FC = () => {
               </div>
             )}
 
-            {/* PROFILE — placeholder */}
+            {/* PROFILE */}
             {activeTab === 'profile' && (
-              <div className="flex flex-col items-center justify-center mt-20 text-gray-400">
-                <p className="text-xl italic">Profil</p>
+              <div className="w-full max-w-[935px]">
+                {/* Header */}
+                <div className="flex items-start gap-12 px-4 py-8 border-b border-gray-200 dark:border-gray-700">
+                  {/* Avatar */}
+                  <div className="flex-shrink-0">
+                    {user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt="avatar"
+                        className="w-[150px] h-[150px] rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
+                      />
+                    ) : (
+                      <div className="w-[150px] h-[150px] rounded-full bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 flex items-center justify-center text-white text-5xl font-bold select-none">
+                        {(user?.pseudo ?? user?.firstName ?? 'U')[0].toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex flex-col gap-4 flex-1 min-w-0">
+                    {/* Username + actions */}
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <span className="text-xl font-light text-gray-900 dark:text-white truncate">
+                        {user?.pseudo ?? [user?.firstName, user?.lastName].filter(Boolean).join(' ') ?? 'Utilisateur'}
+                      </span>
+                      <button className="px-4 py-1.5 text-sm font-semibold bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        Modifier le profil
+                      </button>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex gap-8">
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        <span className="font-semibold">{(insta.posts ?? []).length}</span>{' '}
+                        <span className="text-gray-500 dark:text-gray-400">publication{(insta.posts ?? []).length > 1 ? 's' : ''}</span>
+                      </div>
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        <span className="font-semibold">248</span>{' '}
+                        <span className="text-gray-500 dark:text-gray-400">abonnés</span>
+                      </div>
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        <span className="font-semibold">183</span>{' '}
+                        <span className="text-gray-500 dark:text-gray-400">abonnements</span>
+                      </div>
+                    </div>
+
+                    {/* Bio */}
+                    <div className="text-sm text-gray-900 dark:text-white leading-snug">
+                      {user?.firstName && user?.lastName && (
+                        <p className="font-semibold">{user.firstName} {user.lastName}</p>
+                      )}
+                      {user?.age && (
+                        <p className="text-gray-500 dark:text-gray-400">{user.age} ans</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tab bar */}
+                <div className="flex items-center justify-center border-b border-gray-200 dark:border-gray-700">
+                  <button className="flex items-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-gray-900 dark:text-white border-t border-gray-900 dark:border-white -mb-px">
+                    <Grid3x3 size={12} />
+                    Publications
+                  </button>
+                  <button className="flex items-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                    <Bookmark size={12} />
+                    Enregistrés
+                  </button>
+                  <button className="flex items-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                    <Tag size={12} />
+                    Identifiés
+                  </button>
+                </div>
+
+                {/* Grid */}
+                {(insta.posts ?? []).length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                    <Grid3x3 size={48} strokeWidth={1} className="mb-4" />
+                    <p className="font-semibold text-gray-900 dark:text-white text-lg">Aucune publication</p>
+                    <p className="text-sm mt-1 text-gray-500">Les photos apparaîtront ici.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 gap-1 mt-1">
+                      <p className="text-sm text-gray-500 col-span-full text-center mt-4">
+                        Aucuns posts pour le moment...
+                      </p>
+                  </div>
+                )}
               </div>
             )}
           </main>

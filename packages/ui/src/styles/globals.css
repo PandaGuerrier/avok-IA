@@ -9,83 +9,85 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Fond ultra-clair avec une pointe de chaleur rose */
-  --background: oklch(0.99 0.005 340);
-  --foreground: oklch(0.2 0.04 340);
+  /* Fond très clair, légèrement teinté de bleu glacier pour la fraîcheur */
+  --background: oklch(0.98 0.01 220);
+  --foreground: oklch(0.15 0.1 275); /* Basé sur MidnightBlue */
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.04 340);
+  --card-foreground: oklch(0.15 0.1 275);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.04 340);
+  --popover-foreground: oklch(0.15 0.1 275);
 
-  /* Primary : Rose Pâle Principal (ton Efrei moderne adouci) */
-  --primary: oklch(82% 0.08 340);
-  --primary-foreground: oklch(0.3 0.1 340);
+  /* Primary : Le RoyalBlue pour une action franche et pro */
+  --primary: oklch(0.60 0.22 260);
+  --primary-foreground: oklch(0.98 0.01 220);
 
-  /* Secondary : Version encore plus douce / poudrée */
-  --secondary: oklch(92% 0.04 340);
-  --secondary-foreground: oklch(0.3 0.08 340);
+  /* Secondary : Le SkyBlue, parfait pour des badges ou éléments légers */
+  --secondary: oklch(0.92 0.06 210);
+  --secondary-foreground: oklch(0.4 0.12 210);
 
-  /* Éléments neutres teintés de rose */
-  --muted: oklch(0.96 0.01 340);
-  --muted-foreground: oklch(0.5 0.03 340);
-  --accent: oklch(0.94 0.02 340);
-  --accent-foreground: oklch(0.2 0.04 340);
+  /* Éléments neutres */
+  --muted: oklch(0.94 0.02 260);
+  --muted-foreground: oklch(0.45 0.08 260);
 
-  --destructive: oklch(0.6 0.18 25);
+  /* Accent : Le MediumPurple pour attirer l'œil sur des détails */
+  --accent: oklch(0.92 0.08 300);
+  --accent-foreground: oklch(0.5 0.2 300);
+
+  --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.98 0 0);
 
-  --border: oklch(0.92 0.02 340);
-  --input: oklch(0.92 0.02 340);
-  --ring: oklch(82% 0.08 340);
+  --border: oklch(0.9 0.03 260);
+  --input: oklch(0.9 0.03 260);
+  --ring: oklch(0.60 0.22 260);
 
   --radius: 0.75rem;
 
-  /* Sidebar Monochrome Rose */
-  --sidebar: oklch(0.985 0.005 340);
-  --sidebar-foreground: oklch(0.25 0.04 340);
-  --sidebar-primary: oklch(82% 0.08 340);
-  --sidebar-primary-foreground: oklch(0.3 0.1 340);
-  --sidebar-accent: oklch(0.95 0.02 340);
-  --sidebar-accent-foreground: oklch(0.2 0.04 340);
-  --sidebar-border: oklch(0.93 0.01 340);
-  --sidebar-ring: oklch(82% 0.08 340);
+  /* Sidebar : Mélange de Midnight et Sky */
+  --sidebar: oklch(0.97 0.01 260);
+  --sidebar-foreground: oklch(0.2 0.1 275);
+  --sidebar-primary: oklch(0.60 0.22 260);
+  --sidebar-primary-foreground: oklch(0.98 0.01 220);
+  --sidebar-accent: oklch(0.9 0.05 210);
+  --sidebar-accent-foreground: oklch(0.2 0.1 275);
+  --sidebar-border: oklch(0.92 0.02 260);
 }
 
 .dark {
-  /* Fond sombre chaud (Aubergine très foncé / Gris-Rose) */
-  --background: oklch(0.14 0.02 340);
-  --foreground: oklch(0.98 0.01 340);
+  /* Fond MidnightBlue très profond */
+  --background: oklch(0.12 0.06 275);
+  --foreground: oklch(0.95 0.03 210);
 
-  --card: oklch(0.18 0.025 340);
-  --card-foreground: oklch(0.98 0.01 340);
+  --card: oklch(0.16 0.07 275);
+  --card-foreground: oklch(0.95 0.03 210);
 
-  --popover: oklch(0.14 0.02 340);
-  --popover-foreground: oklch(0.98 0.01 340);
+  --popover: oklch(0.12 0.06 275);
+  --popover-foreground: oklch(0.95 0.03 210);
 
-  /* Primary : Rose Pâle Lumineux (effet néon doux) */
-  --primary: oklch(85% 0.1 340);
-  --primary-foreground: oklch(0.15 0.04 340);
+  /* Primary : SkyBlue version "Néon" pour percer le noir */
+  --primary: oklch(0.85 0.12 210);
+  --primary-foreground: oklch(0.15 0.1 275);
 
-  /* Secondary : Rose très désaturé pour les contrastes secondaires */
-  --secondary: oklch(0.25 0.03 340);
-  --secondary-foreground: oklch(0.98 0.01 340);
+  /* Secondary : RoyalBlue assombri */
+  --secondary: oklch(0.25 0.12 260);
+  --secondary-foreground: oklch(0.85 0.08 260);
 
-  --muted: oklch(0.22 0.025 340);
-  --muted-foreground: oklch(0.75 0.03 340);
+  --muted: oklch(0.22 0.05 275);
+  --muted-foreground: oklch(0.7 0.05 210);
 
-  --accent: oklch(0.28 0.04 340);
-  --accent-foreground: oklch(0.98 0.01 340);
+  /* Accent : MediumPurple éclatant */
+  --accent: oklch(0.7 0.2 300);
+  --accent-foreground: oklch(0.98 0.01 300);
 
-  --border: oklch(0.22 0.025 340);
-  --input: oklch(0.22 0.025 340);
-  --ring: oklch(85% 0.1 340);
+  --border: oklch(0.22 0.06 275);
+  --input: oklch(0.22 0.06 275);
+  --ring: oklch(0.85 0.12 210);
 
-  --sidebar: oklch(0.12 0.02 340);
-  --sidebar-foreground: oklch(0.98 0.01 340);
-  --sidebar-primary: oklch(85% 0.1 340);
-  --sidebar-border: oklch(0.2 0.02 340);
+  --sidebar: oklch(0.1 0.05 275);
+  --sidebar-foreground: oklch(0.9 0.03 210);
+  --sidebar-primary: oklch(0.85 0.12 210);
+  --sidebar-border: oklch(0.18 0.05 275);
 }
 
 .caca {

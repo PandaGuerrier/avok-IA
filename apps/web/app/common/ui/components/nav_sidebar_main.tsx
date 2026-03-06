@@ -36,7 +36,7 @@ export function NavSidebarMain({ items }: NavSidebarMainProps) {
                         asChild
                         tooltip={subItem.title}
                         data-tour-id={`nav-item-${subItem.id || subItem.title}`}
-                        className={`duration-200 ${isSelected(subItem.url, currentPath) ? 'bg-accent font-medium' : ''}`}
+                        className={`duration-200 ${isSelected(subItem.url, currentPath) ? 'bg-primary/40 font-medium' : ''}`}
                       >
                         {subItem.url ? (
                           subItem.external ? (
@@ -46,7 +46,13 @@ export function NavSidebarMain({ items }: NavSidebarMainProps) {
                             </a>
                           ) : (
                             <Link href={subItem.url}>
-                              {subItem.icon && <subItem.icon className="h-4 w-4 shrink-0 " />}
+                              {
+                                subItem.imageUrl ? (
+                                  <img src={subItem.imageUrl} alt={subItem.title} className="h-12 w-full shrink-0" />
+                                ) : (
+                                  subItem.icon && <subItem.icon className="h-4 w-4 shrink-0 " />
+                                )
+                              }
                               <span>{subItem.title}</span>
                             </Link>
                           )

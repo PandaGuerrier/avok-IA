@@ -1,5 +1,4 @@
 import GameDto from '#game/dtos/game'
-import { DURATION_S } from '#game/ui/utils/constants'
 import { ChatMessage } from '#game/ui/utils/types'
 
 function formatTime(seconds: number): string {
@@ -17,19 +16,10 @@ function getXsrfToken(): string {
   )
 }
 
-function calcRemaining(game: GameDto): number {
-  if (!game.startTime) return DURATION_S
-  const startMs = new Date(game.startTime as unknown as string).getTime()
-  const pausedMs = game.totalPausedMs ?? 0
-  const refMs = game.isPaused ? new Date(game.pausedAt as unknown as string).getTime() : Date.now()
-  const elapsed = Math.floor((refMs - startMs - pausedMs) / 1000)
-  return Math.max(0, DURATION_S - elapsed)
-}
-
-function buildInitialMessages(choices: GameDto['choices'], initialMessage: string): ChatMessage[] {
+function buildInitialMessages(game: GameDto, initialMessage: string): ChatMessage[] {
   const messages: ChatMessage[] = []
-  if (initialMessage) messages.push({ role: 'ai', content: initialMessage })
-  for (const choice of choices) {
+  if (initialMessage) messages.push({ role: 'ai', content: initialMessage, images: game.proofs.filter(p => p.imageUrl != null).map(p => p.imageUrl!) })
+  for (const choice of game.choices) {
     messages.push({ role: 'user', content: choice.data.title })
     if (choice.response) messages.push({ role: 'ai', content: choice.response })
   }
@@ -37,4 +27,4 @@ function buildInitialMessages(choices: GameDto['choices'], initialMessage: strin
 }
 
 
-export { formatTime, getXsrfToken, calcRemaining, buildInitialMessages }
+export { formatTime, getXsrfToken, buildInitialMessages }

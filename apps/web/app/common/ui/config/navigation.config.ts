@@ -40,7 +40,7 @@ export function getNavMain(_: SimpleTFunction, gameUuid?: string): NavMainItem[]
               {
                 title: 'Tribunal',
                 url: `/game/${gameUuid}`,
-                icon: Camera,
+                icon: Scale,
                 external: false,
               },
             ],

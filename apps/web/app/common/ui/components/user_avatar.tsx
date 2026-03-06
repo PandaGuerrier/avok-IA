@@ -18,7 +18,7 @@ function generateFallbackText(user: UserDto): string {
   if (user.pseudo) {
     return user.pseudo.slice(0, 2).toUpperCase()
   }
-  return (user.email ?? "NONE").slice(0, 2).toUpperCase()
+  return '?' // Fallback character if no name is available
 }
 
 export function UserAvatar({ user, className }: NavUserProps) {
@@ -26,9 +26,9 @@ export function UserAvatar({ user, className }: NavUserProps) {
   const url = user.avatarUrl ?? user.avatar?.thumbnail?.url ?? undefined
 
   return (
-    <Avatar className={cn('h-10 w-10', className)}>
+    <Avatar className={cn('h-10 w-10 ', className)}>
       <AvatarImage src={url} alt={user.pseudo ?? user.firstName ?? undefined} />
-      <AvatarFallback className="rounded-lg">{fallbackText}</AvatarFallback>
+      <AvatarFallback className="rounded-lg text-primary">{fallbackText}</AvatarFallback>
     </Avatar>
   )
 }

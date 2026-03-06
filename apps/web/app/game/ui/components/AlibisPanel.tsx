@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { StickyNote, Plus, X } from 'lucide-react'
+import { StickyNote, X } from 'lucide-react'
 import type AlibiDto from '#game/dtos/alibi'
+import { Button } from '@workspace/ui/components/button'
 
 interface AlibisPanelProps {
   alibis: AlibiDto[]
@@ -18,39 +18,10 @@ export default function AlibisPanel({
   selectedAlibiUuids,
   onToggle,
   onClearSelection,
-  onAdd,
   onDelete,
   onClose,
   gameUuid,
 }: AlibisPanelProps) {
-  const [formOpen, setFormOpen] = useState(false)
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-
-  async function handleAdd() {
-    if (!title.trim() || !content.trim()) return
-    try {
-      const res = await fetch(`/game/${gameUuid}/alibis`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-XSRF-TOKEN': getXsrfToken(),
-        },
-        body: JSON.stringify({ title: title.trim(), content: content.trim() }),
-      })
-      if (res.ok) {
-        const json = await res.json()
-        onAdd(json.alibi)
-        setTitle('')
-        setContent('')
-        setFormOpen(false)
-      }
-    } catch {
-      // silent
-    }
-  }
-
   async function handleDelete(uuid: string) {
     try {
       await fetch(`/game/${gameUuid}/alibis/${uuid}`, {
@@ -76,54 +47,11 @@ export default function AlibisPanel({
           )}
         </h3>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setFormOpen((v) => !v)}
-            className="p-1 rounded-md bg-gray-100 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-600 dark:text-white/40 hover:text-purple-600 dark:hover:text-purple-400 hover:border-purple-300 dark:hover:border-purple-500/30 transition-all"
-          >
-            <Plus className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-md text-gray-400 dark:text-white/30 hover:text-gray-600 dark:hover:text-white/60 transition-colors"
-          >
+          <Button onClick={onClose} variant="outline">
             <X className="w-3.5 h-3.5" />
-          </button>
+          </Button>
         </div>
       </div>
-
-      {/* Add form */}
-      {formOpen && (
-        <div className="shrink-0 p-3 border-b border-gray-200 dark:border-white/10 bg-purple-50 dark:bg-purple-500/5 space-y-2">
-          <input
-            type="text"
-            placeholder="Titre de l'alibi"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-1.5 text-xs bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:outline-none focus:border-purple-400 dark:focus:border-purple-500/50"
-          />
-          <textarea
-            placeholder="Décrivez votre alibi..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={3}
-            className="w-full px-3 py-1.5 text-xs bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:outline-none focus:border-purple-400 dark:focus:border-purple-500/50 resize-none"
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={handleAdd}
-              className="flex-1 py-1.5 rounded-lg bg-purple-100 dark:bg-purple-500/20 border border-purple-300 dark:border-purple-500/30 text-xs text-purple-700 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-500/30 transition-all"
-            >
-              Ajouter
-            </button>
-            <button
-              onClick={() => setFormOpen(false)}
-              className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-xs text-gray-600 dark:text-white/40 hover:text-gray-800 dark:hover:text-white/70 transition-all"
-            >
-              Annuler
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* List */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
@@ -160,7 +88,9 @@ export default function AlibisPanel({
                         </span>
                       )}
                     </button>
-                    <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 truncate">{alibi.title}</p>
+                    <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 truncate">
+                      {alibi.title}
+                    </p>
                   </div>
                   <button
                     onClick={() => handleDelete(alibi.uuid)}
@@ -184,7 +114,8 @@ export default function AlibisPanel({
       {selectedAlibiUuids.length > 0 && (
         <div className="shrink-0 px-3 py-2 border-t border-gray-200 dark:border-white/10 bg-purple-50 dark:bg-purple-500/5 flex items-center justify-between">
           <p className="text-xs text-purple-700 dark:text-purple-400">
-            {selectedAlibiUuids.length} alibi{selectedAlibiUuids.length > 1 ? 's' : ''} sélectionné{selectedAlibiUuids.length > 1 ? 's' : ''}
+            {selectedAlibiUuids.length} alibi{selectedAlibiUuids.length > 1 ? 's' : ''} sélectionné
+            {selectedAlibiUuids.length > 1 ? 's' : ''}
           </p>
           <button
             onClick={onClearSelection}

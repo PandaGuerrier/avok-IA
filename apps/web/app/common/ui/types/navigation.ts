@@ -6,6 +6,7 @@ interface ItemNav {
   title: string
   url: string
   icon?: LucideIcon
+  imageUrl?: string
   isActive?: boolean
   external?: boolean
   id?: string
