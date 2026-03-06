@@ -51,7 +51,7 @@ services:
 
   cloudflared-exprefrei:
     image: cloudflare/cloudflared:latest
-    container_name: cf_exprefrei
+    container_name: cf_avokia
     command: tunnel run --token ${CF_TOKEN}
     networks:
       - sail
