@@ -1,92 +1,108 @@
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import { BookmarkPlus } from 'lucide-react'
 
-const subjectColors = {
-  Mathématiques: { backgroundColor: '#dcfce7', textColor: '#166534' },
-  Anglais: { backgroundColor: '#dbeafe', textColor: '#1e40af' },
-  Histoire: { backgroundColor: '#f3e8ff', textColor: '#6b21a8' },
-  Sciences: { backgroundColor: '#fed7aa', textColor: '#92400e' },
-  Français: { backgroundColor: '#fee2e2', textColor: '#991b1b' },
+interface CalendarEvent {
+  id: number
+  title: string
+  description: string
 }
 
-const calendarEvents = [
-  { title: 'Mathématiques', start: '2026-03-03T09:00:00', end: '2026-03-03T10:30:00', ...subjectColors['Mathématiques'] },
-  { title: 'Anglais', start: '2026-03-03T11:00:00', end: '2026-03-03T12:00:00', ...subjectColors['Anglais'] },
-  { title: 'Sciences', start: '2026-03-04T10:00:00', end: '2026-03-04T11:30:00', ...subjectColors['Sciences'] },
-  { title: 'Histoire', start: '2026-03-05T09:00:00', end: '2026-03-05T10:00:00', ...subjectColors['Histoire'] },
-  { title: 'Français', start: '2026-03-06T14:00:00', end: '2026-03-06T15:00:00', ...subjectColors['Français'] },
-  { title: 'Mathématiques', start: '2026-03-06T10:00:00', end: '2026-03-06T11:30:00', ...subjectColors['Mathématiques'] },
-]
+interface CalendarDay {
+  date: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+  events: CalendarEvent[]
+}
 
-const assignments = [
-  { subject: 'Mathématiques', title: 'Exercice 3-4 (Dérivées)', dueDate: '2026-03-05', priority: 'high' },
-  { subject: 'Anglais', title: 'Reading comprehension Chapter 5', dueDate: '2026-03-06', priority: 'medium' },
-  { subject: 'Histoire', title: 'Rédaction sur la Révolution Française', dueDate: '2026-03-07', priority: 'high' },
-  { subject: 'Sciences', title: 'Laboratoire report', dueDate: '2026-03-04', priority: 'medium' },
-  { subject: 'Français', title: 'Analyse texte "Le Père Goriot"', dueDate: '2026-03-08', priority: 'low' },
-]
+interface DashboardProps {
+  calendar: CalendarDay[]
+  onAlibisClick: (content: string) => void
+}
 
-export function Dashboard() {
+const DAY_OFFSET: Record<string, number> = {
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+  saturday: 6,
+}
+
+// Noms français possibles renvoyés par l'IA
+const FR_TO_EN: Record<string, string> = {
+  lundi: 'monday', mardi: 'tuesday', mercredi: 'wednesday',
+  jeudi: 'thursday', vendredi: 'friday', samedi: 'saturday', dimanche: 'sunday',
+}
+
+function buildCalendarEvents(calendar: CalendarDay[]) {
+  const today = new Date()
+  const currentDayOfWeek = today.getDay()
+
+  return calendar.flatMap(({ date, events }) => {
+    const normalised = FR_TO_EN[date?.toLowerCase()] ?? date?.toLowerCase()
+    const targetDay = DAY_OFFSET[normalised]
+    if (targetDay === undefined) return []
+
+    let diff = targetDay - currentDayOfWeek
+    if (diff < -3) diff += 7
+    const eventDate = new Date(today)
+    eventDate.setDate(today.getDate() + diff)
+
+    let dateStr: string
+    try {
+      dateStr = eventDate.toISOString().split('T')[0]
+    } catch {
+      return []
+    }
+
+    return (events ?? []).map((event, i) => ({
+      id: String(event.id ?? i),
+      title: event.title ?? '',
+      start: `${dateStr}T${String(8 + i).padStart(2, '0')}:00:00`,
+      end: `${dateStr}T${String(9 + i).padStart(2, '0')}:30:00`,
+      extendedProps: { description: event.description ?? '', dayName: normalised },
+    }))
+  })
+}
+
+export function Dashboard({ calendar, onAlibisClick }: DashboardProps) {
+  const fcEvents = buildCalendarEvents(calendar)
+
+  const handleEventClick = (info: any) => {
+    const { title, extendedProps } = info.event
+    const content = [
+      `[Emploi du temps — ${extendedProps.dayName}]`,
+      `Cours: ${title}`,
+      extendedProps.description ? `Description: ${extendedProps.description}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n')
+    onAlibisClick(content)
+  }
+
   return (
-    <div className="grid grid-cols-3 gap-6 h-full p-6">
-      <div className="col-span-1 bg-white rounded-lg shadow-lg p-6 overflow-auto">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Emploi du temps</h2>
+    <div className="p-6 h-full overflow-auto">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white">Emploi du temps</h2>
+          <p className="text-xs text-gray-400 dark:text-gray-500">Clique sur un cours pour créer un alibi</p>
+        </div>
         <FullCalendar
           plugins={[timeGridPlugin, dayGridPlugin]}
           initialView="timeGridWeek"
           headerToolbar={{ left: 'prev,next', center: 'title', right: '' }}
-          events={calendarEvents}
+          events={fcEvents}
           slotMinTime="07:00:00"
-          slotMaxTime="17:00:00"
+          slotMaxTime="18:00:00"
           allDaySlot={false}
           height="auto"
           contentHeight="auto"
           slotLabelInterval="01:00"
           slotLabelFormat={{ hour: 'numeric', meridiem: 'short' }}
+          eventClick={handleEventClick}
+          eventClassNames="cursor-pointer"
         />
-      </div>
-
-      <div className="col-span-2 bg-white rounded-lg shadow-lg p-6 overflow-auto">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Travaux à faire</h2>
-        <div className="space-y-4">
-          {assignments.map((assignment, index) => (
-            <div
-              key={index}
-              className={`border-l-4 p-4 rounded-lg bg-gray-50 transition hover:shadow-md ${
-                assignment.priority === 'high'
-                  ? 'border-red-500'
-                  : assignment.priority === 'medium'
-                    ? 'border-yellow-500'
-                    : 'border-green-500'
-              }`}
-            >
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <p className="font-semibold text-blue-600 text-sm">{assignment.subject}</p>
-                  <p className="text-gray-800 font-medium">{assignment.title}</p>
-                </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    assignment.priority === 'high'
-                      ? 'bg-red-100 text-red-700'
-                      : assignment.priority === 'medium'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-green-100 text-green-700'
-                  }`}
-                >
-                  {assignment.priority === 'high' ? 'Urgent' : assignment.priority === 'medium' ? 'Normal' : 'Optionnel'}
-                </span>
-              </div>
-              <p className="text-sm text-gray-600">
-                À rendre le:{' '}
-                <span className="font-semibold text-gray-700">
-                  {new Date(assignment.dueDate).toLocaleDateString('fr-FR')}
-                </span>
-              </p>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   )

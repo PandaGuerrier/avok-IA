@@ -1,111 +1,174 @@
-import React, { useState } from 'react';
-import { z } from 'zod';
-import Sidebar from '../components/layout/Sidebar';
-import PostCard from '../components/feed/PostCard';
-import ChatList from '../components/messages/ChatList';
-import ChatWindow from '../components/messages/ChatWindow';
-import Profile from '../components/profile/Profile';
+import React, { useState, useEffect } from 'react'
+import usePageProps from '#common/ui/hooks/use_page_props'
+import AppLayout from '#common/ui/components/app_layout'
+import { useGameStore } from '#game/ui/store/gameStore'
+import Sidebar from '../components/layout/Sidebar'
+import PostCard from '../components/feed/PostCard'
+import ChatList from '../components/messages/ChatList'
+import ChatWindow from '../components/messages/ChatWindow'
+import AlibisModal from '../components/AlibisModal'
 
-// --- LE SCHÉMA (Inchangé) ---
-const instaSchema = z.object({
-  conversations: z.array(z.object({
-    conversationId: z.number().default(0),
-    messages: z.array(z.object({
-      id: z.number().default(0),
-      content: z.string().default(''),
-      isMine: z.boolean().default(false),
-    })).default([]),
-  })).default([]),
-  posts: z.array(z.any()).default([]),
-}).default({})
+interface Contact {
+  id: number
+  name: string
+  role: string
+}
 
-// --- L'INTERFACE GÉNÉRÉE ---
-// Cela permet à TypeScript de comprendre la structure de "insta"
-type InstaData = z.infer<typeof instaSchema>;
+interface Message {
+  id: number
+  content: string
+  isMine: boolean
+}
+
+interface Conversation {
+  conversationId: number
+  messages: Message[]
+}
+
+interface Post {
+  postId: number
+  content: string
+  imageUrl: string
+  comments: { id: number; content: string; author: string }[]
+}
+
+interface Props {
+  game: {
+    uuid: string
+    startAt: unknown
+    resumeAt: unknown | null
+    pausedAt: unknown | null
+    isPaused: boolean | null
+    guiltyPourcentage: number | null
+  }
+  insta: { conversations: Conversation[]; posts: Post[] }
+  contacts: Contact[]
+}
 
 const Instagrume: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'feed' | 'messages' | 'profile' | 'search'>('feed');
-  const [selectedContact, setSelectedContact] = useState<any>(null);
+  const { game, insta, contacts } = usePageProps<Props>()
+  const gameUuid = game.uuid
 
-  // --- ÉTAT TYPÉ AVEC TON SCHÉMA ---
-  const [insta, _setInsta] = useState<InstaData>(instaSchema.parse({
-    conversations: [
-      {
-        conversationId: 1,
-        messages: [
-          { id: 1, content: "Salut !", isMine: false },
-          { id: 2, content: "Ça va ?", isMine: true }
-        ]
-      },
-      {
-        conversationId: 2,
-        messages: []
-      }
-    ],
-    posts: [
-      { id: 1, user: 'lucas_explorer', image: 'https://picsum.photos/id/10/800/800', caption: 'Superbe vue !' },
-      { id: 2, user: 'sarah_design', image: 'https://picsum.photos/id/20/800/800', caption: 'Nouveau projet.' }
-    ]
-  }));
+  const init = useGameStore((s) => s.init)
+
+  const [activeTab, setActiveTab] = useState<'feed' | 'messages' | 'profile' | 'search'>('feed')
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
+  const [alibisModal, setAlibisModal] = useState<{ content: string } | null>(null)
+
+  // Initialize the game store without pausing
+  useEffect(() => {
+    init({
+      gameUuid: game.uuid,
+      startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
+      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
+      pausedAtMs: game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
+      isPaused: game.isPaused ?? false,
+      guiltyPercentage: game.guiltyPourcentage ?? 50,
+    })
+  }, [init, game])
+
+  const normaliseMessages = (raw: any[]): Message[] =>
+    (raw ?? []).map((m, i) => ({
+      id: m.id ?? i,
+      content: m.content ?? m.text ?? m.message ?? '',
+      isMine: m.isMine ?? m.is_mine ?? false,
+    }))
+
+  const messagesForContact = (contactId: number): Message[] => {
+    const byId = insta.conversations.find((c) => c.conversationId === contactId)
+    if (byId) return normaliseMessages(byId.messages)
+    const idx = contacts.findIndex((c) => c.id === contactId)
+    return normaliseMessages(insta.conversations[idx]?.messages)
+  }
 
   return (
-    <div className="flex min-h-screen bg-white text-black font-sans">
-      <Sidebar activeTab={activeTab} onNavigate={(tab: any) => setActiveTab(tab as any)} />
+    <AppLayout layout="sidebar" removePadding hideBottomNav>
+      <div className="flex h-[calc(100vh-4rem)] bg-white dark:bg-gray-900 text-black dark:text-white font-sans overflow-hidden">
+          <Sidebar activeTab={activeTab} onNavigate={(tab: any) => setActiveTab(tab)} />
 
-      <main className={`flex-1 ml-20 xl:ml-64 flex flex-col min-h-screen transition-all ${activeTab === 'messages' ? 'items-stretch' : 'items-center p-4 md:p-8'}`}>
+          <main
+            className={`flex-1 flex flex-col h-full transition-all ${
+              activeTab === 'messages'
+                ? 'items-stretch overflow-hidden'
+                : 'items-center p-4 md:p-8 overflow-y-auto'
+            }`}
+          >
+            {/* FEED */}
+            {activeTab === 'feed' && (
+              <div className="max-w-[850px] w-full mt-4 flex flex-col items-center">
+                {insta.posts.length === 0 && (
+                  <p className="text-gray-400 text-sm mt-8">Aucun post disponible.</p>
+                )}
+                {insta.posts.map((post, i) => (
+                  <PostCard
+                    key={post.postId ?? i}
+                    post={post}
+                    onAlibisClick={(content) => setAlibisModal({ content })}
+                  />
+                ))}
+              </div>
+            )}
 
-        {/* VUE FEED */}
-        {activeTab === 'feed' && (
-          <div className="max-w-[850px] w-full mt-4 flex flex-col items-center">
-            {insta.posts.map((post: any) => (
-              <PostCard
-                key={post.id}
-                user={post.user}
-                image={post.image}
-                caption={post.caption}
-              />
-            ))}
-          </div>
-        )}
+            {/* SEARCH */}
+            {activeTab === 'search' && (
+              <div className="flex flex-col items-center justify-center mt-20 text-gray-400">
+                <p className="text-xl italic">Recherche en cours de préparation...</p>
+              </div>
+            )}
 
-        {/* VUE SEARCH (Invisible pour l'instant) */}
-        {activeTab === 'search' && (
-          <div className="flex flex-col items-center justify-center mt-20 text-gray-400">
-            <p className="text-xl italic">Recherche en cours de préparation...</p>
-          </div>
-        )}
-
-        {/* VUE MESSAGES */}
-        {activeTab === 'messages' && (
-          <div className="w-full h-screen flex bg-white overflow-hidden border-l border-gray-200">
-            <div className="w-1/3 min-w-[300px] max-w-[400px] border-r border-gray-200">
-              <ChatList
-                onSelectContact={(contact: any) => setSelectedContact(contact)}
-                selectedId={selectedContact?.id}
-              />
-            </div>
-            <div className="flex-1 flex flex-col bg-white">
-              {selectedContact ? (
-                <ChatWindow
-                  contact={selectedContact}
-                  initialMessages={insta.conversations.find(c => c.conversationId === selectedContact.id)?.messages || []}
-                />
-              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-center p-10 bg-gray-50/30">
-                  <div className="w-24 h-24 border border-black rounded-full flex items-center justify-center mb-4">
-                    <span className="text-4xl">📩</span>
-                  </div>
-                  <h3 className="text-xl font-medium">Tes messages</h3>
+            {/* MESSAGES */}
+            {activeTab === 'messages' && (
+              <div className="w-full h-screen flex bg-white dark:bg-gray-900 overflow-hidden border-l border-gray-200 dark:border-gray-700">
+                <div className="w-1/3 min-w-[280px] max-w-[380px] border-r border-gray-200 dark:border-gray-700">
+                  <ChatList
+                    contacts={contacts}
+                    conversations={insta.conversations}
+                    onSelectContact={(c) => setSelectedContact(c)}
+                    selectedId={selectedContact?.id}
+                  />
                 </div>
-              )}
-            </div>
-          </div>
-        )}
+                <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+                  {selectedContact ? (
+                    <ChatWindow
+                      contact={selectedContact}
+                      messages={messagesForContact(selectedContact.id)}
+                      onAlibisClick={(content) => setAlibisModal({ content })}
+                    />
+                  ) : (
+                    <div className="h-full flex flex-col items-center justify-center text-center p-10 bg-gray-50/30 dark:bg-gray-800/30">
+                      <div className="w-24 h-24 border border-black dark:border-gray-600 rounded-full flex items-center justify-center mb-4">
+                        <span className="text-4xl">📩</span>
+                      </div>
+                      <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                        Sélectionne une conversation
+                      </h3>
+                      <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
+                        Clique sur des messages pour les utiliser comme alibi
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
-        {activeTab === 'profile' && <Profile />}
-      </main>
-    </div>
-  );
-};
+            {/* PROFILE — placeholder */}
+            {activeTab === 'profile' && (
+              <div className="flex flex-col items-center justify-center mt-20 text-gray-400">
+                <p className="text-xl italic">Profil</p>
+              </div>
+            )}
+          </main>
 
-export default Instagrume;
+          {alibisModal && (
+            <AlibisModal
+              gameUuid={gameUuid}
+              defaultContent={alibisModal.content}
+              onClose={() => setAlibisModal(null)}
+            />
+          )}
+        </div>
+      </AppLayout>
+    )
+}
+
+export default Instagrume

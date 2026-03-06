@@ -2,11 +2,13 @@ import type { SimpleTFunction } from '#common/ui/hooks/use_translation'
 
 import {
   FileCheck,
-  HomeIcon,
   Scale,
   Shield,
   User,
   Settings2,
+  Camera,
+  Mail,
+  BookOpen,
 } from 'lucide-react'
 
 import type { NavMainItem, NavUserOptionsGroup } from '#common/ui/types/navigation'
@@ -28,18 +30,46 @@ export function getNavUser(_: SimpleTFunction): NavUserOptionsGroup[] {
   ]
 }
 
-export function getNavMain(t: SimpleTFunction): NavMainItem[] {
+export function getNavMain(_: SimpleTFunction, gameUuid?: string): NavMainItem[] {
   return [
-    {
-      title: 'GÉNÉRAL',
-      items: [
-        {
-          title: t('common.layout.navMain.dashboard'),
-          url: '/',
-          icon: HomeIcon,
-        },
-      ],
-    },
+    ...(gameUuid
+      ? [
+          {
+            title: 'GLOBAL',
+            items: [
+              {
+                title: 'Tribunal',
+                url: `/game/${gameUuid}`,
+                icon: Camera,
+                external: false,
+              },
+            ],
+          },
+          {
+            title: 'RÉSEAUX SOCIAUX',
+            items: [
+              {
+                title: 'Instagrume',
+                url: `/game/${gameUuid}/instagrume`,
+                icon: Camera,
+                external: false,
+              },
+              {
+                title: 'Jaimail',
+                url: `/game/${gameUuid}/jaimail`,
+                icon: Mail,
+                external: false,
+              },
+              {
+                title: 'NoteTrack',
+                url: `/game/${gameUuid}/notetrack`,
+                icon: BookOpen,
+                external: false,
+              },
+            ],
+          },
+        ]
+      : []),
   ]
 }
 

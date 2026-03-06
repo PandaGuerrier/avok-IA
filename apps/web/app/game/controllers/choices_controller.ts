@@ -5,6 +5,7 @@ import IAService from '#ia/services/ia_service'
 import Game from '#game/models/game'
 import Choice from '#game/models/choice'
 import Proof from '#game/models/proof'
+import Alibi from '#game/models/alibi'
 import ChoiceDto from '#game/dtos/choice'
 
 @inject()
@@ -41,6 +42,7 @@ export default class ChoicesController {
           isTrap: vine.boolean().optional(),
         }),
         selectedProofUuids: vine.array(vine.string()).optional(),
+        selectedAlibiUuids: vine.array(vine.string()).optional(),
       })
     )
 
@@ -61,6 +63,19 @@ export default class ChoicesController {
       }
     }
 
+    // Charger les alibis sélectionnés
+    let selectedAlibisContext = ''
+    if (payload.selectedAlibiUuids && payload.selectedAlibiUuids.length > 0) {
+      const selectedAlibis = await Alibi.query()
+        .where('gameUuid', game.uuid)
+        .whereIn('uuid', payload.selectedAlibiUuids)
+      if (selectedAlibis.length > 0) {
+        selectedAlibisContext = `\nAlibis fournis par le suspect :\n${selectedAlibis
+          .map((a) => `- ${a.title} : ${a.content}`)
+          .join('\n')}`
+      }
+    }
+
     const previousChoices = game.choices.map((c) => ({
       title: c.data.title,
       description: c.data.description,
@@ -77,7 +92,7 @@ ${JSON.stringify(game.data)}
 
 Historique des choix précédents :
 ${JSON.stringify(previousChoices)}
-${selectedProofsContext}
+${selectedProofsContext}${selectedAlibisContext}
 
 L'enquêteur vient de choisir : "${payload.data.title}" - ${payload.data.description}
 ${payload.data.isTrap ? '(Ce choix était un piège — l\'enquêteur s\'est trompé de piste)' : ''}

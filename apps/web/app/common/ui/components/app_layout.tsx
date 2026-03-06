@@ -10,6 +10,7 @@ import { Toaster } from '@workspace/ui/components/sonner'
 import { getNavHome, getNavMain, getNavUser } from '#common/ui/config/navigation.config'
 import PostHogTracker from '#common/ui/components/posthog_tracker'
 import { ReactNode } from 'react'
+import { usePage } from '@inertiajs/react'
 
 interface BreadcrumbItemProps {
   label: string
@@ -33,8 +34,12 @@ export default function AppLayout({
 }: AppLayoutProps) {
   const user = useUser()
   const { t } = useTranslation()
+  const { url } = usePage()
 
-  const navMain = getNavMain(t)
+  const gameUuidMatch = url.match(/\/game\/([0-9a-f-]{36})/)
+  const gameUuid = gameUuidMatch?.[1]
+
+  const navMain = getNavMain(t, gameUuid)
   const navUser = getNavUser(t)
   const navHome = getNavHome(t)
 

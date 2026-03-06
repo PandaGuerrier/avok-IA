@@ -5,6 +5,7 @@ import vine from '@vinejs/vine'
 import GameService from '#game/services/game_service'
 import IAService from '#ia/services/ia_service'
 import Game from '#game/models/game'
+import Proof from '#game/models/proof'
 import GameDto from '#game/dtos/game'
 
 @inject()
@@ -31,13 +32,30 @@ export default class GamesController {
   }
 
   async store({ auth, response }: HttpContext) {
-    const defaultData = await this.gameService.init(auth.user!)
+    const { data, script } = await this.gameService.init(auth.user!)
 
     const game = await Game.create({
-      data: defaultData,
+      data,
       userUuid: auth.user!.uuid,
-      startTime: DateTime.now(),
+      startAt: DateTime.now(),
     })
+
+    await Promise.all([
+      ...script.images.map((label, i) =>
+        Proof.create({
+          gameUuid: game.uuid,
+          imageUrl: `/images/histories/${script.id}/img-${i + 1}.png`,
+          data: { title: label, type: 'image' },
+        })
+      ),
+      ...script.pdf.map((pdfText, i) =>
+        Proof.create({
+          gameUuid: game.uuid,
+          content: pdfText,
+          data: { title: `Document ${i + 1}`, type: 'pdf' },
+        })
+      ),
+    ])
 
     return response.redirect().toRoute('game.start', { uuid: game.uuid })
   }
@@ -58,25 +76,41 @@ export default class GamesController {
     let currentChoices = game.currentChoices
 
     if (game.choices.length === 0 && !game.currentChoices) {
-      const prompt = `
-Tu es un enquêteur IA dans un jeu de déduction policière.
-Tu analyses les données numériques d'un adolescent pour déterminer sa culpabilité.
+      const history = (game.data as any)?.history
+      const contacts = (game.data as any)?.contacts ?? []
+      const suspectName = contacts[0]?.name ?? 'le suspect'
 
-Voici les données du jeu :
+      const prompt = `
+Tu joues le rôle de la Juge Moreau, présidente du tribunal dans un jeu de déduction policière.
+Tu t'adresses directement à l'enquêteur chargé du dossier.
+
+Contexte de l'affaire :
+${history?.content ?? JSON.stringify(game.data)}
+
+Données numériques saisies du suspect (Instagram, mails, agenda, notes) :
 ${JSON.stringify(game.data)}
 
-C'est le début de l'enquête. Génère un message d'introduction et 3 choix d'action. EXACTEMENT 1 des 3 choix doit être un piège (isTrap: true) qui mènera l'enquêteur sur une fausse piste.
+L'enquêteur s'appelle : ${auth.user!.firstName}
+Le suspect principal : ${suspectName}
 
-Génère aussi 2 à 3 preuves initiales tirées des données.
+Génère le message d'ouverture de la juge qui :
+1. Salue l'enquêteur par son prénom de façon formelle
+2. Présente brièvement l'affaire : qui est le suspect, quel est le crime présumé
+3. Précise que les preuves matérielles sont disponibles dans le "dossier preuves" (bouton en haut à gauche)
+4. Mentionne que l'enquêteur peut consulter les réseaux sociaux et données du suspect dans la sidebar
+5. Invite à commencer l'analyse avec les 3 premières pistes proposées
+Style : formel, sérieux, ton judiciaire. 3-4 phrases. Commence directement par "Maître [prénom]," ou "Enquêteur [prénom],".
+
+Génère aussi 3 premiers choix d'action. EXACTEMENT 1 des 3 doit être un piège (isTrap: true).
 
 Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
 {
-  "message": "Message d'introduction (en français)",
+  "message": "Message de la juge en français",
   "nextChoices": [
     {"id": 1, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false},
     {"id": 2, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": true},
     {"id": 3, "title": "Titre court", "description": "Description", "choosen": false, "isTrap": false}
-  ],
+  ]
 }
 Langue: français
       `.trim()
@@ -158,16 +192,22 @@ Langue: français
       return response.unauthorized()
     }
 
-    if (game.pausedAt) {
-      const additionalMs = DateTime.now().diff(game.pausedAt).milliseconds
-      game.totalPausedMs = (game.totalPausedMs ?? 0) + additionalMs
+    let resumeAtMs: number | null = null
+
+    if (game.pausedAt && (game.startAt || game.resumeAt)) {
+      const nowMs = Date.now()
+      const pausedAtMs = game.pausedAt.toMillis()
+      const baseMs = game.resumeAt?.toMillis() ?? game.startAt!.toMillis()
+      const pauseDuration = Math.max(0, nowMs - pausedAtMs)
+      resumeAtMs = baseMs + pauseDuration
+      game.resumeAt = DateTime.fromMillis(resumeAtMs)
     }
 
     game.isPaused = false
     game.pausedAt = null
     await game.save()
 
-    return response.ok({ isPaused: game.isPaused, totalPausedMs: game.totalPausedMs })
+    return response.ok({ resumeAtMs })
   }
 
   async interrogate({ params, auth, request, response }: HttpContext) {

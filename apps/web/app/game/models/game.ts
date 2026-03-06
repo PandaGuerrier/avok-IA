@@ -35,8 +35,11 @@ export default class Game extends BaseModel {
   @column.dateTime()
   declare finishedAt: DateTime | null
 
-  @column.dateTime()
-  declare startTime: DateTime | null
+  @column.dateTime({ columnName: 'start_time' })
+  declare startAt: DateTime | null
+
+  @column.dateTime({ columnName: 'resumed_at' })
+  declare resumeAt: DateTime | null
 
   @column()
   declare isPaused: boolean

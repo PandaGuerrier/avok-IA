@@ -18,6 +18,10 @@ export default interface DataGameType {
     notes: NoteData[]
   }
   contacts: ContactData[]
+  history: {
+    id: string
+    content: string
+  }
 }
 
 export const GameSchema = z.object({
@@ -74,6 +78,11 @@ export const GameSchema = z.object({
         .default([]),
     })
     .default({}),
+
+  history: z.object({
+    id: z.string().default(''),
+    content: z.string().default(''),
+  }).default({}),
 })
 
 export interface CalendarData {

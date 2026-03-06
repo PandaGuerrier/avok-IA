@@ -16,6 +16,8 @@ import {
 import useUser from '#auth/ui/hooks/use_user'
 
 import { NavUser } from '#common/ui/components/nav_user'
+import TimerWidget from '#game/ui/components/TimerWidget'
+import GuiltyWidget from '#game/ui/components/GuiltyWidget'
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   navMain: NavMainItem[]
@@ -24,8 +26,9 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar({ navMain, navUser, ...props }: AppSidebarProps) {
   const user = useUser()
+
   return (
-    <Sidebar {...props} variant={"floating"}>
+    <Sidebar {...props} variant={'floating'}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -41,6 +44,10 @@ export function AppSidebar({ navMain, navUser, ...props }: AppSidebarProps) {
         <NavSidebarMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
+        <div className="flex items-center gap-6">
+          <GuiltyWidget />
+          <TimerWidget />
+        </div>
         <NavUser user={user} options={navUser} />
       </SidebarFooter>
     </Sidebar>

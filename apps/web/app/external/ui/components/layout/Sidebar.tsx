@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onNavigate }) => {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-20 xl:w-64 border-r bg-white p-4 flex flex-col z-50 transition-all">
+    <aside className="shrink-0 h-full w-16 xl:w-64 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 flex flex-col transition-all overflow-y-auto">
       {/* SECTION LOGO */}
       <div className="my-8 flex items-center justify-center xl:justify-start px-2">
         <img src="/images/logo.png" alt="Logo" className="w-10 h-10 xl:hidden object-contain" />
@@ -34,12 +34,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onNavigate }) => {
           onNavigate(item.id);
         }
       }}
-      className={`flex items-center p-3 rounded-xl cursor-pointer transition-all hover:bg-gray-100 ${
-        activeTab === item.id ? 'bg-gray-100 font-bold' : ''
+      className={`flex items-center p-3 rounded-xl cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-gray-800 ${
+        activeTab === item.id ? 'bg-gray-100 dark:bg-gray-800 font-bold' : ''
       }`}
     >
-      <span className="text-black">{item.icon}</span>
-      <span className="ml-4 text-md hidden xl:block">{item.name}</span>
+      <span className="text-black dark:text-white">{item.icon}</span>
+      <span className="ml-4 text-md hidden xl:block text-black dark:text-white">{item.name}</span>
     </div>
   ))}
 </nav>
