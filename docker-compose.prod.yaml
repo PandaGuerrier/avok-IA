@@ -29,8 +29,6 @@ services:
       DB_USER: ${DB_USER?err}
       DB_PASSWORD: ${DB_PASSWORD?err}
       DB_DATABASE: ${DB_DATABASE?err}
-      RESEND_API_KEY: ${RESEND_API_KEY?err}
-      EMAIL_FROM: ${EMAIL_FROM?err}
       VITE_API_URL: ${VITE_API_URL?err}
     volumes:
       # CORRECTION ICI : On mappe directement le dossier tmp
