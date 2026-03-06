@@ -6,9 +6,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        # Passé au build pour le frontend (Vite)
         VITE_API_URL: ${VITE_API_URL}
-    # Suppression de env_file qui causait l'erreur
     ports:
       - "${PORT:-3333}:3333"
     networks:
@@ -37,10 +35,6 @@ services:
   pgsql:
     image: 'pgvector/pgvector:0.8.0-pg17'
     container_name: '${COMPOSE_PROJECT_NAME}_pgsql'
-    # On évite d'exposer le port 5432 sur l'extérieur pour la sécu,
-    # sauf si vous en avez besoin pour un client SQL externe.
-    ports:
-      - '${DB_PORT_EXTERNAL:-5432}:5432'
     environment:
       POSTGRES_DB: '${DB_DATABASE}'
       POSTGRES_USER: '${DB_USER}'
@@ -53,3 +47,22 @@ services:
       test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}' ]
       retries: 5
       timeout: 5s
+      interval: 10s
+
+  cloudflared-exprefrei:
+    image: cloudflare/cloudflared:latest
+    container_name: cf_exprefrei
+    command: tunnel run --token ${CF_TOKEN}
+    networks:
+      - sail
+    restart: always
+
+# --- IMPORTANT : Les définitions ci-dessous doivent être à la racine (pas d'espace devant) ---
+
+networks:
+  sail:
+    driver: bridge
+
+volumes:
+  sailpgsql:
+  web_uploads:
