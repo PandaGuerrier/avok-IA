@@ -17,6 +17,7 @@ import ChoicesBar from '#game/ui/components/ChoicesBar'
 import AlibisPanel from '#game/ui/components/AlibisPanel'
 import ProofsModal from '#game/ui/components/ProofsModal'
 import InterrogateModal from '#game/ui/components/InterrogateModal'
+import GameTour from '#game/ui/components/GameTour'
 
 export interface Props {
   game: GameDto
@@ -36,6 +37,7 @@ export default function StartPage() {
   )
   const [choices, setChoices] = useState<ChoiceData[]>(initialChoices || [])
   const [loading, setLoading] = useState(false)
+  const [regenerating, setRegenerating] = useState(false)
 
   const [proofs] = useState<ProofDto[]>(game.proofs || [])
   const [selectedProofUuids, setSelectedProofUuids] = useState<string[]>([])
@@ -107,33 +109,51 @@ export default function StartPage() {
     }
   }
 
+  async function handleRegenerate() {
+    if (loading || regenerating || isPaused) return
+    setRegenerating(true)
+    try {
+      const res = await fetch(`/game/${game.uuid}/choices/regenerate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-XSRF-TOKEN': getXsrfToken(),
+        },
+        body: JSON.stringify({ selectedProofUuids, selectedAlibiUuids }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        if (json.nextChoices?.length > 0) {
+          setChoices(json.nextChoices)
+        }
+      } else {
+        console.error('[regenerate] HTTP', res.status, await res.text())
+      }
+    } catch (err) {
+      console.error('[regenerate] fetch error:', err)
+    } finally {
+      setRegenerating(false)
+    }
+  }
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   const contacts: ContactData[] = (game.data as any)?.contacts ?? []
 
   return (
     <GameStoreProvider game={game}>
-    <AppLayout layout="sidebar" hideBottomNav removePadding>
-      <div className="relative flex h-[calc(100vh-4rem)] overflow-hidden bg-white dark:bg-[#050510] text-black dark:text-white">
-        {/* Background glow */}
-        <div
-          className="pointer-events-none absolute inset-0 z-0"
-          style={{
-            background: window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6,182,212,0.06) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6,182,212,0.03) 0%, transparent 70%)',
-          }}
-        />
-
-        {/* Main column */}
-        <div className="relative z-10 flex flex-1 flex-col min-w-0">
-          <GameHeader
-            gameUuid={game.uuid}
-            proofsCount={proofs.length}
-            alibisCount={alibis.length}
-            onProofsClick={() => setProofsOpen(true)}
-            onAlibisToggle={() => setAlibisPanelOpen((v) => !v)}
-            onInterrogateClick={() => setInterrogateOpen(true)}
+      <GameTour gameUuid={game.uuid} page="game" />
+      <AppLayout layout="sidebar" hideBottomNav removePadding>
+        <div className="relative flex h-[calc(100vh-4rem)] overflow-hidden bg-white dark:bg-[#050510] text-black dark:text-white">
+          {/* Background glow */}
+          <div
+            className="pointer-events-none absolute inset-0 z-0"
+            style={{
+              background: window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6,182,212,0.06) 0%, transparent 70%)'
+                : 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6,182,212,0.03) 0%, transparent 70%)',
+            }}
           />
 
           {/* Main column */}
@@ -147,60 +167,71 @@ export default function StartPage() {
               onInterrogateClick={() => setInterrogateOpen(true)}
             />
 
-            <ChatArea messages={messages} loading={loading} chatEndRef={chatEndRef} />
+            {/* Chat + side panel */}
+            <div className="flex flex-1 overflow-hidden min-w-0">
+              <div className="flex flex-1 flex-col min-w-0">
+                <ChatArea messages={messages} loading={loading} chatEndRef={chatEndRef} />
 
-            <ChoicesBar
-              choices={choices}
-              loading={loading}
-              isPaused={isPaused}
-              selectedProofUuids={selectedProofUuids}
-              selectedAlibiUuids={selectedAlibiUuids}
-              onChoice={handleChoice}
-            />
+                <ChoicesBar
+                  choices={choices}
+                  loading={loading}
+                  regenerating={regenerating}
+                  isPaused={isPaused}
+                  selectedProofUuids={selectedProofUuids}
+                  selectedAlibiUuids={selectedAlibiUuids}
+                  onChoice={handleChoice}
+                  onRegenerate={handleRegenerate}
+                />
+              </div>
+
+              {/* Alibis side panel */}
+              {alibisPanelOpen && (
+                <AlibisPanel
+                  gameUuid={game.uuid}
+                  alibis={alibis}
+                  selectedAlibiUuids={selectedAlibiUuids}
+                  onToggle={(uuid) =>
+                    setSelectedAlibiUuids((prev) =>
+                      prev.includes(uuid) ? prev.filter((id) => id !== uuid) : [...prev, uuid]
+                    )
+                  }
+                  onClearSelection={() => setSelectedAlibiUuids([])}
+                  onAdd={(alibi) => setAlibis((prev) => [...prev, alibi])}
+                  onDelete={(uuid) => setAlibis((prev) => prev.filter((a) => a.uuid !== uuid))}
+                  onClose={() => setAlibisPanelOpen(false)}
+                />
+              )}
+            </div>
+
+            {proofsOpen && (
+              <ProofsModal
+                proofs={proofs}
+                selectedProofUuids={selectedProofUuids}
+                onToggle={(uuid) =>
+                  setSelectedProofUuids((prev) =>
+                    prev.includes(uuid) ? prev.filter((id) => id !== uuid) : [...prev, uuid]
+                  )
+                }
+                onClearSelection={() => setSelectedProofUuids([])}
+                onClose={() => setProofsOpen(false)}
+              />
+            )}
+
+            {interrogateOpen && (
+              <InterrogateModal
+                gameUuid={game.uuid}
+                contacts={contacts}
+                onAnswer={(answer, contactName, judgeReaction) =>
+                  setMessages((prev) => [
+                    ...prev,
+                    { role: 'contact', content: answer, contactName },
+                    ...(judgeReaction ? [{ role: 'ai' as const, content: judgeReaction }] : []),
+                  ])
+                }
+                onClose={() => setInterrogateOpen(false)}
+              />
+            )}
           </div>
-
-          {/* Alibis side panel */}
-          {alibisPanelOpen && (
-            <AlibisPanel
-              gameUuid={game.uuid}
-              alibis={alibis}
-              selectedAlibiUuids={selectedAlibiUuids}
-              onToggle={(uuid) =>
-                setSelectedAlibiUuids((prev) =>
-                  prev.includes(uuid) ? prev.filter((id) => id !== uuid) : [...prev, uuid]
-                )
-              }
-              onClearSelection={() => setSelectedAlibiUuids([])}
-              onAdd={(alibi) => setAlibis((prev) => [...prev, alibi])}
-              onDelete={(uuid) => setAlibis((prev) => prev.filter((a) => a.uuid !== uuid))}
-              onClose={() => setAlibisPanelOpen(false)}
-            />
-          )}
-
-          {proofsOpen && (
-            <ProofsModal
-              proofs={proofs}
-              selectedProofUuids={selectedProofUuids}
-              onToggle={(uuid) =>
-                setSelectedProofUuids((prev) =>
-                  prev.includes(uuid) ? prev.filter((id) => id !== uuid) : [...prev, uuid]
-                )
-              }
-              onClearSelection={() => setSelectedProofUuids([])}
-              onClose={() => setProofsOpen(false)}
-            />
-          )}
-
-          {interrogateOpen && (
-            <InterrogateModal
-              gameUuid={game.uuid}
-              contacts={contacts}
-              onAnswer={(answer, contactName) =>
-                setMessages((prev) => [...prev, { role: 'contact', content: answer, contactName }])
-              }
-              onClose={() => setInterrogateOpen(false)}
-            />
-          )}
         </div>
       </AppLayout>
     </GameStoreProvider>

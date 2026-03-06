@@ -42,7 +42,7 @@ interface SidebarProps {
 
 export default function Sidebar({ setIsComposeOpen, activeTab, handleTabChange, isDarkMode }: SidebarProps) {
   return (
-    <aside className="w-64 bg-white dark:bg-slate-900 flex flex-col py-4 border-r border-slate-200 dark:border-slate-800 z-10 transition-colors">
+    <aside id="tour-mail-sidebar" className="w-64 bg-white dark:bg-slate-900 flex flex-col py-4 border-r border-slate-200 dark:border-slate-800 z-10 transition-colors">
       <div className="px-4 mb-6">
         <button onClick={() => setIsComposeOpen(true)} className="flex items-center justify-center gap-2 bg-brand-blue hover:bg-brand-dark text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-sm w-full text-sm">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
