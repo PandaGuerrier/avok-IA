@@ -12,9 +12,6 @@ interface GameStore {
   init: (data: {
     gameUuid: string
     startAtMs: number | null
-    resumeAtMs: number | null
-    pausedAtMs: number | null
-    isPaused: boolean
     guiltyPercentage: number
   }) => void
   pause: (pausedAtMs: number) => void

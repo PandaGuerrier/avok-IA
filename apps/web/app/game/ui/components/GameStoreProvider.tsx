@@ -8,9 +8,6 @@ import { getXsrfToken } from '#game/ui/utils/utils'
 export interface GameStoreInfo {
   uuid: string
   startAt: unknown
-  resumeAt: unknown | null
-  pausedAt: unknown | null
-  isPaused: boolean | null
   guiltyPourcentage: number | null
 }
 
@@ -29,10 +26,6 @@ export default function GameStoreProvider({
     init({
       gameUuid: game.uuid,
       startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
-      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
-      pausedAtMs:
-        game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
-      isPaused: game.isPaused ?? false,
       guiltyPercentage: game.guiltyPourcentage ?? 50,
     })
   }, [init, game])

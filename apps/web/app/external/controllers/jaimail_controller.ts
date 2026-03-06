@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Game from '#game/models/game'
+import GameDto from '#game/dtos/game'
 
 export default class JaimailController {
   async show({ inertia, params, auth, response }: HttpContext) {
@@ -8,14 +9,7 @@ export default class JaimailController {
 
     const data = game.data as any
     return inertia.render('external/jaimail', {
-      game: {
-        uuid: game.uuid,
-        startAt: game.startAt,
-        resumeAt: game.resumeAt,
-        pausedAt: game.pausedAt,
-        isPaused: game.isPaused ?? false,
-        guiltyPourcentage: game.guiltyPourcentage ?? 50,
-      },
+      game: new GameDto(game),
       mails: data.mails ?? [],
     })
   }
