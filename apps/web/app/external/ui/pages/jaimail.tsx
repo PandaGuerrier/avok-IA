@@ -8,6 +8,7 @@ import EmailList from '../components/EmailList'
 import EmailDetail from '../components/EmailDetail'
 import Toast from '../components/Toast'
 import AlibisModal from '../components/AlibisModal'
+import GameTour from '#game/ui/components/GameTour'
 import type { Email } from '../schema/mailSchema'
 
 interface MailData {
@@ -154,6 +155,7 @@ export default function Jaimail() {
 
   return (
     <AppLayout layout="sidebar" removePadding hideBottomNav>
+    <GameTour gameUuid={gameUuid} page="jaimail" />
     <div
       className={`flex flex-col h-[calc(100vh-4rem)] w-full font-sans relative overflow-hidden transition-colors duration-300 ${
         isDarkMode ? 'dark bg-slate-950 text-slate-200' : 'bg-slate-50 text-brand-dark'

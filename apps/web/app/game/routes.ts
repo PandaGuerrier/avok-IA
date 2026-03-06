@@ -14,10 +14,11 @@ router
     router.put('/game/:uuid', [GamesController, 'update']).as('game.update')
 
     router.post('/game/:uuid/interrogate', [GamesController, 'interrogate']).as('game.interrogate')
-    router.post('/game/:uuid/pause', [GamesController, 'pause']).as('game.pause')
-    router.post('/game/:uuid/resume', [GamesController, 'resume']).as('game.resume')
+  //  router.post('/game/:uuid/pause', [GamesController, 'pause']).as('game.pause')
+   // router.post('/game/:uuid/resume', [GamesController, 'resume']).as('game.resume')
 
     router.post('/game/:uuid/choices', [ChoicesController, 'store']).as('game.choices.store')
+    router.post('/game/:uuid/choices/regenerate', [ChoicesController, 'regenerate']).as('game.choices.regenerate')
     router.get('/game/:uuid/choices', [ChoicesController, 'index']).as('game.choices.index')
     router.get('/game/:uuid/choices/:choiceUuid', [ChoicesController, 'show']).as('game.choices.show')
 

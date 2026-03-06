@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { Users, X, Loader2 } from 'lucide-react'
 import type { ContactData } from '#game/types/data'
 import { getXsrfToken } from '#game/ui/utils/utils'
+import { useGameStore } from '#game/ui/store/gameStore'
 
 interface InterrogateModalProps {
   gameUuid: string
   contacts: ContactData[]
-  onAnswer: (answer: string, contactName: string) => void
+  onAnswer: (answer: string, contactName: string, judgeReaction: string) => void
   onClose: () => void
 }
 
@@ -16,6 +17,7 @@ export default function InterrogateModal({
   onAnswer,
   onClose,
 }: InterrogateModalProps) {
+  const { updateGuilt } = useGameStore()
   const [selectedContact, setSelectedContact] = useState<ContactData | null>(null)
   const [question, setQuestion] = useState('')
   const [loading, setLoading] = useState(false)
@@ -35,7 +37,8 @@ export default function InterrogateModal({
       })
       if (res.ok) {
         const json = await res.json()
-        onAnswer(json.answer, json.contactName)
+        updateGuilt(json.guiltyPourcentage)
+        onAnswer(json.answer, json.contactName, json.judgeReaction ?? '')
         onClose()
       }
     } catch {

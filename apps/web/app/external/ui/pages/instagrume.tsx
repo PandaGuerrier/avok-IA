@@ -7,6 +7,7 @@ import PostCard from '../components/feed/PostCard'
 import ChatList from '../components/messages/ChatList'
 import ChatWindow from '../components/messages/ChatWindow'
 import AlibisModal from '../components/AlibisModal'
+import GameTour from '#game/ui/components/GameTour'
 
 interface Contact {
   id: number
@@ -83,6 +84,7 @@ const Instagrume: React.FC = () => {
 
   return (
     <AppLayout layout="sidebar" removePadding hideBottomNav>
+      <GameTour gameUuid={gameUuid} page="instagrume" />
       <div className="flex h-[calc(100vh-4rem)] bg-white dark:bg-gray-900 text-black dark:text-white font-sans overflow-hidden">
           <Sidebar activeTab={activeTab} onNavigate={(tab: any) => setActiveTab(tab)} />
 

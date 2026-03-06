@@ -10,7 +10,7 @@ interface ChatAreaProps {
 
 export default function ChatArea({ messages, loading, chatEndRef }: ChatAreaProps) {
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin scrollbar-track-transparent dark:scrollbar-thumb-white/10 scrollbar-thumb-black/10">
+    <div id="tour-chat" className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin scrollbar-track-transparent dark:scrollbar-thumb-white/10 scrollbar-thumb-black/10">
       {messages.map((msg, i) => (
         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           {msg.role === 'contact' ? (

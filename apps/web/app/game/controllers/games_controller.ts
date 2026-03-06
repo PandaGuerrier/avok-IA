@@ -95,7 +95,7 @@ DONNÉES À ANALYSER (accessibles dans la sidebar à gauche - réseaux sociaux) 
 ${JSON.stringify(game.data)}
 
 === TON DE LA JUGE ===
-- Froide, impitoyable, procédurière
+- Froide, procédurière
 - Tu soupçonnes l'accusé et tu l'accuses formellement
 - Formes judiciaires : "Maître ${auth.user!.firstName}...", "La cour estime...", "Les preuves montrent..."
 - Ton ton : accusateur et persuasif
@@ -110,7 +110,7 @@ OBLIGATOIRES :
 2. Mentionne que ${suspectName} est impliqué(e) et que les données sont dans la SIDEBAR À GAUCHE
 3. Invite l'accusé à se DÉFENDRE en présentant des preuves
 
-NE MENTIONNE PAS "enquêteur" - il n'est qu'un ACCUSÉ qui doit prouver son innocence.
+NE MENTIONNE PAS "enquêteur", ni "maître" - il n'est qu'un ACCUSÉ qui doit prouver son innocence.
 
 === MESSAGES SUIVANTS ===
 - Réponds à la DÉFENSE de l'utilisateur
@@ -153,7 +153,7 @@ Langue: français
       `.trim()
 
       try {
-        const raw = await this.iaService.chat(prompt)
+        const raw = await this.iaService.chat([{ role: 'user', content: prompt }])
         const parsed = JSON.parse(raw)
         initialMessage = parsed.message || ''
         currentChoices = parsed.nextChoices || []
@@ -280,36 +280,86 @@ Langue: français
 
     const prompt = `
 Tu es ${contact.name}, ${contact.role} de l'adolescent faisant l'objet d'une enquête policière.
-Un enquêteur vient t'interroger. Tu dois répondre EN CHARACTER, de façon naturelle et cohérente avec ton rôle et ce que tu sais.
+Un accusé vient t'interroger pour prouver son innocence. Tu dois répondre EN CHARACTER, de façon naturelle et cohérente avec ton rôle.
 Tu peux être coopératif, réticent, ou nerveux selon ce que tu sais — mais tu restes toi-même.
 
 === CONTEXTE DE L'AFFAIRE ===
-Voici les données numériques de l'adolescent (messages Instagram, mails, agenda, notes scolaires) qui ont été récupérées dans l'enquête. Tu connais cet adolescent et certains de ces éléments te sont familiers :
+Voici les données numériques de l'adolescent (messages Instagram, mails, agenda, notes scolaires) :
 ${JSON.stringify(game.data)}
 
-=== CE QUE L'ENQUÊTEUR A DÉCOUVERT ===
-Étapes de l'enquête (décisions prises et réponses reçues) :
+=== AVANCEMENT DE L'INTERROGATOIRE ===
+Étapes précédentes :
 ${choicesSummary || 'Aucune étape pour l\'instant.'}
 
 Preuves collectées :
 ${proofsSummary || 'Aucune preuve pour l\'instant.'}
 
-Niveau de culpabilité actuel estimé par l'enquêteur : ${game.guiltyPourcentage}%
+Niveau de culpabilité actuel : ${game.guiltyPourcentage}%
 
-=== QUESTION DE L'ENQUÊTEUR ===
+=== QUESTION POSÉE ===
 "${payload.question}"
 
-Réponds en 2-3 phrases maximum, en français, comme si tu étais vraiment cette personne. Ne cite pas les données brutes, intègre-les naturellement dans ta réponse.
+=== RÈGLES ===
+- Ta réponse en 2-3 phrases, en français, comme si tu étais vraiment cette personne.
+- Ne cite pas les données brutes, intègre-les naturellement.
+- Si ta réponse AIDE l'accusé à prouver son innocence (alibi confirmé, contradiction révélée) : guiltyDelta négatif (-15 à -5).
+- Si ta réponse est vague, ambiguë ou ne l'aide pas : guiltyDelta nul (0).
+- Si ta réponse l'INCRIMINE davantage (tu contredis son alibi, tu révèles quelque chose de compromettant) : guiltyDelta positif (+5 à +15).
+
+=== FORMAT DE RÉPONSE OBLIGATOIRE ===
+Réponds UNIQUEMENT en JSON valide :
+{
+  "answer": "Ta réponse en tant que ${contact.name} (2-3 phrases)",
+  "guiltyDelta": 0
+}
 `.trim()
 
     let answer = ''
+    let guiltyDelta = 0
     try {
-      answer = await this.iaService.chat(prompt)
+      const raw = await this.iaService.chat([{ role: 'user', content: prompt }])
+      const parsed = JSON.parse(raw)
+      answer = parsed.answer || ''
+      guiltyDelta = parsed.guiltyDelta || 0
     } catch {
       answer = "Je... je ne sais pas trop quoi vous dire. C'est une situation difficile pour moi."
+      guiltyDelta = 0
     }
 
-    return response.ok({ answer, contactName: contact.name })
+    const newGuilty = Math.max(0, Math.min(100, game.guiltyPourcentage + guiltyDelta))
+    game.guiltyPourcentage = newGuilty
+    await game.save()
+
+    // Réaction de la Juge au témoignage
+    const judgePrompt = `
+Tu es la Juge Moreau. Un accusé vient d'appeler le témoin ${contact.name} (${contact.role}) à la barre.
+
+CONTEXTE DE L'AFFAIRE :
+${JSON.stringify(game.data)}
+
+QUESTION POSÉE PAR L'ACCUSÉ : "${payload.question}"
+
+RÉPONSE DU TÉMOIN ${contact.name} : "${answer}"
+
+CULPABILITÉ ACTUELLE : ${newGuilty}% (${guiltyDelta < 0 ? `ce témoignage a fait baisser la culpabilité de ${Math.abs(guiltyDelta)}%` : guiltyDelta > 0 ? `ce témoignage a fait monter la culpabilité de ${guiltyDelta}%` : 'ce témoignage n\'a pas changé la culpabilité'})
+
+Réagis à ce témoignage EN TANT QUE JUGE, de façon froide et procédurière. MAX 200 caractères.
+- Si le témoignage aide l'accusé : tu restes sceptique, tu cherches la faille ("La cour note ce témoignage, mais...")
+- S'il l'incrimine : tu t'engouffres dedans ("Voilà qui confirme les soupçons de la cour...")
+- S'il est neutre : tu tranches court ("La cour en prend note.")
+
+Réponds en une seule phrase directe, sans JSON.
+`.trim()
+
+    let judgeReaction = ''
+    try {
+      judgeReaction = await this.iaService.chat([{ role: 'user', content: judgePrompt }])
+      if (judgeReaction.length > 200) judgeReaction = judgeReaction.substring(0, 197) + '...'
+    } catch {
+      judgeReaction = 'La cour prend note de ce témoignage.'
+    }
+
+    return response.ok({ answer, contactName: contact.name, guiltyPourcentage: newGuilty, judgeReaction })
   }
 
   async result({ params, auth, response, inertia }: HttpContext) {

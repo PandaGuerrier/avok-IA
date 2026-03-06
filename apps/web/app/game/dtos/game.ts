@@ -26,7 +26,6 @@ export default class GameDto extends BaseModelDto {
   declare startAt: DateTime | null
   declare resumeAt: DateTime | null
   declare isPaused: boolean
-  declare startAt: DateTime | null
   declare pausedAt: DateTime | null
   declare totalPausedMs: number
   declare currentChoices: ChoiceData[] | null

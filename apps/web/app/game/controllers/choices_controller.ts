@@ -12,6 +12,104 @@ import ChoiceDto from '#game/dtos/choice'
 export default class ChoicesController {
   constructor(protected iaService: IAService) {}
 
+  async regenerate({ params, auth, request, response }: HttpContext) {
+    const game = await Game.findByOrFail('uuid', params.uuid)
+    if (game.userUuid !== auth.user!.uuid) return response.unauthorized()
+
+    const schema = vine.compile(
+      vine.object({
+        selectedProofUuids: vine.array(vine.string()).optional(),
+        selectedAlibiUuids: vine.array(vine.string()).optional(),
+      })
+    )
+    const payload = await request.validateUsing(schema)
+
+    await game.load('choices')
+
+    let selectedProofsContext = ''
+    if (payload.selectedProofUuids?.length) {
+      const selectedProofs = await Proof.query()
+        .where('gameUuid', game.uuid)
+        .whereIn('uuid', payload.selectedProofUuids)
+      if (selectedProofs.length > 0) {
+        selectedProofsContext = `\nPreuves actuellement sélectionnées :\n${selectedProofs
+          .map((p) => `- ${p.data?.title || 'Preuve'} : ${p.content}`)
+          .join('\n')}`
+      }
+    }
+
+    let selectedAlibisContext = ''
+    if (payload.selectedAlibiUuids?.length) {
+      const selectedAlibis = await Alibi.query()
+        .where('gameUuid', game.uuid)
+        .whereIn('uuid', payload.selectedAlibiUuids)
+      if (selectedAlibis.length > 0) {
+        selectedAlibisContext = `\nAlibis actuellement sélectionnés :\n${selectedAlibis
+          .map((a) => `- ${a.title} : ${a.content}`)
+          .join('\n')}`
+      }
+    }
+
+    const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
+
+DONNÉES COMPLÈTES DE L'AFFAIRE :
+${JSON.stringify(game.data)}
+
+=== RÈGLES ===
+- Tu dois proposer 3 nouvelles alternatives de défense pour l'accusé (1 piège ALÉATOIRE, 2 valides).
+- Les titres DOIVENT être NEUTRES et NE PAS révéler le piège.
+- Les choix doivent être cohérents avec l'état actuel de l'interrogatoire et les alibis/preuves sélectionnés.
+
+=== FORMAT DE RÉPONSE OBLIGATOIRE ===
+Réponds UNIQUEMENT en JSON valide :
+{
+  "nextChoices": [
+    {"id": 1, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": false},
+    {"id": 2, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": true},
+    {"id": 3, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": false}
+  ]
+}
+Langue : français`.trim()
+
+    const historyMessages = game.choices.flatMap((c) => [
+      { role: 'user' as const, content: `L'accusé a présenté : "${c.data.title}" — ${c.data.description}` },
+      { role: 'assistant' as const, content: JSON.stringify({ message: c.response, guiltyDelta: 0, nextChoices: [] }) },
+    ])
+
+    const currentUserContent = [
+      "L'accusé demande de nouvelles options de défense.",
+      `Culpabilité actuelle : ${game.guiltyPourcentage}%.`,
+      selectedProofsContext,
+      selectedAlibisContext,
+      'Génère 3 nouvelles alternatives cohérentes avec la situation.',
+    ]
+      .filter(Boolean)
+      .join('\n')
+
+    const messages = [
+      { role: 'system' as const, content: systemMessage },
+      ...historyMessages,
+      { role: 'user' as const, content: currentUserContent },
+    ]
+
+    try {
+      const raw = await this.iaService.chat(messages)
+      // Strip potential markdown code blocks from IA response
+      const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+      const parsed = JSON.parse(cleaned)
+      const nextChoices = parsed.nextChoices || parsed.choices || []
+      if (!Array.isArray(nextChoices) || nextChoices.length === 0) {
+        throw new Error('Empty or invalid nextChoices in IA response')
+      }
+      game.currentChoices = nextChoices
+      await game.save()
+      return response.ok({ nextChoices })
+    } catch (err) {
+      console.error('[regenerate] IA error:', err)
+      return response.internalServerError({ error: 'Impossible de générer de nouveaux choix.' })
+    }
+  }
+
   async index({ params, auth, response }: HttpContext) {
     const game = await Game.findByOrFail('uuid', params.uuid)
     if (game.userUuid !== auth.user!.uuid) return response.unauthorized()
@@ -50,14 +148,14 @@ export default class ChoicesController {
 
     await game.load('choices')
 
-    // Charger les preuves sélectionnées pour les inclure dans le prompt
+    // Charger les preuves sélectionnées
     let selectedProofsContext = ''
     if (payload.selectedProofUuids && payload.selectedProofUuids.length > 0) {
       const selectedProofs = await Proof.query()
         .where('gameUuid', game.uuid)
         .whereIn('uuid', payload.selectedProofUuids)
       if (selectedProofs.length > 0) {
-        selectedProofsContext = `\nPreuves sélectionnées par l'enquêteur :\n${selectedProofs
+        selectedProofsContext = `\nPreuves présentées par l'accusé :\n${selectedProofs
           .map((p) => `- ${p.data?.title || 'Preuve'} : ${p.content}`)
           .join('\n')}`
       }
@@ -70,79 +168,87 @@ export default class ChoicesController {
         .where('gameUuid', game.uuid)
         .whereIn('uuid', payload.selectedAlibiUuids)
       if (selectedAlibis.length > 0) {
-        selectedAlibisContext = `\nAlibis fournis par le suspect :\n${selectedAlibis
+        selectedAlibisContext = `\nAlibis fournis par l'accusé :\n${selectedAlibis
           .map((a) => `- ${a.title} : ${a.content}`)
           .join('\n')}`
       }
     }
 
-    const previousChoices = game.choices.map((c) => ({
-      title: c.data.title,
-      description: c.data.description,
-      response: c.response,
-      isTrap: c.data.isTrap,
-    }))
+    // ── Construction de l'historique conversationnel ──────────────────────────
+    // Message système : contexte fixe de l'affaire + règles de réponse
+    const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
 
-    const prompt = `
-RÔLE : Tu es la Juge Moreau. Tu réagis à la DÉFENSE de l'ACCUSÉ qui vient de présenter une piste/argument.
+DONNÉES COMPLÈTES DE L'AFFAIRE :
+${JSON.stringify(game.data)}
 
-CONTEXTE : Tu juges l'accusé. Il essaie de se défendre en analysant les données accessibles dans la sidebar.
-DONNÉES COMPLÈTES : ${JSON.stringify(game.data)}
-
-HISTORIQUE DE LA DÉFENSE :
-${JSON.stringify(previousChoices)}
-${selectedProofsContext}${selectedAlibisContext}
-
-L'ACCUSÉ VIENT DE CHOISIR : "${payload.data.title}" - ${payload.data.description}
-${payload.data.isTrap ? '(⚠️ PIÈGE CHOISI - L\'accusé s\'est trompé)' : ''}
-
-=== TA RÉACTION ===
-Tu dois JUGER sa défense et RÉPONDRE EN LE PIÉGEANT.
-Si sa défense tient bien = diminue sa culpabilité. Sinon = augmente-la.
-
-MAX 250 caractères (compte chaque lettre, espace, ponctuation).
-
-Génère ta réaction + 3 nouveaux choix de défense pour l'accusé (1 piège, 2 valides).
+=== RÈGLES ===
+- Tu dois JUGER la défense de l'accusé et répondre en le challengeant.
+- Si sa défense tient bien : diminue la culpabilité. Sinon : augmente-la.
+- MAX 250 caractères pour ton message (compte chaque lettre, espace, ponctuation).
+- Génère toujours 3 nouveaux choix de défense (1 piège ALÉATOIRE, 2 valides).
+- Les titres DOIVENT être NEUTRES et NE PAS révéler le piège.
+- Le piège peut être id 1, 2 ou 3 (aléatoire, pas toujours le même).
 
 === GUILTYΔELTA ===
-- Bonne défense présentée : -20 à -15 (innocence prouvée)
+- Bonne défense avec preuve/alibi solide : -20 à -15
 - Défense ambiguë : -10 à -5
 - Neutre : 0
-- Mauvaise/PIÈGE choisi : +5 à +10 (preuve de culpabilité)
-Choix du piège ajoute +10 minimum.
+- Mauvaise défense : +5 à +10
+- Piège choisi : +10 minimum
 
-=== TITRES & PIÈGE ===
-Les titres DOIVENT être NEUTRES et NE PAS révéler le piège.
-Le piège DOIT être ALÉATOIRE : pas toujours id 2, peut être id 1, 2 ou 3.
-Les 3 titres doivent sembler également crédibles/défendables.
-
-Réponds UNIQUEMENT en JSON valide :
+=== FORMAT DE RÉPONSE OBLIGATOIRE ===
+Réponds UNIQUEMENT en JSON valide, sans texte avant ni après :
 {
   "message": "Réaction de la Juge (MAX 250 caractères)",
   "guiltyDelta": 0,
   "nextChoices": [
-    {"id": 1, "title": "Titre neutre et ambigu", "description": "...", "choosen": false, "isTrap": false},
-    {"id": 2, "title": "Titre neutre et ambigu", "description": "...", "choosen": false, "isTrap": true},
-    {"id": 3, "title": "Titre neutre et ambigu", "description": "...", "choosen": false, "isTrap": false}
+    {"id": 1, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": false},
+    {"id": 2, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": true},
+    {"id": 3, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": false}
   ]
 }
-Langue: français
-    `.trim()
+Langue : français`.trim()
+
+    // Paires user/assistant pour chaque échange précédent (historique complet)
+    const historyMessages = game.choices.flatMap((c) => [
+      {
+        role: 'user' as const,
+        content: `L'accusé présente : "${c.data.title}" — ${c.data.description}`,
+      },
+      {
+        role: 'assistant' as const,
+        // On stocke la réponse texte ; on reconstruit un JSON minimal pour cohérence de format
+        content: JSON.stringify({ message: c.response, guiltyDelta: 0, nextChoices: [] }),
+      },
+    ])
+
+    // Message utilisateur actuel : le nouveau choix + preuves/alibis sélectionnés
+    const currentUserContent = [
+      `L'accusé présente : "${payload.data.title}" — ${payload.data.description}`,
+      payload.data.isTrap ? '(⚠️ C\'est un piège — l\'accusé s\'est trompé)' : '',
+      selectedProofsContext,
+      selectedAlibisContext,
+    ]
+      .filter(Boolean)
+      .join('\n')
+
+    const messages = [
+      { role: 'system' as const, content: systemMessage },
+      ...historyMessages,
+      { role: 'user' as const, content: currentUserContent },
+    ]
 
     let iaMessage = ''
     let guiltyDelta = 0
     let nextChoices: any[] = []
 
     try {
-      const raw = await this.iaService.chat(prompt)
+      const raw = await this.iaService.chat(messages)
       const parsed = JSON.parse(raw)
       iaMessage = parsed.message || ''
-      
-      // Valider et limiter le message à 250 caractères pour les messages suivants (pas le premier)
-      if (game.choices.length > 0 && iaMessage.length > 250) {
+      if (iaMessage.length > 250) {
         iaMessage = iaMessage.substring(0, 247) + '...'
       }
-      
       guiltyDelta = parsed.guiltyDelta || 0
       nextChoices = parsed.nextChoices || []
     } catch (error) {
