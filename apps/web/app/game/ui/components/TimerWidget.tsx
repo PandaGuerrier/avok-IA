@@ -55,7 +55,7 @@ export default function TimerWidget() {
           {formatTime(seconds)}
         </text>
       </svg>
-      <span className="text-[10px] text-white/40 uppercase tracking-widest">
+      <span className="text-[10px] text-gray-600 dark:text-white/40 uppercase tracking-widest">
         {isPaused ? 'En pause' : 'Temps restant'}
       </span>
     </div>

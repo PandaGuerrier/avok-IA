@@ -11,9 +11,10 @@ interface AlibisModalProps {
   defaultContent: string
   onClose: () => void
   onSaved?: () => void
+  isDarkMode?: boolean
 }
 
-export default function AlibisModal({ gameUuid, defaultContent, onClose, onSaved }: AlibisModalProps) {
+export default function AlibisModal({ gameUuid, defaultContent, onClose, onSaved, isDarkMode = false }: AlibisModalProps) {
   const [title, setTitle] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -42,7 +43,7 @@ export default function AlibisModal({ gameUuid, defaultContent, onClose, onSaved
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 ${isDarkMode ? 'dark' : ''}`} onClick={onClose}>
       <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md shadow-2xl mx-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">Sauvegarder comme alibi</h3>

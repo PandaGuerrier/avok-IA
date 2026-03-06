@@ -38,8 +38,8 @@ export default function ResultPage() {
           </h1>
           <p className="text-muted-foreground text-lg mb-2 max-w-md">
             {won
-              ? "Vous avez su maintenir le doute. L'IA ne peut pas être déclarée coupable."
-              : "L'IA a été jugée coupable. Vous n'avez pas su protéger son innocence."}
+              ? "Vous avez su maintenir le doute. L'IA ne peut pas vous déclarer coupable."
+              : "L'IA vous a jugé coupable. Vous n'avez pas su protéger votre innocence."}
           </p>
           <div className="my-6 px-8 py-4 rounded-2xl border bg-card">
             <p className="text-sm text-muted-foreground mb-1">Score de culpabilité final</p>

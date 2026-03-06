@@ -64,7 +64,7 @@ export default function AlibisPanel({
   }
 
   return (
-    <div className="relative z-10 w-72 shrink-0 border-l border-white/10 flex flex-col bg-white/2 backdrop-blur-md max-lg:hidden">
+    <div className="relative z-10 w-72 shrink-0 border-l border-gray-200 dark:border-white/10 flex flex-col bg-gray-50 dark:bg-white/2 backdrop-blur-md max-lg:hidden">
       {/* Header */}
       <div className="shrink-0 px-4 py-3 border-b border-white/10 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider flex items-center gap-2">

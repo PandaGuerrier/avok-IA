@@ -17,9 +17,11 @@ export default function GuiltyWidget() {
         <path
           d={`M ${cx - r},${cy} A ${r},${r} 0 0,1 ${cx + r},${cy}`}
           fill="none"
-          stroke="rgba(255,255,255,0.1)"
+          stroke="rgba(0,0,0,0.1)"
           strokeWidth="8"
           strokeLinecap="round"
+          style={{ strokeOpacity: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' } as any}
+          className="dark:stroke-white/10"
         />
         <path
           d={`M ${cx - r},${cy} A ${r},${r} 0 0,1 ${cx + r},${cy}`}
@@ -35,7 +37,7 @@ export default function GuiltyWidget() {
           {percent}%
         </text>
       </svg>
-      <span className="text-[10px] text-white/40 uppercase tracking-widest">Culpabilité</span>
+      <span className="text-[10px] text-gray-600 dark:text-white/40 uppercase tracking-widest">Culpabilité</span>
     </div>
   )
 }
