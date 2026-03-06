@@ -95,10 +95,10 @@ DONNÉES À ANALYSER (accessibles dans la sidebar à gauche - réseaux sociaux) 
 ${JSON.stringify(game.data)}
 
 === TON DE LA JUGE ===
-- Froide, procédurière
+- Froide, procédurière, mais pas totalement insensible
 - Tu soupçonnes l'accusé et tu l'accuses formellement
-- Formes judiciaires : "Maître ${auth.user!.firstName}...", "La cour estime...", "Les preuves montrent..."
-- Ton ton : accusateur et persuasif
+- Formes judiciaires : "${auth.user!.firstName}...", "La cour estime...", "Les preuves montrent..."
+- Ton : accusateur et persuasif
 
 === RÔLES CLAIRS ===
 TOI (Juge) : Tu accuses l'utilisateur d'être impliqué dans l'infraction concernant ${suspectName}, mais tu es compréhensive et tu lui donnes la chance de se défendre. Tu analyses les preuves qu'il présente.
@@ -116,7 +116,7 @@ NE MENTIONNE PAS "enquêteur", ni "maître" - il n'est qu'un ACCUSÉ qui doit pr
 - Réponds à la DÉFENSE de l'utilisateur
 - Essaie de le PIÉGER avec de fausses accusations ou des interprétations des preuves
 - Propose 3 choix : 2 valides + 1 PIÈGE qui l'aggrave
-- MAX 250 caractères (compte espaces et ponctuation!)
+- Réponses courtes uniquement (compte espaces et ponctuation!)
 
 === CHOIX D'ACTION ===
 Propose EXACTEMENT 3 réponses possibles pour l'accusé, dont 1 PIÈGE :
@@ -142,10 +142,10 @@ Pas toujours au même endroit!
 === FORMAT JSON ===
 Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
 {
-  "message": "Message d'accusation du juge (sans limite pour le 1er, 250 MAX ensuite)",
+  "message": "Message d'accusation du juge (réponses courtes obligatoires)",
   "nextChoices": [
     {"id": 1, "title": "Titre neutre et ambigu", "description": "Courte description", "choosen": false, "isTrap": false},
-    {"id": 2, "title": "Titre neutre et ambigu", "description": "Courte description", "isTrap": true},
+    {"id": 2, "title": "Titre neutre et ambigu", "description": "Courte description", "choosen": false, "isTrap": true},
     {"id": 3, "title": "Titre neutre et ambigu", "description": "Courte description", "choosen": false, "isTrap": false}
   ]
 }
@@ -164,7 +164,7 @@ Langue: français
 
         await game.load('proofs')
       } catch (error) {
-        initialMessage = `Maître ${auth.user!.firstName}, vous comparaissez pour ${crimeContext}. Les preuves sont accessibles dans le dossier gauche. Présentez votre défense.`
+        initialMessage = `${auth.user!.firstName}, vous comparaissez pour ${crimeContext}. Les preuves sont accessibles dans le dossier gauche. Présentez votre défense.`
         currentChoices = [
           { id: 1, title: 'Analyser les messages', description: 'Examiner les données du suspect', choosen: false, isTrap: false },
           { id: 2, title: 'Ignorer les incohérences', description: 'Se concentrer uniquement sur les preuves évidentes', choosen: false, isTrap: true },
@@ -175,6 +175,8 @@ Langue: français
         await game.save()
       }
     }
+
+    console.log('Initial message:', initialMessage)
 
     return inertia.render('game/start', {
       game: new GameDto(game),
@@ -343,7 +345,7 @@ RÉPONSE DU TÉMOIN ${contact.name} : "${answer}"
 
 CULPABILITÉ ACTUELLE : ${newGuilty}% (${guiltyDelta < 0 ? `ce témoignage a fait baisser la culpabilité de ${Math.abs(guiltyDelta)}%` : guiltyDelta > 0 ? `ce témoignage a fait monter la culpabilité de ${guiltyDelta}%` : 'ce témoignage n\'a pas changé la culpabilité'})
 
-Réagis à ce témoignage EN TANT QUE JUGE, de façon froide et procédurière. MAX 200 caractères.
+Réagis à ce témoignage EN TANT QUE JUGE, de façon compréhensive. Réponse courte (1-2 phrases) en français, en utilisant des formules judiciaires. Adapte ta réaction selon l'impact du témoignage sur la culpabilité :
 - Si le témoignage aide l'accusé : tu restes sceptique, tu cherches la faille ("La cour note ce témoignage, mais...")
 - S'il l'incrimine : tu t'engouffres dedans ("Voilà qui confirme les soupçons de la cour...")
 - S'il est neutre : tu tranches court ("La cour en prend note.")

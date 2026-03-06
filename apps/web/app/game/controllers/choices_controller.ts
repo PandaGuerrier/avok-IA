@@ -252,6 +252,7 @@ Langue : français`.trim()
       guiltyDelta = parsed.guiltyDelta || 0
       nextChoices = parsed.nextChoices || []
     } catch (error) {
+      console.error('[store] IA error:', error)
       iaMessage = "La cour demande à l'enquêteur de présenter des preuves tangibles. Quelle piste souhaitez-vous explorer?"
       guiltyDelta = 0
       nextChoices = [
