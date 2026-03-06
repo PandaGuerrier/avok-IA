@@ -233,24 +233,6 @@ export default function StartPage() {
             )}
           </div>
         </div>
-
-        {/* Alibis side panel */}
-        {alibisPanelOpen && (
-          <AlibisPanel
-            gameUuid={game.uuid}
-            alibis={alibis}
-            selectedAlibiUuids={selectedAlibiUuids}
-            onToggle={(uuid) =>
-              setSelectedAlibiUuids((prev) =>
-                prev.includes(uuid) ? prev.filter((id) => id !== uuid) : [...prev, uuid]
-              )
-            }
-            onClearSelection={() => setSelectedAlibiUuids([])}
-            onAdd={(alibi) => setAlibis((prev) => [...prev, alibi])}
-            onDelete={(uuid) => setAlibis((prev) => prev.filter((a) => a.uuid !== uuid))}
-            onClose={() => setAlibisPanelOpen(false)}
-          />
-        )}
     </AppLayout>
 
   <style>{`
