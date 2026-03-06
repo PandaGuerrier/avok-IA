@@ -19,7 +19,7 @@ export default function ResultPage() {
   const { t } = useTranslation()
   const navUser = getNavUser(t)
 
-  const won = game.guiltyPourcentage <= 90
+  const won = game.guiltyPourcentage <= 50
 
   return (
     <GameStoreProvider game={game}>

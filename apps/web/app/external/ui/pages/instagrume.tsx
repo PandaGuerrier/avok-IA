@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import AppLayout from '#common/ui/components/app_layout'
 import { useGameStore } from '#game/ui/store/gameStore'
+import { AppsNavigation } from '../components/AppsNavigation'
 import Sidebar from '../components/layout/Sidebar'
 import PostCard from '../components/feed/PostCard'
 import ChatList from '../components/messages/ChatList'
@@ -169,6 +170,28 @@ const Instagrume: React.FC = () => {
             />
           )}
         </div>
+        <style>{`
+          /* Scrollbar styles for dark mode */
+          .dark ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+          }
+          .dark ::-webkit-scrollbar-track {
+            background-color: #0f172a;
+          }
+          .dark ::-webkit-scrollbar-thumb {
+            background-color: #475569;
+            border-radius: 4px;
+          }
+          .dark ::-webkit-scrollbar-thumb:hover {
+            background-color: #64748b;
+          }
+          /* Firefox scrollbar */
+          .dark {
+            scrollbar-color: #475569 #0f172a;
+            scrollbar-width: thin;
+          }
+        `}</style>
       </AppLayout>
     )
 }

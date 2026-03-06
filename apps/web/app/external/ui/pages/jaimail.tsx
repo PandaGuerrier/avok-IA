@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import AppLayout from '#common/ui/components/app_layout'
 import { useGameStore } from '#game/ui/store/gameStore'
+import { AppsNavigation } from '../components/AppsNavigation'
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
 import EmailList from '../components/EmailList'
@@ -62,9 +63,6 @@ export default function Jaimail() {
     init({
       gameUuid: game.uuid,
       startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
-      resumeAtMs: game.resumeAt ? new Date(game.resumeAt as string).getTime() : null,
-      pausedAtMs: game.isPaused && game.pausedAt ? new Date(game.pausedAt as string).getTime() : null,
-      isPaused: game.isPaused ?? false,
       guiltyPercentage: game.guiltyPourcentage ?? 50,
     })
   }, [init, game])
@@ -157,9 +155,7 @@ export default function Jaimail() {
     <AppLayout layout="sidebar" removePadding hideBottomNav>
     <GameTour gameUuid={gameUuid} page="jaimail" />
     <div
-      className={`flex flex-col h-[calc(100vh-4rem)] w-full font-sans relative overflow-hidden transition-colors duration-300 ${
-        isDarkMode ? 'dark bg-slate-950 text-slate-200' : 'bg-slate-50 text-brand-dark'
-      }`}
+      className="flex flex-col h-[calc(100vh-8rem)] w-full font-sans relative overflow-hidden transition-colors duration-300 bg-slate-50 dark:bg-slate-950 text-brand-dark dark:text-slate-200"
     >
       <Header
         isSidebarOpen={true}
@@ -221,6 +217,28 @@ export default function Jaimail() {
           isDarkMode={isDarkMode}
         />
       )}
+      <style>{`
+        /* Scrollbar styles for dark mode */
+        .dark ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        .dark ::-webkit-scrollbar-track {
+          background-color: #0f172a;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+          background-color: #475569;
+          border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+          background-color: #64748b;
+        }
+        /* Firefox scrollbar */
+        .dark {
+          scrollbar-color: #475569 #0f172a;
+          scrollbar-width: thin;
+        }
+      `}</style>
     </div>
     </AppLayout>
   )

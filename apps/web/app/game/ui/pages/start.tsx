@@ -233,7 +233,48 @@ export default function StartPage() {
             )}
           </div>
         </div>
-      </AppLayout>
+
+        {/* Alibis side panel */}
+        {alibisPanelOpen && (
+          <AlibisPanel
+            gameUuid={game.uuid}
+            alibis={alibis}
+            selectedAlibiUuids={selectedAlibiUuids}
+            onToggle={(uuid) =>
+              setSelectedAlibiUuids((prev) =>
+                prev.includes(uuid) ? prev.filter((id) => id !== uuid) : [...prev, uuid]
+              )
+            }
+            onClearSelection={() => setSelectedAlibiUuids([])}
+            onAdd={(alibi) => setAlibis((prev) => [...prev, alibi])}
+            onDelete={(uuid) => setAlibis((prev) => prev.filter((a) => a.uuid !== uuid))}
+            onClose={() => setAlibisPanelOpen(false)}
+          />
+        )}
+      </div>
+    </AppLayout>
+    <style>{`
+      /* Scrollbar styles for dark mode */
+      .dark ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background-color: #0f172a;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background-color: #475569;
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background-color: #64748b;
+      }
+      /* Firefox scrollbar */
+      .dark {
+        scrollbar-color: #475569 #0f172a;
+        scrollbar-width: thin;
+      }
+    `}</style>
     </GameStoreProvider>
   )
 }
