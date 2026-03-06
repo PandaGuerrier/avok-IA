@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { router } from '@inertiajs/react'
 import AppLayout from '#common/ui/components/app_layout'
 import usePageProps from '#common/ui/hooks/use_page_props'
 import type GameDto from '#game/dtos/game'
@@ -57,18 +56,6 @@ export default function StartPage() {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
-
-  // Redirect to result when time runs out
-  useEffect(() => {
-    if (isPaused) return
-    const id = setInterval(() => {
-      if (useGameStore.getState().computeTimeLeft() <= 0) {
-        clearInterval(id)
-        router.visit(`/game/${game.uuid}/result`)
-      }
-    }, 1000)
-    return () => clearInterval(id)
-  }, [isPaused, game.uuid])
 
   // ── Actions ────────────────────────────────────────────────────────────────
 

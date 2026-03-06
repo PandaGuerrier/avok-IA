@@ -137,7 +137,8 @@ export default class GameService {
     }))
 
     const rawData = await this.ia.generateData(user, history.json.content, staticPostsForIA)
-    const data = JSON.parse(rawData) as DataGameType
+    const cleaned = rawData.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+    const data = JSON.parse(cleaned) as DataGameType
 
     data.history = { id: history.id, content: history.json.content }
 

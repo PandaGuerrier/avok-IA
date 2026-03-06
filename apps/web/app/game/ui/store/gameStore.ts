@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { DURATION_S } from '#game/ui/utils/constants'
 
 interface GameStore {
   gameUuid: string | null
@@ -17,7 +16,7 @@ interface GameStore {
   pause: (pausedAtMs: number) => void
   resume: (resumeAtMs: number | null) => void
   updateGuilt: (percent: number) => void
-  computeTimeLeft: () => number
+  computeElapsed: () => number
 }
 
 export const useGameStore = create<GameStore>()((set, get) => ({
@@ -36,12 +35,12 @@ export const useGameStore = create<GameStore>()((set, get) => ({
 
   updateGuilt: (percent) => set({ guiltyPercentage: percent }),
 
-  computeTimeLeft: () => {
+  computeElapsed: () => {
     const { startAtMs, resumeAtMs, pausedAtMs, isPaused } = get()
-    if (!startAtMs) return DURATION_S
+    if (!startAtMs) return 0
     const refMs = isPaused ? (pausedAtMs ?? Date.now()) : Date.now()
     const baseMs = resumeAtMs ?? startAtMs
     const elapsed = Math.floor((refMs - baseMs) / 1000)
-    return Math.max(0, DURATION_S - elapsed)
+    return Math.max(0, elapsed)
   },
 }))

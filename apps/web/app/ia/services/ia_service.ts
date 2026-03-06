@@ -24,7 +24,7 @@ export default class IAService {
       Authorization: `Bearer ${env.get('IA_API_KEY')}`,
     })
 
-    this.model = 'openai/gpt-oss-120b'
+    this.model = 'gpt-5.4'
   }
 
   async chat(messages: ChatMessage[]) {

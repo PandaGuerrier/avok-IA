@@ -21,6 +21,7 @@ export default class HttpService {
   }
 
   async post<T>(endpoint: string, body: any): Promise<T> {
+    console.log('POST', `${this.baseUlr}${endpoint}`, body)
     const response = await fetch(`${this.baseUlr}${endpoint}`, {
       method: 'POST',
       headers: {
@@ -31,6 +32,7 @@ export default class HttpService {
     })
 
     if (!response.ok) {
+      console.error('HTTP error:', response.status, await response.text())
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
