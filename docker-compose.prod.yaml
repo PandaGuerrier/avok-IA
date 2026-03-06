@@ -6,69 +6,50 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL?err}
-    env_file:
-      - apps/web/.env
+        # Passé au build pour le frontend (Vite)
+        VITE_API_URL: ${VITE_API_URL}
+    # Suppression de env_file qui causait l'erreur
     ports:
       - "${PORT:-3333}:3333"
     networks:
       - sail
     depends_on:
-      - pgsql
+      pgsql:
+        condition: service_healthy
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: ${PORT:-3333}
       HOST: ${HOST:-0.0.0.0}
       LOG_LEVEL: ${LOG_LEVEL:-info}
-      APP_KEY: ${APP_KEY?err}
+      APP_KEY: ${APP_KEY}
       SESSION_DRIVER: ${SESSION_DRIVER:-cookie}
       DRIVE_DISK: ${DRIVE_DISK:-fs}
       LIMITER_STORE: ${LIMITER_STORE:-database}
       DB_HOST: ${DB_HOST:-pgsql}
       DB_PORT: ${DB_PORT:-5432}
-      DB_USER: ${DB_USER?err}
-      DB_PASSWORD: ${DB_PASSWORD?err}
-      DB_DATABASE: ${DB_DATABASE?err}
-      VITE_API_URL: ${VITE_API_URL?err}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      VITE_API_URL: ${VITE_API_URL}
     volumes:
-      # CORRECTION ICI : On mappe directement le dossier tmp
       - 'web_uploads:/app/apps/web/build/tmp'
 
   pgsql:
     image: 'pgvector/pgvector:0.8.0-pg17'
     container_name: '${COMPOSE_PROJECT_NAME}_pgsql'
+    # On évite d'exposer le port 5432 sur l'extérieur pour la sécu,
+    # sauf si vous en avez besoin pour un client SQL externe.
     ports:
-      - '${DB_PORT:-5432}:5432'
+      - '${DB_PORT_EXTERNAL:-5432}:5432'
     environment:
-      PGPASSWORD: '${DB_PASSWORD:-secret}'
-      POSTGRES_DB: '${DB_DATABASE:-default}'
-      POSTGRES_USER: '${DB_USER?:err}'
-      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USER}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
     volumes:
       - 'sailpgsql:/var/lib/postgresql/data'
     networks:
       - sail
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE:-default}', '-U', '${DB_USER}' ]
-      retries: 3
+      test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}' ]
+      retries: 5
       timeout: 5s
-
-  cloudflared-exprefrei:
-    image: cloudflare/cloudflared:latest
-    container_name: cf_exprefrei
-    command: tunnel run --token ${CF_TOKEN}
-    networks:
-      - sail
-    env_file:
-      - apps/web/.env
-    deploy:
-      restart_policy:
-        condition: always
-
-networks:
-  sail:
-    driver: bridge
-
-volumes:
-  sailpgsql:
-  web_uploads: # Ne pas oublier de déclarer le volume ici
