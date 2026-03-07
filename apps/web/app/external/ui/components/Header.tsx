@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useUser from '#auth/ui/hooks/use_user'
 
 interface HeaderProps {
   isSidebarOpen: boolean;
@@ -22,30 +23,15 @@ interface Profile {
 export default function Header({
   isSidebarOpen, setIsSidebarOpen, handleTabChange,
   searchQuery, setSearchQuery, isProfileOpen,
-  setIsProfileOpen, isDarkMode, setIsDarkMode
+  setIsProfileOpen
 }: HeaderProps) {
-  const [profile, setProfile] = useState<Profile>({
-    firstName: 'Chargement...',
-    lastName: '',
-    age: '--',
-    picture: 'https://i.pravatar.cc/150'
+  const user = useUser()
+  const [profile, _] = useState<Profile>({
+    firstName: user.firstName || 'John',
+    lastName: user.lastName || 'Doe',
+    age: user.age || 'N/A',
+    picture: user.avatarUrl || 'https://randomuser.me/api/portraits/lego/1.jpg'
   });
-
-  useEffect(() => {
-    fetch('https://randomuser.me/api/')
-      .then(response => response.json())
-      .then(data => {
-        const user = data.results[0];
-        setProfile({
-          firstName: user.name.first,
-          lastName: user.name.last,
-          age: user.dob.age,
-          picture: user.picture.large
-        });
-      })
-      .catch((error: unknown) => console.error('Erreur lors du chargement du profil :', error));
-  }, []);
-
 
   return (
     <header className="flex items-center justify-between px-6 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm z-20 transition-colors">
@@ -87,9 +73,6 @@ export default function Header({
             </div>
             <h3 className="text-lg font-bold text-brand-dark dark:text-slate-100">{profile.firstName} {profile.lastName}</h3>
             <p className="text-slate-500 text-sm mb-4">{profile.age} ans</p>
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className="w-full bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-2 mb-3 rounded-lg transition-colors text-sm font-medium">
-              {isDarkMode ? 'Passer en mode clair' : 'Passer en mode sombre'}
-            </button>
             <div className="w-full h-px bg-slate-100 dark:bg-slate-700 mb-4"></div>
             <button onClick={() => setIsProfileOpen(false)} className="w-full text-slate-500 hover:text-brand-dark dark:hover:text-slate-300 text-sm transition-colors font-medium">Fermer</button>
           </div>

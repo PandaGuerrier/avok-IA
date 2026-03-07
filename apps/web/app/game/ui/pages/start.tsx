@@ -18,6 +18,7 @@ import ProofsModal from '#game/ui/components/ProofsModal'
 import InterrogateModal from '#game/ui/components/InterrogateModal'
 import GameTour from '#game/ui/components/GameTour'
 import { Button } from '@workspace/ui/components/button'
+import { Trophy } from 'lucide-react'
 
 export interface Props {
   game: GameDto
@@ -29,7 +30,24 @@ export default function StartPage() {
   const { game, initialMessage, currentChoices: initialChoices } = usePageProps<Props>()
 
   // ── Zustand store ──────────────────────────────────────────────────────────
-  const { isPaused, updateGuilt } = useGameStore()
+  const { isPaused, updateGuilt, guiltyPercentage } = useGameStore()
+
+  const [won, setWon] = useState(false)
+
+  useEffect(() => {
+    if (guiltyPercentage <= 50) {
+      setWon(true)
+      fetch(`/game/${game.uuid}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-XSRF-TOKEN': getXsrfToken(),
+        },
+        body: JSON.stringify({ isFinished: true }),
+      }).catch(console.error)
+    }
+  }, [guiltyPercentage])
 
   // ── Local state ────────────────────────────────────────────────────────────
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
@@ -63,7 +81,14 @@ export default function StartPage() {
   async function handleChoice(choice: ChoiceData) {
     if (loading || isPaused) return
     setLoading(true)
-    setMessages((prev) => [...prev, { role: 'user', content: choice.title }])
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'user',
+        content: choice.title,
+        alibis: selectedAlibiUuids.length > 0 ? [...selectedAlibiUuids] : undefined,
+      },
+    ])
     try {
       const res = await fetch(`/game/${game.uuid}/choices`, {
         method: 'POST',
@@ -163,7 +188,7 @@ export default function StartPage() {
                   (alibisPanelOpen ? 'right-72' : '')
                 }
               >
-                <div className={"space-x-2"}>
+                <div className={"space-x-2 bg-background p-2 rounded-md shadow-md floating-buttons"}>
                   <Button variant={'outline'} onClick={() => setProofsOpen(true)}>
                     Preuves{' '}
                     <span className="ml-1 px-2 py-0.5 text-[10px] font-mono rounded bg-red-500/20 text-red-500">
@@ -182,7 +207,7 @@ export default function StartPage() {
                 </div>
               </div>
               <div className="flex flex-1 flex-col min-w-0">
-                <ChatArea messages={messages} loading={loading} chatEndRef={chatEndRef} />
+                <ChatArea messages={messages} loading={loading} chatEndRef={chatEndRef} selectedAlibis={selectedAlibiUuids} alibis={alibis} />
 
                 <ChoicesBar
                   choices={choices}
@@ -245,9 +270,47 @@ export default function StartPage() {
             )}
           </div>
         </div>
+
+        {/* Win overlay */}
+        {won && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+            <div className="flex flex-col items-center gap-6 text-center px-8 py-10 rounded-3xl bg-white/10 dark:bg-white/5 border border-white/20 shadow-2xl max-w-sm w-full animate-in fade-in zoom-in-95 duration-500">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-yellow-400/30 blur-2xl scale-150" />
+                <Trophy className="relative w-20 h-20 text-yellow-400 drop-shadow-[0_0_24px_rgba(250,204,21,0.8)]" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-black text-white mb-2">Enquête réussie !</h2>
+                <p className="text-white/70 text-sm leading-relaxed">
+                  Vous avez maintenu le doute sous les 50%.<br />
+                  L'IA ne peut pas vous déclarer coupable.
+                </p>
+              </div>
+              <div className="px-6 py-3 rounded-2xl bg-white/10 border border-white/20">
+                <p className="text-xs text-white/50 mb-0.5">Score de culpabilité</p>
+                <p className="text-3xl font-bold text-yellow-300">{guiltyPercentage}%</p>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" className="text-white border-white/30 hover:bg-white/10" asChild>
+                  <a href="/game">Rejouer</a>
+                </Button>
+                <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold" asChild>
+                  <a href={`/game/${game.uuid}/result`}>Voir les résultats</a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </AppLayout>
 
       <style>{`
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+        50% { transform: translateY(-6px); box-shadow: 0 10px 28px rgba(0,0,0,0.16); }
+      }
+      .floating-buttons {
+        animation: float 3.5s ease-in-out infinite;
+      }
       /* Scrollbar styles for dark mode */
       .dark ::-webkit-scrollbar {
         width: 8px;

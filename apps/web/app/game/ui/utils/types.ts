@@ -3,6 +3,7 @@ interface ChatMessage {
   content: string
   contactName?: string
   images?: string[]
+  alibis?: string[]
 }
 
 export type { ChatMessage }

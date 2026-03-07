@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Heart, MessageCircle, BookmarkPlus, MoreHorizontal } from 'lucide-react'
+import { Heart, MessageCircle, BookmarkPlus } from 'lucide-react'
+import { Button } from '@workspace/ui/components/button'
 
 interface Comment {
   id: number
@@ -58,14 +59,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAlibisClick }) => {
             {post.username ?? 'suspect'}
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => onAlibisClick(buildAlibisContent())}
-              title="Sauvegarder comme alibi"
-              className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-blue-500 transition-colors"
+              variant="outline"
+              size={"sm"}
             >
               <BookmarkPlus size={18} />
-            </button>
-            <MoreHorizontal size={20} className="cursor-pointer text-gray-500 dark:text-gray-400" />
+              Sauvegarder alibi
+            </Button>
           </div>
         </div>
 

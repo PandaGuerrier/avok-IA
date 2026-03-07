@@ -32,8 +32,338 @@ interface Props {
   mails: MailData[]
 }
 
+const IMMERSIVE_EMAILS: Email[] = [
+  // ── Inbox ──────────────────────────────────────────────────────────────────
+  {
+    id: 1001,
+    folder: 'inbox',
+    sender: 'newsletter@lemonde.fr',
+    subject: 'Votre briefing du matin — Actualités du jour',
+    snippet: 'Bonjour, voici votre sélection d\'articles à ne pas manquer ce matin...',
+    body: `Bonjour,
+
+Voici votre sélection d'articles à ne pas manquer ce matin :
+
+• Économie : Le CAC 40 en légère hausse après les annonces de la BCE
+• Politique : Remaniement gouvernemental attendu d'ici la fin de semaine
+• Culture : Festival de Cannes – le palmarès complet
+
+Bonne lecture.
+— La rédaction du Monde`,
+    time: '08:14',
+    unread: true,
+    isStarred: false,
+  },
+  {
+    id: 1002,
+    folder: 'inbox',
+    sender: 'no-reply@netflix.com',
+    subject: 'Nouveau sur Netflix : des séries qui font parler',
+    snippet: 'Cette semaine sur Netflix : 3 nouvelles séries et un documentaire exclusif...',
+    body: `Nouveautés de la semaine sur Netflix :
+
+🎬 Série — "Labyrinth" (Saison 1) : Un thriller psychologique haletant
+📺 Documentaire — "Au cœur de l'enquête" : Comment travaillent les détectives privés ?
+🎭 Film — "Le dernier témoin" : Un classique remasterisé
+
+Bonne soirée !`,
+    time: 'Hier',
+    unread: true,
+    isStarred: false,
+  },
+  {
+    id: 1003,
+    folder: 'inbox',
+    sender: 'thomas.renard@gmail.com',
+    subject: 'Re: Dîner samedi ?',
+    snippet: 'Oui ça marche pour moi ! Je ramène le vin, tu t\'occupes du reste ?',
+    body: `Oui ça marche pour moi !
+
+Je ramène le vin, tu t'occupes du reste ? J'ai vu que Marion ne peut finalement pas venir, c'est dommage.
+
+À samedi,
+Thomas`,
+    time: 'Hier',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1004,
+    folder: 'inbox',
+    sender: 'factures@edf.fr',
+    subject: 'Votre facture EDF du mois — Montant : 89,40 €',
+    snippet: 'Votre facture du mois est disponible. Montant prélevé le 10 du mois : 89,40 €',
+    body: `Bonjour,
+
+Votre facture mensuelle est disponible dans votre espace client.
+
+Montant : 89,40 €
+Prélèvement prévu le : 10 du mois
+Contrat : Particulier — Tarif Bleu
+
+Consultez votre espace client pour plus de détails.
+
+EDF — Service client`,
+    time: 'Lun.',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1005,
+    folder: 'inbox',
+    sender: 'sophie.malik@avocat-conseil.fr',
+    subject: 'Documents à signer avant le 15',
+    snippet: 'Comme convenu, je vous transmets les pièces à signer. Merci de me retourner...',
+    body: `Bonjour,
+
+Comme convenu lors de notre entretien téléphonique, je vous transmets en pièce jointe les documents à signer avant le 15 du mois.
+
+Merci de me les retourner scannés dès que possible.
+
+Cordialement,
+Sophie Malik
+Avocate — Cabinet Malik & Associés`,
+    time: 'Lun.',
+    unread: true,
+    isStarred: false,
+    attachments: [
+      { name: 'contrat_signature.pdf', size: '340 Ko', type: 'pdf' },
+      { name: 'annexe_conditions.pdf', size: '120 Ko', type: 'pdf' },
+    ],
+  },
+  // ── Starred ─────────────────────────────────────────────────────────────────
+  {
+    id: 1006,
+    folder: 'inbox',
+    sender: 'clara.fontaine@gmail.com',
+    subject: 'Les photos du week-end !',
+    snippet: 'Je viens de mettre en ligne les photos du week-end à Lyon, elles sont...',
+    body: `Salut !
+
+Je viens de mettre en ligne les photos du week-end à Lyon, elles sont vraiment bien ! J'ai fait une petite sélection sur l'album partagé.
+
+Le lien : album-photo-lyon-weekend.fr/clara
+
+Bises,
+Clara`,
+    time: '12 jan.',
+    unread: false,
+    isStarred: true,
+  },
+  {
+    id: 1007,
+    folder: 'inbox',
+    sender: 'rh@entreprise-groupe.fr',
+    subject: '✅ Confirmation — Augmentation de salaire effective dès février',
+    snippet: 'Suite à notre entretien annuel, nous avons le plaisir de vous confirmer...',
+    body: `Bonjour,
+
+Suite à votre entretien annuel d'évaluation, nous avons le plaisir de vous confirmer que votre augmentation de salaire sera effective à partir du 1er février.
+
+Votre nouveau salaire brut mensuel sera de 3 450 €.
+
+Félicitations pour votre travail cette année.
+
+Cordialement,
+Direction des Ressources Humaines`,
+    time: '8 jan.',
+    unread: false,
+    isStarred: true,
+  },
+  // ── Sent ────────────────────────────────────────────────────────────────────
+  {
+    id: 1008,
+    folder: 'sent',
+    sender: 'moi@jaimail.fr',
+    subject: 'Re: Réunion de la semaine prochaine',
+    snippet: 'Bonjour, je confirme ma présence pour la réunion de lundi à 14h. Bonne journée.',
+    body: `Bonjour,
+
+Je confirme ma présence pour la réunion de lundi à 14h.
+
+Bonne journée,`,
+    time: 'Hier',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1009,
+    folder: 'sent',
+    sender: 'moi@jaimail.fr',
+    subject: 'Demande de devis — Travaux salle de bain',
+    snippet: 'Bonjour, je souhaiterais obtenir un devis pour des travaux de rénovation...',
+    body: `Bonjour,
+
+Je souhaiterais obtenir un devis pour des travaux de rénovation de ma salle de bain (remplacement de la douche, nouveau carrelage sol et murs).
+
+Surface approximative : 6 m²
+Disponibilité pour une visite : semaine du 20
+
+Cordialement`,
+    time: 'Jeu.',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1010,
+    folder: 'sent',
+    sender: 'moi@jaimail.fr',
+    subject: 'Réclamation — Commande #4872 non reçue',
+    snippet: 'Madame, Monsieur, je vous contacte au sujet de ma commande passée le 3 janvier...',
+    body: `Madame, Monsieur,
+
+Je vous contacte au sujet de ma commande n°4872 passée le 3 janvier et dont la livraison était prévue avant le 8. À ce jour, je n'ai toujours rien reçu.
+
+Pourriez-vous faire le point sur ce colis ?
+
+Cordialement`,
+    time: '9 jan.',
+    unread: false,
+    isStarred: false,
+  },
+  // ── Snoozed ─────────────────────────────────────────────────────────────────
+  {
+    id: 1011,
+    folder: 'snoozed',
+    sender: 'reservation@hotel-bellevue.fr',
+    subject: 'Votre réservation — Hôtel Bellevue du 14 au 16 mars',
+    snippet: 'Merci pour votre réservation. Retrouvez tous les détails de votre séjour...',
+    body: `Bonjour,
+
+Merci pour votre réservation à l'Hôtel Bellevue.
+
+Dates : du 14 au 16 mars
+Chambre : Supérieure double
+Numéro de réservation : BLV-20241
+
+Check-in : à partir de 15h
+Check-out : avant 12h
+
+Au plaisir de vous accueillir !
+L'équipe Bellevue`,
+    time: '5 jan.',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1012,
+    folder: 'snoozed',
+    sender: 'impots.gouv.fr',
+    subject: 'Rappel — Déclaration de revenus à compléter',
+    snippet: 'N\'oubliez pas de compléter votre déclaration de revenus avant la date limite...',
+    body: `Bonjour,
+
+Nous vous rappelons que la date limite de déclaration de revenus approche.
+
+Département 75 (Paris) : avant le 23 mai
+Connectez-vous sur impots.gouv.fr pour accéder à votre espace.
+
+Direction Générale des Finances Publiques`,
+    time: '2 jan.',
+    unread: false,
+    isStarred: false,
+  },
+  // ── Archive ─────────────────────────────────────────────────────────────────
+  {
+    id: 1013,
+    folder: 'archive',
+    sender: 'ameli@assurance-maladie.fr',
+    subject: 'Votre attestation Vitale mise à jour',
+    snippet: 'Votre nouvelle attestation de droits est disponible en téléchargement...',
+    body: `Bonjour,
+
+Votre attestation de droits à l'assurance maladie a été mise à jour. Vous pouvez la télécharger depuis votre espace Ameli.
+
+Cette attestation est à conserver pour vos démarches administratives.
+
+L'Assurance Maladie`,
+    time: 'Nov.',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1014,
+    folder: 'archive',
+    sender: 'no-reply@sncf.fr',
+    subject: 'Votre billet — Paris → Lyon, 14 nov. 08h02',
+    snippet: 'Votre billet de train est confirmé. Départ Paris Gare de Lyon à 08h02...',
+    body: `Votre billet TGV INOUI
+
+Paris Gare de Lyon → Lyon Part-Dieu
+Départ : 14 novembre — 08h02
+Arrivée : 14 novembre — 09h58
+Voiture : 12 — Siège : 67 (fenêtre)
+Réservation : XKQP72
+
+Bon voyage !`,
+    time: '13 nov.',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1015,
+    folder: 'archive',
+    sender: 'contact@mutuelle-sante.fr',
+    subject: 'Remboursement effectué — 47,20 €',
+    snippet: 'Votre remboursement de 47,20 € a été viré sur votre compte bancaire...',
+    body: `Bonjour,
+
+Votre remboursement de soins a été traité.
+
+Montant remboursé : 47,20 €
+Virement prévu sous 3 à 5 jours ouvrés
+
+Détail des soins remboursés :
+— Consultation spécialiste : 28,00 €
+— Médicaments : 19,20 €
+
+Votre Mutuelle Santé`,
+    time: 'Oct.',
+    unread: false,
+    isStarred: false,
+  },
+  // ── Trash ───────────────────────────────────────────────────────────────────
+  {
+    id: 1016,
+    folder: 'trash',
+    sender: 'promo@shopping-express.com',
+    subject: '🛍️ -50% sur tout le site — Offre flash 24h !',
+    snippet: 'Ne manquez pas notre vente flash ! Jusqu\'à -50% sur des milliers d\'articles...',
+    body: `VENTE FLASH — 24H SEULEMENT
+
+Jusqu'à -50% sur des milliers d'articles !
+Livraison gratuite dès 30€ d'achat.
+
+Code promo : FLASH50
+
+Dépêchez-vous, stocks limités !`,
+    time: 'Lun.',
+    unread: false,
+    isStarred: false,
+  },
+  {
+    id: 1017,
+    folder: 'trash',
+    sender: 'noreply@concours-gagnant.net',
+    subject: 'Félicitations ! Vous avez été sélectionné(e) — réclamez votre lot',
+    snippet: 'Vous avez été tiré(e) au sort parmi nos participants. Un cadeau vous attend...',
+    body: `Félicitations !
+
+Vous avez été sélectionné(e) pour recevoir un cadeau d'une valeur de 500 €.
+
+Pour le réclamer, cliquez sur le lien ci-dessous et renseignez vos coordonnées.
+
+[Réclamer mon cadeau]
+
+(Ne pas répondre à cet email)`,
+    time: 'Dim.',
+    unread: false,
+    isStarred: false,
+  },
+]
+
 function mapMailsToEmails(mails: MailData[]): Email[] {
-  return (mails ?? []).map((m, i) => {
+  const fromServer = (mails ?? []).map((m, i) => {
     const body = m.content ?? m.body ?? ''
     return {
       id: m.mailId ?? i + 1,
@@ -47,6 +377,7 @@ function mapMailsToEmails(mails: MailData[]): Email[] {
       isStarred: false,
     }
   })
+  return [...fromServer, ...IMMERSIVE_EMAILS]
 }
 
 export default function Jaimail() {

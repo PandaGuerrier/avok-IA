@@ -1,14 +1,17 @@
 import { type RefObject } from 'react'
 import { Loader2 } from 'lucide-react'
 import type { ChatMessage } from '#game/ui/utils/types'
+import type AlibiDto from '#game/dtos/alibi'
 
 interface ChatAreaProps {
   messages: ChatMessage[]
   loading: boolean
   chatEndRef: RefObject<HTMLDivElement | null>
+  selectedAlibis: string[]
+  alibis: AlibiDto[]
 }
 
-export default function ChatArea({ messages, loading, chatEndRef }: ChatAreaProps) {
+export default function ChatArea({ messages, loading, chatEndRef, selectedAlibis, alibis }: ChatAreaProps) {
   return (
     <div
       id="tour-chat"
@@ -17,7 +20,7 @@ export default function ChatArea({ messages, loading, chatEndRef }: ChatAreaProp
       {messages.map((msg, i) => (
         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           {msg.role === 'contact' ? (
-            <div className="max-w-[80%] rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm leading-relaxed backdrop-blur-sm bg-amber-500/10 border border-amber-500/20 text-amber-200">
+            <div className="max-w-[80%] rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm leading-relaxed backdrop-blur-sm bg-amber-500/20 border border-amber-500/30 text-amber-700 dark:bg-amber-500/15 dark:border-amber-500/20 dark:text-amber-100">
               <p className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider mb-1">
                 {msg.contactName}
               </p>
@@ -63,6 +66,30 @@ export default function ChatArea({ messages, loading, chatEndRef }: ChatAreaProp
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {msg.alibis && msg.alibis.length > 0 && (
+                <div className="flex flex-col gap-2 mt-4">
+                  {msg.alibis.map((alibiId, k) => {
+                    const alibi = alibis.find(a => a.uuid === alibiId)
+                    if (!alibi) return null
+
+                    const isSelected = selectedAlibis.includes(alibiId)
+
+                    return (
+                      <div
+                        key={k}
+                        className={`px-3 py-1 rounded cursor-pointer text-xs font-medium ${
+                          isSelected
+                            ? 'bg-green-500/20 border border-green-500/40 text-green-700 dark:bg-green-500/15 dark:border-green-500/30 dark:text-green-100'
+                            : 'bg-gray-200/50 border border-gray-300/40 text-gray-800 dark:bg-white/10 dark:border-white/20 dark:text-white/80'
+                        }`}
+                      >
+                        {alibi.title}
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </div>

@@ -47,6 +47,6 @@ export default class SignUpController {
 
     await auth.use('web').login(user)
 
-    return response.redirect('/ready')
+    return response.redirect('/game')
   }
 }
