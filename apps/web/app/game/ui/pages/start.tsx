@@ -35,18 +35,22 @@ export default function StartPage() {
   const [won, setWon] = useState(false)
 
   useEffect(() => {
-    if (guiltyPercentage <= 50) {
-      setWon(true)
-      fetch(`/game/${game.uuid}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-XSRF-TOKEN': getXsrfToken(),
-        },
-        body: JSON.stringify({ isFinished: true }),
-      }).catch(console.error)
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
     }
+    fetch(`/game/${game.uuid}/guilty`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-XSRF-TOKEN': getXsrfToken(),
+      },
+      body: JSON.stringify({ guiltyPourcentage: guiltyPercentage }),
+    })
+      .then((res) => res.json())
+      .then((data) => { if (data.isFinished) setWon(true) })
+      .catch(console.error)
   }, [guiltyPercentage])
 
   // ── Local state ────────────────────────────────────────────────────────────
@@ -69,6 +73,7 @@ export default function StartPage() {
   const [interrogateOpen, setInterrogateOpen] = useState(false)
 
   const chatEndRef = useRef<HTMLDivElement>(null)
+  const isInitialMount = useRef(true)
 
   // ── Effects ────────────────────────────────────────────────────────────────
 

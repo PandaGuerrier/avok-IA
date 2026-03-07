@@ -1,4 +1,5 @@
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw, Send } from 'lucide-react'
+import { useState } from 'react'
 import type ChoiceData from '#game/types/choices'
 
 interface ChoicesBarProps {
@@ -24,6 +25,15 @@ export default function ChoicesBar({
 }: ChoicesBarProps) {
   const totalSelected = selectedProofUuids.length + selectedAlibiUuids.length
   const disabled = loading || regenerating || isPaused
+
+  const [customInput, setCustomInput] = useState('')
+
+  const handleCustomSubmit = () => {
+    const text = customInput.trim()
+    if (!text || disabled) return
+    onChoice({ id: 0, title: text, description: text, choosen: true, isTrap: false })
+    setCustomInput('')
+  }
 
   return (
     <div
@@ -78,6 +88,24 @@ export default function ChoicesBar({
         >
           <RefreshCw size={15} className={`transition-transform duration-500 ${regenerating ? 'animate-spin' : 'group-hover:rotate-180'}`} />
           <span className="text-[10px] font-medium uppercase tracking-widest whitespace-nowrap">Régénérer</span>
+        </button>
+      </div>
+      <div className="flex items-center gap-2 pt-1">
+        <input
+          type="text"
+          value={customInput}
+          onChange={(e) => setCustomInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleCustomSubmit()}
+          disabled={disabled}
+          placeholder="Choix personnalisé..."
+          className="flex-1 px-3 py-2 text-sm rounded-xl border bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-800 dark:text-white/80 placeholder:text-gray-400 dark:placeholder:text-white/25 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 disabled:opacity-40 transition-all"
+        />
+        <button
+          onClick={handleCustomSubmit}
+          disabled={disabled || !customInput.trim()}
+          className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl border transition-all disabled:opacity-40 bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20 hover:border-cyan-400/60 text-cyan-500 dark:text-cyan-400"
+        >
+          <Send size={14} />
         </button>
       </div>
     </div>

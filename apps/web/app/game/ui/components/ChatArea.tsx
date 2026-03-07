@@ -15,8 +15,30 @@ export default function ChatArea({ messages, loading, chatEndRef, selectedAlibis
   return (
     <div
       id="tour-chat"
-      className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin scrollbar-track-transparent dark:scrollbar-thumb-white/10 scrollbar-thumb-black/10"
+      className="relative flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin scrollbar-track-transparent dark:scrollbar-thumb-white/10 scrollbar-thumb-black/10"
     >
+      {/* Background watermark */}
+      <div className="pointer-events-none select-none fixed inset-0 flex flex-col items-center justify-center gap-2 overflow-hidden z-0 opacity-[0.04] dark:opacity-[0.06]">
+        <span
+          className="text-[clamp(3rem,10vw,8rem)] font-black uppercase tracking-[0.25em] text-destructive leading-none text-center"
+          style={{ WebkitTextStroke: '1px currentColor' }}
+        >
+          VOUS ÊTES
+        </span>
+        <span
+          className="text-[clamp(3rem,10vw,8rem)] font-black uppercase tracking-[0.25em] text-destructive leading-none text-center"
+          style={{ WebkitTextStroke: '1px currentColor' }}
+        >
+          ACCUSÉ
+        </span>
+        <div className="mt-4 flex gap-6 text-[clamp(0.5rem,1.5vw,1rem)] font-bold uppercase tracking-[0.5em] text-destructive opacity-60">
+          <span>CONFIDENTIEL</span>
+          <span>•</span>
+          <span>DOSSIER CRIMINEL</span>
+          <span>•</span>
+          <span>CONFIDENTIEL</span>
+        </div>
+      </div>
       {messages.map((msg, i) => (
         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           {msg.role === 'contact' ? (

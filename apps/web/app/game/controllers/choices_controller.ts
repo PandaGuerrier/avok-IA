@@ -52,11 +52,14 @@ export default class ChoicesController {
 
     const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
 
+L'ACCUSÉ (la personne que tu juges) : ${auth.user!.firstName} ${auth.user!.lastName || ''}
+IMPORTANT : Les personnages dans les données ci-dessous (contacts, Instagram, mails...) sont des tiers — PAS l'accusé. L'accusé est ${auth.user!.firstName}, les autres sont des témoins/suspects à analyser.
+
 DONNÉES COMPLÈTES DE L'AFFAIRE :
 ${JSON.stringify(game.data)}
 
 === RÈGLES ===
-- Tu dois proposer 3 nouvelles alternatives de défense pour l'accusé (1 piège ALÉATOIRE, 2 valides).
+- Tu dois proposer 3 nouvelles alternatives de défense pour ${auth.user!.firstName} (1 piège ALÉATOIRE, 2 valides).
 - Les titres DOIVENT être NEUTRES et NE PAS révéler le piège.
 - Les choix doivent être cohérents avec l'état actuel de l'interrogatoire et les alibis/preuves sélectionnés.
 
@@ -72,7 +75,7 @@ Réponds UNIQUEMENT en JSON valide :
 Langue : français`.trim()
 
     const historyMessages = game.choices.flatMap((c) => [
-      { role: 'user' as const, content: `L'accusé a présenté : "${c.data.title}" — ${c.data.description}` },
+      { role: 'user' as const, content: `L'accusé a présenté : "${c.data.title}"${c.data.description ? ` — ${c.data.description}` : ''}` },
       { role: 'assistant' as const, content: JSON.stringify({ message: c.response, guiltyDelta: 0, nextChoices: [] }) },
     ])
 
@@ -135,7 +138,7 @@ Langue : français`.trim()
         data: vine.object({
           id: vine.number(),
           title: vine.string(),
-          description: vine.string(),
+          description: vine.string().optional(),
           choosen: vine.boolean(),
           isTrap: vine.boolean().optional(),
         }),
@@ -178,11 +181,14 @@ Langue : français`.trim()
     // Message système : contexte fixe de l'affaire + règles de réponse
     const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
 
+L'ACCUSÉ (la personne que tu juges) : ${auth.user!.firstName} ${auth.user!.lastName || ''}
+IMPORTANT : Les personnages dans les données ci-dessous (contacts, Instagram, mails...) sont des tiers — PAS l'accusé. L'accusé est ${auth.user!.firstName}, les autres sont des témoins/suspects à analyser.
+
 DONNÉES COMPLÈTES DE L'AFFAIRE :
 ${JSON.stringify(game.data)}
 
 === RÈGLES ===
-- Tu dois JUGER la défense de l'accusé et répondre en le challengeant.
+- Tu dois JUGER la défense de ${auth.user!.firstName} et répondre en le challengeant.
 - Si sa défense tient bien : diminue la culpabilité. Sinon : augmente-la.
 - MAX 250 caractères pour ton message (compte chaque lettre, espace, ponctuation).
 - Génère toujours 3 nouveaux choix de défense (1 piège ALÉATOIRE, 2 valides).
@@ -224,7 +230,7 @@ Langue : français`.trim()
 
     // Message utilisateur actuel : le nouveau choix + preuves/alibis sélectionnés
     const currentUserContent = [
-      `L'accusé présente : "${payload.data.title}" — ${payload.data.description}`,
+      `L'accusé présente : "${payload.data.title}"${payload.data.description ? ` — ${payload.data.description}` : ''}`,
       payload.data.isTrap ? '(⚠️ C\'est un piège — l\'accusé s\'est trompé)' : '',
       selectedProofsContext,
       selectedAlibisContext,

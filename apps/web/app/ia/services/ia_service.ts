@@ -1,6 +1,7 @@
 import HttpService from '#core/services/http_service'
 import env from '#start/env'
 import User from '#users/models/user'
+import { LoadedHistory } from '#game/services/game_service'
 
 export interface IAResponse extends Response {
   choices: {
@@ -36,7 +37,7 @@ export default class IAService {
     return response.choices[0].message.content
   }
 
-  async generateData(_user: User, affaireContent: string, staticPosts?: { postId: number; content: string }[]) {
+  async generateData(user: User, history: LoadedHistory, staticPosts?: { postId: number; content: string }[]) {
     const response = await this.httpService.post<IAResponse>('/chat/completions', {
       model: this.model,
       response_format: {
@@ -45,10 +46,10 @@ export default class IAService {
       messages: [
         {
           role: 'system',
-          content: `Tu es un générateur de données pour un jeu de déduction policière. Tu dois produire un objet JSON strictement conforme à la structure ci-dessous.
+          content: `Tu es un générateur de données pour un jeu où un adolescent est accusé d'un crime. Tu dois produire un objet JSON strictement conforme à la structure ci-dessous.
 
         ## AFFAIRE
-        ${affaireContent}
+        ${history.json.content}
 
         ## RÈGLES IMPORTANTES
         - La personne est ACCUSÉE, pas coupable. Les données doivent refléter cela (pas de preuve irréfutable de culpabilité, alibis possibles, etc.).
@@ -61,13 +62,11 @@ export default class IAService {
         ${staticPosts && staticPosts.length > 0 ? `- Les posts Instagram sont FIXES (fournis ci-dessous). Tu dois UNIQUEMENT générer les commentaires pour chaque post, en respectant les postId. Ne change pas le contenu des posts.\n        - POSTS FIXES :\n        ${staticPosts.map((p) => `  Post ${p.postId}: "${p.content}"`).join('\n        ')}` : '- imageUrl des posts Instagram : laisser une chaîne vide "".'}
 
         ## STRUCTURE JSON EXACTE À RESPECTER
-
+        # C'est un exemple de structure à respecter, les données doivent être différentes et cohérentes avec l'affaire décrite ci-dessus :
         {
           "contacts": [
             { "id": 1, "name": "Lucas Martin", "role": "meilleur ami" },
-            { "id": 2, "name": "Sophie Dupont", "role": "petite amie" },
-            { "id": 3, "name": "M. Lefebvre", "role": "professeur principal" },
-            { "id": 4, "name": "Maman", "role": "mère" }
+            ... (4 à 5 contacts au total, avec des rôles variés : famille, amis, collègues du collège, etc.)
           ],
           "insta": {
             "conversations": [
@@ -147,12 +146,28 @@ export default class IAService {
         }
 
         ## QUANTITÉS MINIMALES
-        - contacts : 4 à 5 personnes
-        - insta.conversations : 1 conversation par contact (même conversationId que l'id du contact), 6 à 10 messages chacune
+        - contacts : 7 à 9 personnes
+        - insta.conversations : 1 conversation par contact (même conversationId que l'id du contact), 10 à 15 messages chacune, essaye de varier les accusations (un coup on accuse l'utilisateur, un coup on parle de l'affaire sans accuser, un coup on parle d'autre chose, un autre coup on fait bien comprendre qu'il n'est pas du tout et qu'il a un superbe alibi etc.)
         - insta.posts : ${staticPosts && staticPosts.length > 0 ? `exactement ${staticPosts.length} post(s) (les postId sont fixés, génère uniquement les commentaires)` : '2 à 3 posts'}
         - mails : 6 à 12 mails (mélange spam + utiles)
         - notes.calendar : 4 à 5 jours de la semaine avec 2 à 4 événements chacun
         - notes.notes : 4 à 6 notes
+
+        insta.conversations :
+        Le isMine: false, parle avec les données de l'utilisateur (donc utiliser le prénom de l'utilisateur et faire référence à des éléments de l'affaire). Le isMine: true, parle au nom de l'utilisateur (donc utiliser "je", "moi", etc. et faire référence à des éléments de l'affaire, et dire le prénom de la personne en face).
+
+        ## DONNÉES DE L'UTILISATEUR
+        - Prénom de l'utilisateur : ${user.firstName}
+        - Nom de l'utilisateur : ${user.lastName}
+        - Âge de l'utilisateur : ${user.age}
+
+        Détermine son genre (masculin, féminin, autre) et adapte les conversations en conséquence (ex : "je suis allé au foot" vs "je suis allée au foot", etc.).
+
+
+        ## AFFAIRE
+        - Histoire de l'affaire : ${history.json.content}
+        - L'accusé est ${user.firstName} ${user.lastName}, un adolescent de ${user.age} ans. Prends en compte son âge et adapte les conversations, les événements du calendrier, les mails, etc. en conséquence (ex : pas de mails professionnels, pas de rendez-vous médicaux, etc.).
+        - Dans les conversations Instagrume, seul ${user.firstName} ${user.lastName} est accusé au tribunal, pas les contacts. Les conversations doivent refléter cela (pas de preuve irréfutable de culpabilité, alibis possibles, etc.). Ne parle pas de culpabilité des contacts (ou autres personnes), même si certains peuvent émettre des doutes ou des soupçons. Les conversations doivent être réalistes pour des adolescents (ex : pas de discussions sur des sujets d'adultes, pas de langage trop soutenu, etc.).
 
         Réponds UNIQUEMENT avec le JSON, sans texte avant ni après. Langue : français.`,
         },

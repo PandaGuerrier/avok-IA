@@ -9,12 +9,10 @@ import { FieldErrorBag } from '@workspace/ui/components/field-error-bag'
 
 import { useTranslation } from '#common/ui/hooks/use_translation'
 import useFlashMessage from '#common/ui/hooks/use_flash_message'
-import { WebcamCapture } from './webcam_capture'
 
 export function RegistrationForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
   const { t } = useTranslation()
   const [errorMessages, setErrorMessages] = useState<string[]>([])
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 
   const { data, setData, errors, post } = useForm<{
     firstName: string
@@ -40,16 +38,6 @@ export function RegistrationForm({ className, ...props }: React.ComponentPropsWi
     }
   }, [messages])
 
-  function handleCapture(file: File, preview: string) {
-    setData('avatar', file)
-    setAvatarPreview(preview)
-  }
-
-  function handleReset() {
-    setData('avatar', null)
-    setAvatarPreview(null)
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     post('/sign-up', { forceFormData: true })
@@ -66,20 +54,7 @@ export function RegistrationForm({ className, ...props }: React.ComponentPropsWi
         <p className="text-sm text-muted-foreground mt-1">{t('auth.registration.description')}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 items-stretch">
-
-        {/* Gauche — Webcam */}
-        <div className="flex flex-col items-center justify-center gap-3 border rounded-xl p-6">
-          <p className="text-sm font-medium">Photo de profil</p>
-          <WebcamCapture
-            onCapture={handleCapture}
-            onReset={handleReset}
-            preview={avatarPreview}
-          />
-          <FieldErrorBag errors={errors} field="avatar" />
-        </div>
-
-        {/* Droite — Champs */}
+      <div className="grid gap-6 items-stretch">
         <FieldSet className="w-full">
           <FieldGroup>
             <div className="grid grid-cols-2 gap-3">

@@ -11,7 +11,7 @@ router
     router.post('/game/create', [GamesController, 'store']).as('game.create')
     router.get('/game/:uuid/result', [GamesController, 'result']).as('game.result')
     router.get('/game/:uuid', [GamesController, 'show']).as('game.start')
-    router.put('/game/:uuid', [GamesController, 'update']).as('game.update')
+    router.patch('/game/:uuid/guilty', [GamesController, 'updateGuilty']).as('game.updateGuilty')
 
     router.post('/game/:uuid/interrogate', [GamesController, 'interrogate']).as('game.interrogate')
   //  router.post('/game/:uuid/pause', [GamesController, 'pause']).as('game.pause')

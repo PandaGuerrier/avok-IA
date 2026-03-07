@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import IAService from '#ia/services/ia_service'
 import User from '#users/models/user'
+import Game from '#game/models/game'
 import type DataGameType from '#game/types/data'
 
 export interface HistoryPreuve {
@@ -136,7 +137,7 @@ export default class GameService {
       content: p.content,
     }))
 
-    const rawData = await this.ia.generateData(user, history.json.content, staticPostsForIA)
+    const rawData = await this.ia.generateData(user, history, staticPostsForIA)
     const cleaned = rawData.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
     const data = JSON.parse(cleaned) as DataGameType
 
@@ -155,5 +156,210 @@ export default class GameService {
     }
 
     return { data, history }
+  }
+
+  // ── Game logic ───────────────────────────────────────────────────────────────
+
+  /**
+   * Met à jour le score de culpabilité. Si <= 50%, marque la partie comme terminée (victoire).
+   */
+  async updateGuiltyScore(
+    game: Game,
+    score: number
+  ): Promise<{ guiltyPourcentage: number; isFinished: boolean }> {
+    game.guiltyPourcentage = Math.max(0, Math.min(100, score))
+    if (game.guiltyPourcentage <= 50) {
+      game.isFinished = true
+    }
+    await game.save()
+    return { guiltyPourcentage: game.guiltyPourcentage, isFinished: game.isFinished }
+  }
+
+  /**
+   * Génère le message initial de la Juge Moreau et les premiers choix. Sauvegarde en base.
+   */
+  async generateInitialMessage(
+    game: Game,
+    user: User
+  ): Promise<{ initialMessage: string; currentChoices: any[] }> {
+    console.log("Gén du message pour : ", user.firstName, user.lastName, "avec l'affaire : ", (game.data as any)?.history)
+    const history = (game.data as any)?.history
+    const crimeContext = history?.content
+      ? `Infraction: ${history.content.substring(0, 100)}...`
+      : 'Infraction inconnue'
+
+    const prompt = `
+RÔLE : Tu es la Juge Moreau, présidente du tribunal. Tu JUGES l'accusé (l'utilisateur).
+
+=== L'AFFAIRE ===
+CONTEXTE DU CRIME : ${history?.content ?? 'Une infraction a été commise'}
+
+QUI EST ACCUSÉ : ${user.firstName} ${user.lastName || ''} age: ${user.age || 'inconnu'} ans
+
+DONNÉES À ANALYSER (accessibles sur le coté gauche - réseaux sociaux) :
+${JSON.stringify(game.data)}
+
+=== TON DE LA JUGE ===
+- Froide, procédurière, mais pas totalement insensible
+- Tu soupçonnes l'accusé et tu l'accuses formellement
+- Formes judiciaires : "${user.firstName}...", "La cour estime...", "Les preuves montrent..."
+- Ton : accusateur et persuasif
+
+=== RÔLES CLAIRS ===
+TOI (Juge) : Tu accuses l'utilisateur d'être impliqué dans l'infraction, mais tu es compréhensive et tu lui donnes la chance de se défendre. Tu analyses les preuves qu'il présente.
+L'UTILISATEUR (Accusé) : Doit se DÉFENDRE en trouvant des preuves d'innocence dans les réseaux sociaux/données disponibles à gauche
+
+=== PREMIER MESSAGE (OUVERTURE DU PROCÈS) ===
+OBLIGATOIRES :
+1. Rappelle clairement l'ACCUSATION (pourquoi il est au tribunal)
+2. Les données sont dans les réseaux sociaux à gauche, il doit les analyser pour trouver des preuves d'innocence
+3. Invite l'accusé à se DÉFENDRE en présentant des preuves
+4. Utilise son nom pour l'accuser ("M./Mme ${user.lastName}") ou "Vous, ${user.firstName}" pour renforcer le côté accusateur
+
+NE MENTIONNE PAS "enquêteur", ni "maître" - il n'est qu'un ACCUSÉ qui doit prouver son innocence.
+
+=== CHOIX D'ACTION ===
+Propose EXACTEMENT 3 réponses possibles pour l'accusé, dont 1 PIÈGE ALÉATOIRE :
+Les titres doivent être NEUTRES et AMBIGUS (ex: "Ce n'est pas ce que vous croyez", "Regardez mieux", "Vous avez mal compris")
+
+Ou quand il y a des alibis: "Utiliser l'alibi de X", "Utiliser l'alibi de Y", "Ne pas utiliser d'alibi"
+
+=== FORMAT JSON ===
+Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :
+{
+  "message": "Message d'accusation du juge (réponses courtes obligatoires)",
+  "nextChoices": [
+    {"id": 1, "title": "Titre", "description": "Courte description", "choosen": false, "isTrap": false},
+    {"id": 2, "title": "Titre", "description": "Courte description", "choosen": false, "isTrap": true},
+    {"id": 3, "title": "v", "description": "Courte description", "choosen": false, "isTrap": false}
+  ]
+}
+Langue: français
+    `.trim()
+
+    try {
+      const raw = await this.ia.chat([{ role: 'user', content: prompt }])
+      const parsed = JSON.parse(raw)
+      const initialMessage = parsed.message || ''
+      const currentChoices = parsed.nextChoices || []
+      game.currentChoices = currentChoices
+      game.initialMessage = initialMessage
+      await game.save()
+      return { initialMessage, currentChoices }
+    } catch {
+      const initialMessage = `${user.firstName}, vous comparaissez pour ${crimeContext}. Les preuves sont accessibles dans le dossier gauche. Présentez votre défense.`
+      const currentChoices = [
+        { id: 1, title: 'Analyser les messages', description: 'Examiner les données du suspect', choosen: false, isTrap: false },
+        { id: 2, title: 'Ignorer les incohérences', description: 'Se concentrer uniquement sur les preuves évidentes', choosen: false, isTrap: true },
+        { id: 3, title: 'Consulter les alibis', description: 'Vérifier les déclarations du suspect', choosen: false, isTrap: false },
+      ]
+      game.currentChoices = currentChoices
+      game.initialMessage = initialMessage
+      await game.save()
+      return { initialMessage, currentChoices }
+    }
+  }
+
+  /**
+   * Interroge un contact et retourne sa réponse + l'impact sur la culpabilité.
+   */
+  async interrogateContact(
+    game: Game,
+    contact: { name: string; role: string },
+    question: string
+  ): Promise<{ answer: string; guiltyDelta: number }> {
+    const choicesSummary = game.choices
+      .map((c) => `- ${c.data.title} : ${c.response || ''}`)
+      .join('\n')
+    const proofsSummary = game.proofs
+      .map((p) => `- ${p.data?.title || 'Preuve'} : ${p.content}`)
+      .join('\n')
+
+    const prompt = `
+Tu es ${contact.name}, ${contact.role} de l'adolescent faisant l'objet d'une enquête policière.
+Un accusé vient t'interroger pour prouver son innocence. Tu dois répondre EN CHARACTER, de façon naturelle et cohérente avec ton rôle.
+
+=== CONTEXTE DE L'AFFAIRE ===
+${JSON.stringify(game.data)}
+
+=== AVANCEMENT DE L'INTERROGATOIRE ===
+Étapes précédentes :
+${choicesSummary || "Aucune étape pour l'instant."}
+
+Preuves collectées :
+${proofsSummary || "Aucune preuve pour l'instant."}
+
+Niveau de culpabilité actuel : ${game.guiltyPourcentage}%
+
+=== QUESTION POSÉE ===
+"${question}"
+
+=== RÈGLES ===
+- Ta réponse en 2-3 phrases, en français, comme si tu étais vraiment cette personne.
+- guiltyDelta négatif (-15 à -5) si ta réponse aide l'accusé, -2 si la réponse est vague, positif (+5 MAX) si elle l'incrimine.
+
+=== FORMAT DE RÉPONSE OBLIGATOIRE ===
+Réponds UNIQUEMENT en JSON valide :
+{
+  "answer": "Ta réponse en tant que ${contact.name} (2-3 phrases)",
+  "guiltyDelta": 0
+}
+    `.trim()
+
+    try {
+      const raw = await this.ia.chat([{ role: 'user', content: prompt }])
+      const parsed = JSON.parse(raw)
+      return { answer: parsed.answer || '', guiltyDelta: parsed.guiltyDelta || 0 }
+    } catch {
+      return {
+        answer: "Je... je ne sais pas trop quoi vous dire. C'est une situation difficile pour moi.",
+        guiltyDelta: -2,
+      }
+    }
+  }
+
+  /**
+   * Génère la réaction de la Juge Moreau suite à un témoignage.
+   */
+  async getJudgeReaction(params: {
+    contactName: string
+    contactRole: string
+    question: string
+    answer: string
+    guiltyDelta: number
+    newGuilty: number
+    gameData: unknown
+  }): Promise<string> {
+    const { contactName, contactRole, question, answer, guiltyDelta, newGuilty, gameData } = params
+
+    const deltaDescription =
+      guiltyDelta < 0
+        ? `ce témoignage a fait baisser la culpabilité de ${Math.abs(guiltyDelta)}%`
+        : guiltyDelta > 0
+          ? `ce témoignage a fait monter la culpabilité de ${guiltyDelta}%`
+          : "ce témoignage n'a pas changé la culpabilité"
+
+    const prompt = `
+Tu es la Juge Moreau. Un accusé vient d'appeler le témoin ${contactName} (${contactRole}) à la barre.
+
+CONTEXTE DE L'AFFAIRE :
+${JSON.stringify(gameData)}
+
+QUESTION POSÉE PAR L'ACCUSÉ : "${question}"
+RÉPONSE DU TÉMOIN ${contactName} : "${answer}"
+CULPABILITÉ ACTUELLE : ${newGuilty}% (${deltaDescription})
+
+Réagis en tant que Juge (1 phrase, formules judiciaires, sans JSON).
+- Témoignage favorable à l'accusé → sceptique ("La cour note ce témoignage, mais...")
+- Témoignage défavorable → tu t'engouffres dedans ("Voilà qui confirme les soupçons de la cour...")
+- Neutre → concis ("La cour en prend note.")
+    `.trim()
+
+    try {
+      const reaction = await this.ia.chat([{ role: 'user', content: prompt }])
+      return reaction.length > 200 ? reaction.substring(0, 197) + '...' : reaction
+    } catch {
+      return 'La cour prend note de ce témoignage.'
+    }
   }
 }
