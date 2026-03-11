@@ -1,6 +1,8 @@
 import { Link, usePage } from '@inertiajs/react'
+import { Lock } from 'lucide-react'
 
 import { isSection, type NavMainItem } from '#common/ui/types/navigation'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 import {
   SidebarGroup,
@@ -10,12 +12,21 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@workspace/ui/components/sidebar'
+
 export interface NavSidebarMainProps {
   items: NavMainItem[]
 }
 
+function getAppKey(url: string): 'instagrume' | 'jaimail' | 'notetrack' | null {
+  if (url.includes('/instagrume')) return 'instagrume'
+  if (url.includes('/jaimail')) return 'jaimail'
+  if (url.includes('/notetrack')) return 'notetrack'
+  return null
+}
+
 export function NavSidebarMain({ items }: NavSidebarMainProps) {
   const { url: currentPath } = usePage()
+  const isUnlocked = useTutorialStore((s) => s.isUnlocked)
 
   return (
     <>
@@ -30,41 +41,56 @@ export function NavSidebarMain({ items }: NavSidebarMainProps) {
               <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {visibleItems.map((subItem) => (
-                    <SidebarMenuItem key={subItem.title}>
-                      <SidebarMenuButton
-                        asChild
-                        tooltip={subItem.title}
-                        data-tour-id={`nav-item-${subItem.id || subItem.title}`}
-                        className={`duration-200 ${isSelected(subItem.url, currentPath) ? 'bg-primary/40 font-medium' : ''}`}
-                      >
-                        {subItem.url ? (
-                          subItem.external ? (
-                            <a href={subItem.url} target="_blank" rel="noopener noreferrer">
-                              {subItem.icon && <subItem.icon className="h-4 w-4 shrink-0 " />}
-                              <span>{subItem.title}</span>
-                            </a>
-                          ) : (
-                            <Link href={subItem.url}>
-                              {
-                                subItem.imageUrl ? (
-                                  <img src={subItem.imageUrl} alt={subItem.title} className="h-12 w-full shrink-0" />
-                                ) : (
-                                  subItem.icon && <subItem.icon className="h-4 w-4 shrink-0 " />
-                                )
-                              }
-                              <span>{subItem.title}</span>
-                            </Link>
-                          )
-                        ) : (
-                          <span>
+                  {visibleItems.map((subItem) => {
+                    const appKey = getAppKey(subItem.url)
+                    const locked = appKey ? !isUnlocked(appKey) : false
+
+                    return (
+                      <SidebarMenuItem key={subItem.title}>
+                        {locked ? (
+                          <SidebarMenuButton
+                            tooltip={subItem.lockedHint ?? 'Complète les étapes précédentes pour débloquer'}
+                            className="opacity-40 cursor-not-allowed"
+                            disabled
+                          >
+                            <Lock className="h-3 w-3 shrink-0 text-muted-foreground" />
                             {subItem.icon && <subItem.icon className="h-4 w-4 shrink-0" />}
                             <span>{subItem.title}</span>
-                          </span>
+                          </SidebarMenuButton>
+                        ) : (
+                          <SidebarMenuButton
+                            asChild
+                            tooltip={subItem.title}
+                            data-tour-id={`nav-item-${subItem.id || subItem.title}`}
+                            className={`duration-200 ${isSelected(subItem.url, currentPath) ? 'bg-primary/40 font-medium' : ''}`}
+                          >
+                            {subItem.url ? (
+                              subItem.external ? (
+                                <a href={subItem.url} target="_blank" rel="noopener noreferrer">
+                                  {subItem.icon && <subItem.icon className="h-4 w-4 shrink-0 " />}
+                                  <span>{subItem.title}</span>
+                                </a>
+                              ) : (
+                                <Link href={subItem.url}>
+                                  {subItem.imageUrl ? (
+                                    <img src={subItem.imageUrl} alt={subItem.title} className="h-12 w-full shrink-0" />
+                                  ) : (
+                                    subItem.icon && <subItem.icon className="h-4 w-4 shrink-0 " />
+                                  )}
+                                  <span>{subItem.title}</span>
+                                </Link>
+                              )
+                            ) : (
+                              <span>
+                                {subItem.icon && <subItem.icon className="h-4 w-4 shrink-0" />}
+                                <span>{subItem.title}</span>
+                              </span>
+                            )}
+                          </SidebarMenuButton>
                         )}
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                      </SidebarMenuItem>
+                    )
+                  })}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>

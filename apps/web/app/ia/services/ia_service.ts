@@ -1,6 +1,6 @@
-import HttpService from '#core/services/http_service'
 import env from '#start/env'
 import User from '#users/models/user'
+import IaConfig from '#ia/models/ia_config'
 import { LoadedHistory } from '#game/services/game_service'
 
 export interface IAResponse extends Response {
@@ -16,37 +16,123 @@ export interface ChatMessage {
   content: string
 }
 
+interface ResolvedConfig {
+  url: string
+  key: string
+  model: string
+}
+
 export default class IAService {
-  declare httpService: HttpService
-  declare model: string
-
-  constructor() {
-    this.httpService = new HttpService(env.get('IA_API_URL')!, {
-      Authorization: `Bearer ${env.get('IA_API_KEY')}`,
-    })
-
-    this.model = 'gpt-4o-mini'
+  private static async loadConfig(): Promise<ResolvedConfig> {
+    const config = await IaConfig.query().where('isActive', true).first()
+    return {
+      url: config?.endpoint ?? env.get('IA_API_URL')!,
+      key: config?.apiKey ?? env.get('IA_API_KEY')!,
+      model: config?.model ?? 'o3-mini',
+    }
   }
 
   async chat(messages: ChatMessage[]) {
-    const response = await this.httpService.post<IAResponse>('/chat/completions', {
-      model: this.model,
-      messages,
+    const { url, key, model } = await IAService.loadConfig()
+
+    const response = await fetch(`${url}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        reasoning_effort: 'low',
+        messages,
+      }),
     })
 
-    return response.choices[0].message.content
+    if (!response.ok) {
+      const text = await response.text().catch(() => '')
+      throw new Error(`IA chat failed: ${response.status} ${text}`)
+    }
+
+    const data = (await response.json()) as IAResponse
+    return data.choices[0].message.content
+  }
+
+  async *streamChat(messages: ChatMessage[]): AsyncGenerator<string> {
+    const { url, key, model } = await IAService.loadConfig()
+
+    console.log('loaded config', { url, model })
+
+    const response = await fetch(`${url}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        reasoning_effort: 'low',
+        messages,
+        stream: true,
+      }),
+    })
+
+    if (!response.ok || !response.body) {
+      const text = await response.text().catch(() => '')
+      throw new Error(`Stream failed: ${response.status} ${text}`)
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let remainder = ''
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        remainder += decoder.decode(value, { stream: true })
+        const lines = remainder.split('\n')
+        remainder = lines.pop() ?? ''
+
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (!trimmed || trimmed === 'data: [DONE]') continue
+          if (!trimmed.startsWith('data: ')) continue
+          try {
+            const data = JSON.parse(trimmed.slice(6))
+            const content = data.choices?.[0]?.delta?.content
+            if (content) yield content
+          } catch {
+            // Skip malformed lines
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock()
+    }
   }
 
   async generateData(user: User, history: LoadedHistory, staticPosts?: { postId: number; content: string }[]) {
-    const response = await this.httpService.post<IAResponse>('/chat/completions', {
-      model: this.model,
-      response_format: {
-        type: 'json_object',
+    const { url, key, model } = await IAService.loadConfig()
+
+    console.log('Generating data with config:', { url, model })
+
+    const response = await fetch(`${url}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
       },
-      messages: [
-        {
-          role: 'system',
-          content: `Tu es un générateur de données pour un jeu où un adolescent est accusé d'un crime. Tu dois produire un objet JSON strictement conforme à la structure ci-dessous.
+      body: JSON.stringify({
+        model,
+        response_format: {
+          type: 'json_object',
+        },
+        reasoning_effort: 'low',
+        messages: [
+          {
+            role: 'system',
+            content: `Tu es un générateur de données pour un jeu où un adolescent est accusé d'un crime. Tu dois produire un objet JSON strictement conforme à la structure ci-dessous.
 
         ## AFFAIRE
         ${history.json.content}
@@ -170,10 +256,17 @@ export default class IAService {
         - Dans les conversations Instagrume, seul ${user.firstName} ${user.lastName} est accusé au tribunal, pas les contacts. Les conversations doivent refléter cela (pas de preuve irréfutable de culpabilité, alibis possibles, etc.). Ne parle pas de culpabilité des contacts (ou autres personnes), même si certains peuvent émettre des doutes ou des soupçons. Les conversations doivent être réalistes pour des adolescents (ex : pas de discussions sur des sujets d'adultes, pas de langage trop soutenu, etc.).
 
         Réponds UNIQUEMENT avec le JSON, sans texte avant ni après. Langue : français.`,
-        },
-      ],
+          },
+        ],
+      }),
     })
 
-    return response.choices[0].message.content
+    if (!response.ok) {
+      const text = await response.text().catch(() => '')
+      throw new Error(`IA generateData failed: ${response.status} ${text}`)
+    }
+
+    const data = (await response.json()) as IAResponse
+    return data.choices[0].message.content
   }
 }

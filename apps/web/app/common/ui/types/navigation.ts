@@ -10,6 +10,8 @@ interface ItemNav {
   isActive?: boolean
   external?: boolean
   id?: string
+  locked?: boolean
+  lockedHint?: string
 }
 
 interface NavMainSection {

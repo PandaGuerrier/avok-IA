@@ -7,7 +7,8 @@ import { useGameStore } from '#game/ui/store/gameStore'
 interface InterrogateModalProps {
   gameUuid: string
   contacts: ContactData[]
-  onAnswer: (answer: string, contactName: string, judgeReaction: string) => void
+  onAnswer: (answer: string, contactName: string) => void
+  onJudgeChunk: (chunk: string) => void
   onClose: () => void
 }
 
@@ -15,6 +16,7 @@ export default function InterrogateModal({
   gameUuid,
   contacts,
   onAnswer,
+  onJudgeChunk,
   onClose,
 }: InterrogateModalProps) {
   const { updateGuilt } = useGameStore()
@@ -26,7 +28,7 @@ export default function InterrogateModal({
     if (!selectedContact || !question.trim() || loading) return
     setLoading(true)
     try {
-      const res = await fetch(`/game/${gameUuid}/interrogate`, {
+      const res = await fetch(`/game/${gameUuid}/interrogate/stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,11 +37,39 @@ export default function InterrogateModal({
         },
         body: JSON.stringify({ contactId: selectedContact.id, question }),
       })
-      if (res.ok) {
-        const json = await res.json()
-        updateGuilt(json.guiltyPourcentage)
-        onAnswer(json.answer, json.contactName, json.judgeReaction ?? '')
-        onClose()
+
+      if (!res.ok || !res.body) return
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let sseBuffer = ''
+      let contactAnswered = false
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        sseBuffer += decoder.decode(value, { stream: true })
+        const lines = sseBuffer.split('\n')
+        sseBuffer = lines.pop() ?? ''
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue
+          try {
+            const event = JSON.parse(line.slice(6))
+            if (event.type === 'contact' && !contactAnswered) {
+              contactAnswered = true
+              updateGuilt(event.guiltyPourcentage)
+              onAnswer(event.answer, event.contactName)
+              // Modal will be closed by parent via onAnswer callback
+              setLoading(false)
+            } else if (event.type === 'judge_chunk') {
+              onJudgeChunk(event.content)
+            }
+          } catch {
+            // Skip malformed SSE lines
+          }
+        }
       }
     } catch {
       // silent

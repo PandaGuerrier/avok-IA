@@ -9,6 +9,7 @@ import { AttendancePage } from '../components/attendancePage'
 import { IncidentsPage } from '../components/incidents_page'
 import AlibisModal from '../components/AlibisModal'
 import GameTour from '#game/ui/components/GameTour'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 interface CalendarEvent {
   id: number
@@ -47,6 +48,7 @@ export default function Note_track() {
   const gameUuid = game.uuid
 
   const init = useGameStore((s) => s.init)
+  const initTutorial = useTutorialStore((s) => s.init)
 
   const [currentPage, setCurrentPage] = useState('dashboard')
   const [alibisModal, setAlibisModal] = useState<{ content: string } | null>(null)
@@ -58,6 +60,7 @@ export default function Note_track() {
       startAtMs: game.startAt ? new Date(game.startAt as string).getTime() : null,
       guiltyPercentage: game.guiltyPourcentage ?? 50,
     })
+    initTutorial(game.uuid)
   }, [init, game])
 
   return (

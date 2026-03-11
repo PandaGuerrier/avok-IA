@@ -55,6 +55,7 @@ export default defineConfig({
     () => import('@adonisjs/i18n/i18n_provider'),
     () => import('@adonisjs/limiter/limiter_provider'),
     () => import('@adonisjs/redis/redis_provider'),
+    () => import('@adonisjs/transmit/transmit_provider'),
   ],
 
   /*
@@ -82,8 +83,14 @@ export default defineConfig({
     // game
     () => import('#game/routes'),
 
+    // ia admin
+    () => import('#ia/routes'),
+
     // external
     () => import('#external/routes'),
+
+    // transmit SSE routes
+    () => import('#start/transmit'),
   ],
 
   /*

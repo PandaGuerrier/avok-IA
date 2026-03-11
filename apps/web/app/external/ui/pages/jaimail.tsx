@@ -9,6 +9,7 @@ import EmailDetail from '../components/EmailDetail'
 import Toast from '../components/Toast'
 import AlibisModal from '../components/AlibisModal'
 import GameTour from '#game/ui/components/GameTour'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 import type { Email } from '../schema/mailSchema'
 
 interface MailData {
@@ -385,6 +386,7 @@ export default function Jaimail() {
   const gameUuid = game.uuid
 
   const init = useGameStore((s) => s.init)
+  const markTutorialAction = useTutorialStore((s) => s.markAction)
 
   const [emails, setEmails] = useState<Email[]>(() => mapMailsToEmails(mails))
 
@@ -545,6 +547,7 @@ export default function Jaimail() {
           defaultContent={alibisModal.content}
           onClose={() => setAlibisModal(null)}
           isDarkMode={isDarkMode}
+          onSaved={() => markTutorialAction('mailAlibi', gameUuid)}
         />
       )}
       <style>{`

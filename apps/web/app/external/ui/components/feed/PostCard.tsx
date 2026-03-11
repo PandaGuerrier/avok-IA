@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Heart, MessageCircle, BookmarkPlus } from 'lucide-react'
 import { Button } from '@workspace/ui/components/button'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 interface Comment {
   id: number
@@ -23,6 +24,7 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post, onAlibisClick }) => {
   const [isLiked, setIsLiked] = useState(false)
+  const needsGlow = useTutorialStore((s) => s.needsGlow)
 
   const buildAlibisContent = () => {
     const comments = post.comments ?? []
@@ -63,6 +65,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAlibisClick }) => {
               onClick={() => onAlibisClick(buildAlibisContent())}
               variant="outline"
               size={"sm"}
+              className={needsGlow('instaPostAlibi') ? 'tutorial-glow' : ''}
             >
               <BookmarkPlus size={18} />
               Sauvegarder alibi

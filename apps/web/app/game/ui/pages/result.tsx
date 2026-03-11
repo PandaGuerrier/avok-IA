@@ -1,11 +1,7 @@
 import GameStoreProvider from '#game/ui/components/GameStoreProvider'
-import AppSidebarLayout from '#common/ui/components/app_sidebar_layout'
 import { Main } from '#common/ui/components/main'
 import { Button } from '@workspace/ui/components/button'
 import usePageProps from '#common/ui/hooks/use_page_props'
-import useUser from '#auth/ui/hooks/use_user'
-import { getNavUser } from '#common/ui/config/navigation.config'
-import { useTranslation } from '#common/ui/hooks/use_translation'
 import { Trophy, XCircle } from 'lucide-react'
 import type GameDto from '#game/dtos/game'
 
@@ -15,15 +11,11 @@ interface Props {
 
 export default function ResultPage() {
   const { game } = usePageProps<Props>()
-  const user = useUser()
-  const { t } = useTranslation()
-  const navUser = getNavUser(t)
 
   const won = game.guiltyPourcentage <= 50
 
   return (
     <GameStoreProvider game={game}>
-    <AppSidebarLayout navMain={[]} navUser={navUser} user={user}>
       <Main>
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
           <div className="mb-6">
@@ -50,7 +42,6 @@ export default function ResultPage() {
           </Button>
         </div>
       </Main>
-    </AppSidebarLayout>
     </GameStoreProvider>
   )
 }

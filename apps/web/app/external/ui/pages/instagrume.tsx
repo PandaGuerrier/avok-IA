@@ -10,6 +10,7 @@ import ChatList from '../components/messages/ChatList'
 import ChatWindow from '../components/messages/ChatWindow'
 import AlibisModal from '../components/AlibisModal'
 import GameTour from '#game/ui/components/GameTour'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 interface Contact {
   id: number
@@ -55,10 +56,11 @@ const Instagrume: React.FC = () => {
   const gameUuid = game.uuid
 
   const init = useGameStore((s) => s.init)
+  const markTutorialAction = useTutorialStore((s) => s.markAction)
 
   const [activeTab, setActiveTab] = useState<'feed' | 'messages' | 'profile' | 'search'>('feed')
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
-  const [alibisModal, setAlibisModal] = useState<{ content: string } | null>(null)
+  const [alibisModal, setAlibisModal] = useState<{ content: string; source?: 'post' | 'conv' } | null>(null)
 
   // Initialize the game store without pausing
   useEffect(() => {
@@ -108,7 +110,7 @@ const Instagrume: React.FC = () => {
                   <PostCard
                     key={post.postId ?? i}
                     post={post}
-                    onAlibisClick={(content) => setAlibisModal({ content })}
+                    onAlibisClick={(content) => setAlibisModal({ content, source: 'post' })}
                   />
                 ))}
               </div>
@@ -137,7 +139,7 @@ const Instagrume: React.FC = () => {
                     <ChatWindow
                       contact={selectedContact}
                       messages={messagesForContact(selectedContact.id)}
-                      onAlibisClick={(content) => setAlibisModal({ content })}
+                      onAlibisClick={(content) => setAlibisModal({ content, source: 'conv' })}
                     />
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center text-center p-10 bg-gray-50/30 dark:bg-gray-800/30">
@@ -255,6 +257,10 @@ const Instagrume: React.FC = () => {
               gameUuid={gameUuid}
               defaultContent={alibisModal.content}
               onClose={() => setAlibisModal(null)}
+              onSaved={() => {
+                if (alibisModal.source === 'post') markTutorialAction('instaPostAlibi', gameUuid)
+                if (alibisModal.source === 'conv') markTutorialAction('instaConvAlibi', gameUuid)
+              }}
             />
           )}
         </div>

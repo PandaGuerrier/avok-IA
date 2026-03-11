@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { BookmarkPlus, X } from 'lucide-react'
 import { Button } from '@workspace/ui/components/button'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 interface Message {
   id: number
@@ -24,6 +25,7 @@ const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').toU
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ contact, messages, onAlibisClick }) => {
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const needsGlow = useTutorialStore((s) => s.needsGlow)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -65,6 +67,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ contact, messages, onAlibisClic
             <Button
               onClick={() => onAlibisClick(buildAlibisContent())}
               size="sm"
+              className={needsGlow('instaConvAlibi') && selected.size >= 1 ? 'tutorial-glow' : ''}
             >
               <BookmarkPlus size={14} />
               Créer un alibi

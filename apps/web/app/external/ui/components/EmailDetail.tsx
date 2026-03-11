@@ -1,6 +1,7 @@
 import { BookmarkPlus } from 'lucide-react'
 import { getAvatarColor } from '../data/utils'
 import type { Email } from '../schema/mailSchema'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 interface EmailDetailProps {
   selectedEmail: Email
@@ -9,6 +10,7 @@ interface EmailDetailProps {
 }
 
 export default function EmailDetail({ selectedEmail, setSelectedEmail, onAlibisClick }: EmailDetailProps) {
+  const needsGlow = useTutorialStore((s) => s.needsGlow)
   if (!selectedEmail) return null
 
   const buildAlibisContent = () =>
@@ -25,7 +27,7 @@ export default function EmailDetail({ selectedEmail, setSelectedEmail, onAlibisC
         </button>
         <button
           onClick={() => onAlibisClick(buildAlibisContent())}
-          className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-full transition-colors"
+          className={`ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-full transition-colors ${needsGlow('mailAlibi') ? 'tutorial-glow' : ''}`}
         >
           <BookmarkPlus size={14} />
           Utiliser comme alibi

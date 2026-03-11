@@ -11,7 +11,7 @@ interface ChatAreaProps {
   alibis: AlibiDto[]
 }
 
-export default function ChatArea({ messages, loading, chatEndRef, selectedAlibis, alibis }: ChatAreaProps) {
+export default function ChatArea({ messages, chatEndRef, selectedAlibis, alibis }: ChatAreaProps) {
   return (
     <div
       id="tour-chat"
@@ -56,6 +56,13 @@ export default function ChatArea({ messages, loading, chatEndRef, selectedAlibis
                   : 'bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white/85 rounded-bl-sm'
               }`}
             >
+              {
+                msg.content === '' && (
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
+                  </div>
+                )
+              }
               {msg.content}
 
               {msg.images && msg.images.length > 0 && (
@@ -118,14 +125,6 @@ export default function ChatArea({ messages, loading, chatEndRef, selectedAlibis
           )}
         </div>
       ))}
-
-      {loading && (
-        <div className="flex justify-start">
-          <div className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl rounded-bl-sm px-4 py-3">
-            <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
-          </div>
-        </div>
-      )}
 
       <div ref={chatEndRef} />
     </div>

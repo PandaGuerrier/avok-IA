@@ -1,5 +1,6 @@
 import React from 'react'
 import { Home, MessageCircle, User } from 'lucide-react'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 interface SidebarProps {
   activeTab: string
@@ -7,6 +8,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, onNavigate }) => {
+  const needsGlow = useTutorialStore((s) => s.needsGlow)
   const menuItems = [
     { id: 'feed', name: 'Accueil', icon: <Home size={26} /> },
     { id: 'messages', name: 'Messages', icon: <MessageCircle size={26} /> },
@@ -40,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onNavigate }) => {
             }}
             className={`flex items-center p-3 rounded-xl cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-gray-800 ${
               activeTab === item.id ? 'bg-gray-100 dark:bg-gray-800 font-bold' : ''
-            }`}
+            } ${item.id === 'messages' && needsGlow('instaConvAlibi') ? 'tutorial-glow' : ''}`}
           >
             <span className="text-black dark:text-white">{item.icon}</span>
             <span className="ml-4 text-md hidden xl:block text-black dark:text-white">

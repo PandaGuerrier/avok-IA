@@ -7,6 +7,8 @@ export default class JaimailController {
     const game = await Game.findByOrFail('uuid', params.uuid)
     if (game.userUuid !== auth.user!.uuid) return response.unauthorized()
 
+    if (game.isFinished) return response.redirect(`/game/${game.uuid}/result`)
+
     const data = game.data as any
     return inertia.render('external/jaimail', {
       game: new GameDto(game),

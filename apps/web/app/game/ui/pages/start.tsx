@@ -17,6 +17,7 @@ import AlibisPanel from '#game/ui/components/AlibisPanel'
 import ProofsModal from '#game/ui/components/ProofsModal'
 import InterrogateModal from '#game/ui/components/InterrogateModal'
 import GameTour from '#game/ui/components/GameTour'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 import { Button } from '@workspace/ui/components/button'
 import { Trophy } from 'lucide-react'
 
@@ -31,6 +32,8 @@ export default function StartPage() {
 
   // ── Zustand store ──────────────────────────────────────────────────────────
   const { isPaused, updateGuilt, guiltyPercentage } = useGameStore()
+  const markAction = useTutorialStore((s) => s.markAction)
+  const needsGlow = useTutorialStore((s) => s.needsGlow)
 
   const [won, setWon] = useState(false)
 
@@ -85,7 +88,10 @@ export default function StartPage() {
 
   async function handleChoice(choice: ChoiceData) {
     if (loading || isPaused) return
+    if (selectedProofUuids.length > 0) markAction('usedProof', game.uuid)
+    if (selectedAlibiUuids.length > 0) markAction('usedAlibi', game.uuid)
     setLoading(true)
+
     setMessages((prev) => [
       ...prev,
       {
@@ -93,9 +99,11 @@ export default function StartPage() {
         content: choice.title,
         alibis: selectedAlibiUuids.length > 0 ? [...selectedAlibiUuids] : undefined,
       },
+      { role: 'ai', content: '' },
     ])
+
     try {
-      const res = await fetch(`/game/${game.uuid}/choices`, {
+      const res = await fetch(`/game/${game.uuid}/choices/stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,24 +112,66 @@ export default function StartPage() {
         },
         body: JSON.stringify({ data: choice, selectedProofUuids, selectedAlibiUuids }),
       })
-      if (!res.ok) {
+
+      if (!res.ok || !res.body) {
         setMessages((prev) => [
-          ...prev,
+          ...prev.slice(0, -1),
           { role: 'ai', content: "Une erreur s'est produite. Réessayez." },
         ])
         return
       }
-      const json = await res.json()
-      setMessages((prev) => [...prev, { role: 'ai', content: json.choice.response }])
-      updateGuilt(json.guiltyPourcentage)
-      setChoices(json.nextChoices || [])
-      setSelectedProofUuids([])
-      setSelectedAlibiUuids([])
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let sseBuffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        sseBuffer += decoder.decode(value, { stream: true })
+        const lines = sseBuffer.split('\n')
+        sseBuffer = lines.pop() ?? ''
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue
+          try {
+            const event = JSON.parse(line.slice(6))
+            if (event.type === 'chunk') {
+              setMessages((prev) => {
+                const last = prev[prev.length - 1]
+                if (last?.role === 'ai') {
+                  return [...prev.slice(0, -1), { ...last, content: last.content + event.content }]
+                }
+                return prev
+              })
+            } else if (event.type === 'done') {
+              updateGuilt(event.guiltyPourcentage)
+              setChoices(event.nextChoices || [])
+              setSelectedProofUuids([])
+              setSelectedAlibiUuids([])
+            } else if (event.type === 'error') {
+              setMessages((prev) => {
+                const last = prev[prev.length - 1]
+                if (last?.role === 'ai' && last.content === '') {
+                  return [...prev.slice(0, -1), { role: 'ai', content: "Une erreur s'est produite." }]
+                }
+                return prev
+              })
+            }
+          } catch {
+            // Skip malformed SSE lines
+          }
+        }
+      }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'ai', content: "Une erreur s'est produite. Réessayez." },
-      ])
+      setMessages((prev) => {
+        const last = prev[prev.length - 1]
+        if (last?.role === 'ai' && last.content === '') {
+          return [...prev.slice(0, -1), { role: 'ai', content: "Une erreur s'est produite. Réessayez." }]
+        }
+        return prev
+      })
     } finally {
       setLoading(false)
     }
@@ -194,19 +244,19 @@ export default function StartPage() {
                 }
               >
                 <div className={"space-x-2 bg-background p-2 rounded-md shadow-md floating-buttons"}>
-                  <Button variant={'outline'} onClick={() => setProofsOpen(true)}>
+                  <Button variant={'outline'} onClick={() => setProofsOpen(true)} className={needsGlow('usedProof') ? 'tutorial-glow' : ''}>
                     Preuves{' '}
                     <span className="ml-1 px-2 py-0.5 text-[10px] font-mono rounded bg-red-500/20 text-red-500">
                       {proofs.length}
                     </span>
                   </Button>
-                  <Button variant={'outline'} onClick={() => setAlibisPanelOpen(!alibisPanelOpen)}>
+                  <Button variant={'outline'} onClick={() => setAlibisPanelOpen(!alibisPanelOpen)} className={needsGlow('usedAlibi') ? 'tutorial-glow' : ''}>
                     Alibi(s){' '}
                     <span className="ml-1 px-2 py-0.5 text-[10px] font-mono rounded bg-blue-500/20 text-blue-500">
                       {alibis.length}
                     </span>
                   </Button>
-                  <Button variant={'default'} onClick={() => setInterrogateOpen(true)}>
+                  <Button variant={'default'} onClick={() => setInterrogateOpen(true)} className={needsGlow('interrogated') ? 'tutorial-glow' : ''}>
                     Intérroger une personne
                   </Button>
                 </div>
@@ -223,6 +273,7 @@ export default function StartPage() {
                   selectedAlibiUuids={selectedAlibiUuids}
                   onChoice={handleChoice}
                   onRegenerate={handleRegenerate}
+                  onCustomChoice={() => markAction('usedCustomChoice', game.uuid)}
                 />
               </div>
 
@@ -263,13 +314,24 @@ export default function StartPage() {
               <InterrogateModal
                 gameUuid={game.uuid}
                 contacts={contacts}
-                onAnswer={(answer, contactName, judgeReaction) =>
+                onAnswer={(answer, contactName) => {
+                  markAction('interrogated', game.uuid)
                   setMessages((prev) => [
                     ...prev,
                     { role: 'contact', content: answer, contactName },
-                    ...(judgeReaction ? [{ role: 'ai' as const, content: judgeReaction }] : []),
+                    { role: 'ai', content: '' },
                   ])
-                }
+                  setInterrogateOpen(false)
+                }}
+                onJudgeChunk={(chunk) => {
+                  setMessages((prev) => {
+                    const last = prev[prev.length - 1]
+                    if (last?.role === 'ai') {
+                      return [...prev.slice(0, -1), { ...last, content: last.content + chunk }]
+                    }
+                    return prev
+                  })
+                }}
                 onClose={() => setInterrogateOpen(false)}
               />
             )}
@@ -296,10 +358,10 @@ export default function StartPage() {
                 <p className="text-3xl font-bold text-yellow-300">{guiltyPercentage}%</p>
               </div>
               <div className="flex gap-3">
-                <Button variant="outline" className="text-white border-white/30 hover:bg-white/10" asChild>
+                <Button variant="outline" asChild>
                   <a href="/game">Rejouer</a>
                 </Button>
-                <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold" asChild>
+                <Button variant={"default"} asChild>
                   <a href={`/game/${game.uuid}/result`}>Voir les résultats</a>
                 </Button>
               </div>

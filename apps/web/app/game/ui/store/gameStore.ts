@@ -13,6 +13,7 @@ interface GameStore {
     startAtMs: number | null
     guiltyPercentage: number
   }) => void
+  start: (startAtMs: number) => void
   pause: (pausedAtMs: number) => void
   resume: (resumeAtMs: number | null) => void
   updateGuilt: (percent: number) => void
@@ -28,6 +29,8 @@ export const useGameStore = create<GameStore>()((set, get) => ({
   guiltyPercentage: 50,
 
   init: (data) => set(data),
+
+  start: (startAtMs) => set({ startAtMs }),
 
   pause: (pausedAtMs) => set({ isPaused: true, pausedAtMs }),
 

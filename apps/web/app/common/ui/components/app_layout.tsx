@@ -40,7 +40,7 @@ export default function AppLayout({
   const gameUuid = gameUuidMatch?.[1]
 
   const navMain = getNavMain(t, gameUuid)
-  const navUser = getNavUser(t)
+  const navUser = getNavUser(t, user?.role?.name === 'Administrateur')
   const navHome = getNavHome(t)
 
   return (

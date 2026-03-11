@@ -24,7 +24,7 @@ export default class SignUpController {
 
     if (userExist) {
       await auth.use('web').login(userExist)
-      return response.redirect('/ready')
+      return response.redirect('/game')
     }
 
     let avatarPath: string | null = null

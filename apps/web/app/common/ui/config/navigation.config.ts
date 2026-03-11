@@ -9,12 +9,13 @@ import {
   Camera,
   Mail,
   BookOpen,
+  Bot,
 } from 'lucide-react'
 
 import type { NavMainItem, NavUserOptionsGroup } from '#common/ui/types/navigation'
 
-export function getNavUser(_: SimpleTFunction): NavUserOptionsGroup[] {
-  return [
+export function getNavUser(_: SimpleTFunction, isAdmin?: boolean): NavUserOptionsGroup[] {
+  const groups: NavUserOptionsGroup[] = [
     [
       {
         title: 'Mon Profil',
@@ -28,6 +29,18 @@ export function getNavUser(_: SimpleTFunction): NavUserOptionsGroup[] {
       },
     ],
   ]
+
+  if (isAdmin) {
+    groups.push([
+      {
+        title: 'Config IA',
+        url: '/admin/ia',
+        icon: Bot,
+      },
+    ])
+  }
+
+  return groups
 }
 
 export function getNavMain(_: SimpleTFunction, gameUuid?: string): NavMainItem[] {

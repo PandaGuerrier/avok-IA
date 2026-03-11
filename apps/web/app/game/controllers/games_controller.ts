@@ -1,15 +1,20 @@
+import { PassThrough } from 'node:stream'
 import type { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import { DateTime } from 'luxon'
 import vine from '@vinejs/vine'
 import GameService from '#game/services/game_service'
+import IAService from '#ia/services/ia_service'
 import Game from '#game/models/game'
 import Proof from '#game/models/proof'
 import GameDto from '#game/dtos/game'
 
 @inject()
 export default class GamesController {
-  constructor(protected gameService: GameService) {}
+  constructor(
+    protected gameService: GameService,
+    protected ia: IAService
+  ) {}
 
   async index({ auth, inertia }: HttpContext) {
     const games = await Game.query()
@@ -33,7 +38,6 @@ export default class GamesController {
     const game = await Game.create({
       data,
       userUuid: auth.user!.uuid,
-      startAt: DateTime.now(),
     })
 
     await Promise.all([
@@ -63,6 +67,8 @@ export default class GamesController {
       return response.unauthorized()
     }
 
+    if (game.isFinished) return response.redirect(`/game/${game.uuid}/result`)
+
     await game.load('choices')
     await game.load('proofs')
     await game.load('user')
@@ -83,6 +89,21 @@ export default class GamesController {
       initialMessage,
       currentChoices: currentChoices ?? [],
     })
+  }
+
+  async start({ params, auth, response }: HttpContext) {
+    const game = await Game.findByOrFail('uuid', params.uuid)
+
+    if (game.userUuid !== auth.user!.uuid) {
+      return response.unauthorized()
+    }
+
+    if (!game.startAt) {
+      game.startAt = DateTime.now()
+      await game.save()
+    }
+
+    return response.ok({ startAtMs: game.startAt.toMillis() })
   }
 
   async updateGuilty({ params, auth, request, response }: HttpContext) {
@@ -191,6 +212,100 @@ export default class GamesController {
     })
 
     return response.ok({ answer, contactName: contact.name, guiltyPourcentage: newGuilty, judgeReaction })
+  }
+
+  async interrogateStream({ params, auth, request, response }: HttpContext) {
+    const game = await Game.findByOrFail('uuid', params.uuid)
+
+    if (game.userUuid !== auth.user!.uuid) {
+      return response.unauthorized()
+    }
+
+    const schema = vine.compile(
+      vine.object({
+        contactId: vine.number(),
+        question: vine.string().minLength(1),
+      })
+    )
+
+    const payload = await request.validateUsing(schema)
+    const contacts = (game.data as any)?.contacts ?? []
+    const contact = contacts.find((c: any) => c.id === payload.contactId)
+
+    if (!contact) {
+      return response.notFound({ error: 'Contact introuvable' })
+    }
+
+    await game.load('choices')
+    await game.load('proofs')
+
+    const passThrough = new PassThrough()
+    response.header('Content-Type', 'text/event-stream')
+    response.header('Cache-Control', 'no-cache, no-transform')
+    response.header('Connection', 'keep-alive')
+    response.header('X-Accel-Buffering', 'no')
+
+    const sendEvent = (data: object) => {
+      if (!passThrough.destroyed) {
+        passThrough.write(`data: ${JSON.stringify(data)}\n\n`)
+      }
+    }
+
+    ;(async () => {
+      try {
+        // Step 1: Get contact answer (non-streaming, needs JSON for guiltyDelta)
+        const { answer, guiltyDelta } = await this.gameService.interrogateContact(
+          game,
+          contact,
+          payload.question
+        )
+
+        const { guiltyPourcentage: newGuilty } = await this.gameService.updateGuiltyScore(
+          game,
+          game.guiltyPourcentage + guiltyDelta
+        )
+
+        // Step 2: Send contact answer immediately
+        sendEvent({ type: 'contact', answer, contactName: contact.name, guiltyPourcentage: newGuilty })
+
+        // Step 3: Stream judge reaction
+        const deltaDescription =
+          guiltyDelta < 0
+            ? `ce témoignage a fait baisser la culpabilité de ${Math.abs(guiltyDelta)}%`
+            : guiltyDelta > 0
+              ? `ce témoignage a fait monter la culpabilité de ${guiltyDelta}%`
+              : "ce témoignage n'a pas changé la culpabilité"
+
+        const judgePrompt = `
+Tu es la Juge Moreau. Un accusé vient d'appeler le témoin ${contact.name} (${contact.role}) à la barre.
+
+CONTEXTE DE L'AFFAIRE :
+${JSON.stringify(game.data)}
+
+QUESTION POSÉE PAR L'ACCUSÉ : "${payload.question}"
+RÉPONSE DU TÉMOIN ${contact.name} : "${answer}"
+CULPABILITÉ ACTUELLE : ${newGuilty}% (${deltaDescription})
+
+Réagis en tant que Juge (1 phrase, formules judiciaires, sans JSON).
+- Témoignage favorable à l'accusé → sceptique ("La cour note ce témoignage, mais...")
+- Témoignage défavorable → tu t'engouffres dedans ("Voilà qui confirme les soupçons de la cour...")
+- Neutre → concis ("La cour en prend note.")
+        `.trim()
+
+        for await (const chunk of this.ia.streamChat([{ role: 'user', content: judgePrompt }])) {
+          sendEvent({ type: 'judge_chunk', content: chunk })
+        }
+
+        sendEvent({ type: 'done' })
+      } catch (err) {
+        console.error('[interrogateStream] error:', err)
+        sendEvent({ type: 'error' })
+      } finally {
+        passThrough.end()
+      }
+    })()
+
+    return response.stream(passThrough)
   }
 
   async result({ params, auth, response, inertia }: HttpContext) {

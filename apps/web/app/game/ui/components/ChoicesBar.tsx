@@ -1,6 +1,7 @@
 import { RefreshCw, Send } from 'lucide-react'
 import { useState } from 'react'
 import type ChoiceData from '#game/types/choices'
+import { useTutorialStore } from '#game/ui/store/tutorialStore'
 
 interface ChoicesBarProps {
   choices: ChoiceData[]
@@ -11,6 +12,7 @@ interface ChoicesBarProps {
   selectedAlibiUuids: string[]
   onChoice: (choice: ChoiceData) => void
   onRegenerate: () => void
+  onCustomChoice?: () => void
 }
 
 export default function ChoicesBar({
@@ -22,9 +24,11 @@ export default function ChoicesBar({
   selectedAlibiUuids,
   onChoice,
   onRegenerate,
+  onCustomChoice,
 }: ChoicesBarProps) {
   const totalSelected = selectedProofUuids.length + selectedAlibiUuids.length
   const disabled = loading || regenerating || isPaused
+  const needsGlow = useTutorialStore((s) => s.needsGlow)
 
   const [customInput, setCustomInput] = useState('')
 
@@ -32,6 +36,7 @@ export default function ChoicesBar({
     const text = customInput.trim()
     if (!text || disabled) return
     onChoice({ id: 0, title: text, description: text, choosen: true, isTrap: false })
+    onCustomChoice?.()
     setCustomInput('')
   }
 
@@ -98,7 +103,7 @@ export default function ChoicesBar({
           onKeyDown={(e) => e.key === 'Enter' && handleCustomSubmit()}
           disabled={disabled}
           placeholder="Choix personnalisé..."
-          className="flex-1 px-3 py-2 text-sm rounded-xl border bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-800 dark:text-white/80 placeholder:text-gray-400 dark:placeholder:text-white/25 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 disabled:opacity-40 transition-all"
+          className={`flex-1 px-3 py-2 text-sm rounded-xl border bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-800 dark:text-white/80 placeholder:text-gray-400 dark:placeholder:text-white/25 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 disabled:opacity-40 transition-all ${needsGlow('usedCustomChoice') ? 'tutorial-glow' : ''}`}
         />
         <button
           onClick={handleCustomSubmit}

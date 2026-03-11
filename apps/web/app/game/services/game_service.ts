@@ -1,11 +1,14 @@
 import { inject } from '@adonisjs/core'
 import app from '@adonisjs/core/services/app'
+import { DateTime } from 'luxon'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import transmit from '@adonisjs/transmit/services/main'
 import IAService from '#ia/services/ia_service'
 import User from '#users/models/user'
 import Game from '#game/models/game'
 import type DataGameType from '#game/types/data'
+import { getLeaderboardEntries } from '#game/controllers/leaderboard_controller'
 
 export interface HistoryPreuve {
   nom: string
@@ -167,11 +170,25 @@ export default class GameService {
     game: Game,
     score: number
   ): Promise<{ guiltyPourcentage: number; isFinished: boolean }> {
+    const wasFinished = game.isFinished
     game.guiltyPourcentage = Math.max(0, Math.min(100, score))
     if (game.guiltyPourcentage <= 50) {
       game.isFinished = true
+      if (!wasFinished) {
+        game.finishedAt = DateTime.now()
+      }
     }
     await game.save()
+
+    if (!wasFinished && game.isFinished) {
+      try {
+        const entries = await getLeaderboardEntries()
+        await transmit.broadcast('leaderboard', { entries: JSON.parse(JSON.stringify(entries)) })
+      } catch (e) {
+        console.error('[leaderboard] broadcast error', e)
+      }
+    }
+
     return { guiltyPourcentage: game.guiltyPourcentage, isFinished: game.isFinished }
   }
 
@@ -200,10 +217,10 @@ DONNÉES À ANALYSER (accessibles sur le coté gauche - réseaux sociaux) :
 ${JSON.stringify(game.data)}
 
 === TON DE LA JUGE ===
-- Froide, procédurière, mais pas totalement insensible
-- Tu soupçonnes l'accusé et tu l'accuses formellement
+- Sévère et procédurière, mais juste et ouverte aux arguments de défense
+- Tu soupçonnes l'accusé mais tu lui accordes le bénéfice du doute si les preuves le méritent
 - Formes judiciaires : "${user.firstName}...", "La cour estime...", "Les preuves montrent..."
-- Ton : accusateur et persuasif
+- Ton : direct mais équitable — tu veux la vérité, pas forcément une condamnation
 
 === RÔLES CLAIRS ===
 TOI (Juge) : Tu accuses l'utilisateur d'être impliqué dans l'infraction, mais tu es compréhensive et tu lui donnes la chance de se défendre. Tu analyses les preuves qu'il présente.
@@ -219,10 +236,11 @@ OBLIGATOIRES :
 NE MENTIONNE PAS "enquêteur", ni "maître" - il n'est qu'un ACCUSÉ qui doit prouver son innocence.
 
 === CHOIX D'ACTION ===
-Propose EXACTEMENT 3 réponses possibles pour l'accusé, dont 1 PIÈGE ALÉATOIRE :
-Les titres doivent être NEUTRES et AMBIGUS (ex: "Ce n'est pas ce que vous croyez", "Regardez mieux", "Vous avez mal compris")
+Propose EXACTEMENT 3 réponses possibles pour l'accusé, toutes valides (aucun piège) :
+Les titres doivent être NEUTRES et variés — différentes stratégies de défense.
+Au moins 1 choix doit clairement aider l'accusé à faire baisser la culpabilité.
 
-Ou quand il y a des alibis: "Utiliser l'alibi de X", "Utiliser l'alibi de Y", "Ne pas utiliser d'alibi"
+Ou quand il y a des alibis: "Utiliser l'alibi de X", "Utiliser l'alibi de Y", "Présenter une preuve supplémentaire"
 
 === FORMAT JSON ===
 Réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après :

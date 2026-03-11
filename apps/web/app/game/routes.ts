@@ -4,6 +4,7 @@ import { middleware } from '#start/kernel'
 const GamesController = () => import('#game/controllers/games_controller')
 const ChoicesController = () => import('#game/controllers/choices_controller')
 const AlibisController = () => import('#game/controllers/alibis_controller')
+const LeaderboardController = () => import('#game/controllers/leaderboard_controller')
 
 router
   .group(() => {
@@ -11,16 +12,21 @@ router
     router.post('/game/create', [GamesController, 'store']).as('game.create')
     router.get('/game/:uuid/result', [GamesController, 'result']).as('game.result')
     router.get('/game/:uuid', [GamesController, 'show']).as('game.start')
+    router.patch('/game/:uuid/start', [GamesController, 'start']).as('game.start.confirm')
     router.patch('/game/:uuid/guilty', [GamesController, 'updateGuilty']).as('game.updateGuilty')
 
     router.post('/game/:uuid/interrogate', [GamesController, 'interrogate']).as('game.interrogate')
+    router.post('/game/:uuid/interrogate/stream', [GamesController, 'interrogateStream']).as('game.interrogate.stream')
   //  router.post('/game/:uuid/pause', [GamesController, 'pause']).as('game.pause')
    // router.post('/game/:uuid/resume', [GamesController, 'resume']).as('game.resume')
 
     router.post('/game/:uuid/choices', [ChoicesController, 'store']).as('game.choices.store')
+    router.post('/game/:uuid/choices/stream', [ChoicesController, 'storeStream']).as('game.choices.stream')
     router.post('/game/:uuid/choices/regenerate', [ChoicesController, 'regenerate']).as('game.choices.regenerate')
     router.get('/game/:uuid/choices', [ChoicesController, 'index']).as('game.choices.index')
     router.get('/game/:uuid/choices/:choiceUuid', [ChoicesController, 'show']).as('game.choices.show')
+
+    router.get('/leaderboard', [LeaderboardController, 'index']).as('leaderboard.index')
 
     router.get('/game/:uuid/alibis', [AlibisController, 'index']).as('game.alibis.index')
     router.post('/game/:uuid/alibis', [AlibisController, 'store']).as('game.alibis.store')
