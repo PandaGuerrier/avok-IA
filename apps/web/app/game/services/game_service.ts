@@ -293,6 +293,17 @@ Langue: français
       .map((p) => `- ${p.data?.title || 'Preuve'} : ${p.content}`)
       .join('\n')
 
+    const startMs = game.startAt?.toMillis() ?? game.createdAt.toMillis()
+    const elapsedMin = (Date.now() - startMs - (game.totalPausedMs ?? 0)) / 60_000
+    const gamePhase = elapsedMin < 3 ? 'early' : elapsedMin < 7 ? 'mid' : 'late'
+
+    const guiltyRules =
+      gamePhase === 'early'
+        ? `- guiltyDelta entre -10 et +2 : négatif fort (-10 à -5) si ta réponse aide clairement l'accusé, faiblement négatif (-4 à -1) si vague, positif (+1 à +2) si tu l'incrimines légèrement.`
+        : gamePhase === 'mid'
+          ? `- guiltyDelta entre -5 et +5 : négatif (-5 à -2) si ta réponse aide l'accusé, 0 si neutre, positif (+1 à +5) si tu l'incrimines.`
+          : `- guiltyDelta entre -2 et +10 : faiblement négatif (-2 à -1) uniquement si ta réponse est une preuve irréfutable, sinon positif (+2 à +10) car la juge retourne chaque déclaration contre l'accusé.`
+
     const prompt = `
 Tu es ${contact.name}, ${contact.role} de l'adolescent faisant l'objet d'une enquête policière.
 Un accusé vient t'interroger pour prouver son innocence. Tu dois répondre EN CHARACTER, de façon naturelle et cohérente avec ton rôle.
@@ -314,7 +325,7 @@ Niveau de culpabilité actuel : ${game.guiltyPourcentage}%
 
 === RÈGLES ===
 - Ta réponse en 2-3 phrases, en français, comme si tu étais vraiment cette personne.
-- guiltyDelta négatif (-15 à -5) si ta réponse aide l'accusé, -2 si la réponse est vague, positif (+5 MAX) si elle l'incrimine.
+${guiltyRules}
 
 === FORMAT DE RÉPONSE OBLIGATOIRE ===
 Réponds UNIQUEMENT en JSON valide :
@@ -327,7 +338,15 @@ Réponds UNIQUEMENT en JSON valide :
     try {
       const raw = await this.ia.chat([{ role: 'user', content: prompt }])
       const parsed = JSON.parse(raw)
-      return { answer: parsed.answer || '', guiltyDelta: parsed.guiltyDelta || 0 }
+      let guiltyDelta: number = parsed.guiltyDelta || 0
+      if (gamePhase === 'early') {
+        guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
+      } else if (gamePhase === 'mid') {
+        guiltyDelta = Math.max(-5, Math.min(guiltyDelta, 5))
+      } else {
+        guiltyDelta = Math.max(-2, Math.min(guiltyDelta, 10))
+      }
+      return { answer: parsed.answer || '', guiltyDelta }
     } catch {
       return {
         answer: "Je... je ne sais pas trop quoi vous dire. C'est une situation difficile pour moi.",

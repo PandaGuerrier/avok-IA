@@ -305,6 +305,11 @@ Langue : français`.trim()
       ]
     }
 
+    // Bonus alibi : amplifier la baisse de culpabilité x1.5 si un alibi est utilisé
+    if ((payload.selectedAlibiUuids?.length ?? 0) > 0 && guiltyDelta < 0) {
+      guiltyDelta = Math.round(guiltyDelta * 1.5)
+    }
+
     // Clamp delta selon la phase de jeu
     if (gamePhase === 'early') {
       guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
@@ -536,6 +541,12 @@ Langue : français`.trim()
         }
 
         if (iaMessage.length > 250) iaMessage = iaMessage.substring(0, 247) + '...'
+
+        // Bonus alibi : amplifier la baisse de culpabilité x1.5 si un alibi est utilisé
+        if ((payload.selectedAlibiUuids?.length ?? 0) > 0 && guiltyDelta < 0) {
+          guiltyDelta = Math.round(guiltyDelta * 1.5)
+        }
+
         if (gamePhase === 'early') {
           guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
         } else if (gamePhase === 'mid') {
