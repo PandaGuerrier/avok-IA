@@ -183,29 +183,43 @@ Langue : français`.trim()
     // ── Calcul du temps écoulé pour adapter la difficulté ─────────────────────
     const startMs = game.startAt?.toMillis() ?? game.createdAt.toMillis()
     const elapsedMin = (Date.now() - startMs - (game.totalPausedMs ?? 0)) / 60_000
-    const isEarlyGame = elapsedMin < 5
+    const gamePhase = elapsedMin < 3 ? 'early' : elapsedMin < 7 ? 'mid' : 'late'
 
-    const judgePersonality = isEarlyGame
-      ? `- Ton : intransigeant et implacable — tu ne cèdes rien sans preuve béton
-- Tu contre-attaques chaque argument, même les bons, en cherchant la faille
-- Tu rappelles systématiquement les charges les plus lourdes après chaque réplique
-- Tu ignores les alibis vagues et les déclarations sans preuve matérielle`
-      : `- Ton : sceptique et exigeant — tu remets en cause chaque argument
+    const judgePersonality =
+      gamePhase === 'early'
+        ? `- Ton : intransigeant mais accessible — les bonnes preuves font mouche
+- Tu contre-attaques les arguments faibles mais tu reconnais les bons
+- Tu rappelles les charges principales sans chercher systématiquement la faille`
+        : gamePhase === 'mid'
+          ? `- Ton : sceptique et exigeant — tu remets en cause chaque argument
 - Tu demandes des preuves concrètes et ne te laisses pas convaincre facilement
 - Tu rappelles les éléments à charge entre chaque réponse`
+          : `- Ton : implacable et épuisé par les arguments — chaque erreur te coûte cher
+- Tu retournes les arguments faibles contre l'accusé avec force
+- Les preuves insuffisantes renforcent ta conviction de culpabilité
+- Seules les preuves irréfutables t'ébranlent légèrement`
 
-    const guiltyRules = isEarlyGame
-      ? `=== GUILTYDELTA (TOUJOURS NÉGATIF MAIS FAIBLE) ===
-- Preuve directe et irréfutable : -10 à -7
-- Argument pertinent avec preuve : -6 à -5
-- Argument sans preuve concrète : -5
-- La juge est très difficile à ébranler en début de procès — les baisses sont minimes
-- JAMAIS 0 ou positif`
-      : `=== GUILTYDELTA (TOUJOURS NÉGATIF) ===
-- Preuve directe et irréfutable : -15 à -10
-- Argument pertinent avec preuve : -9 à -6
-- Argument sans preuve concrète : -5
-- JAMAIS 0 ou positif`
+    const guiltyRules =
+      gamePhase === 'early'
+        ? `=== GUILTYDELTA ===
+- Preuve directe et irréfutable : -10 à -8
+- Argument pertinent avec preuve : -7 à -5
+- Argument sans preuve concrète : -3 à -1
+- Argument faible ou hors sujet : +1 à +2
+- Maximum autorisé : entre -10 et +2`
+        : gamePhase === 'mid'
+          ? `=== GUILTYDELTA ===
+- Preuve directe et irréfutable : -5 à -4
+- Argument pertinent avec preuve : -4 à -2
+- Argument sans preuve concrète : -1 à +1
+- Argument faible ou hors sujet : +2 à +5
+- Maximum autorisé : entre -5 et +5`
+          : `=== GUILTYDELTA ===
+- Preuve directe et irréfutable : -2 à -1
+- Argument pertinent avec preuve : -1 à +2
+- Argument sans preuve concrète : +3 à +6
+- Argument faible ou hors sujet : +7 à +10
+- Maximum autorisé : entre -2 et +10`
 
     // ── Construction de l'historique conversationnel ──────────────────────────
     // Message système : contexte fixe de l'affaire + règles de réponse
@@ -217,7 +231,7 @@ IMPORTANT : Les personnages dans les données ci-dessous (contacts, Instagram, m
 DONNÉES COMPLÈTES DE L'AFFAIRE :
 ${JSON.stringify(game.data)}
 
-=== PERSONNALITÉ DE LA JUGE (${isEarlyGame ? 'phase initiale — intransigeante' : 'phase avancée — exigeante'}) ===
+=== PERSONNALITÉ DE LA JUGE (${gamePhase === 'early' ? 'phase initiale — accessible' : gamePhase === 'mid' ? 'phase intermédiaire — exigeante' : 'phase finale — implacable'}) ===
 ${judgePersonality}
 - Réponse courte uniquement.
 - Génère toujours 3 nouveaux choix de défense, tous valides (aucun piège).
@@ -291,8 +305,14 @@ Langue : français`.trim()
       ]
     }
 
-    // Garantie : le delta est toujours négatif (chaque action aide l'accusé)
-    guiltyDelta = Math.min(guiltyDelta, -5)
+    // Clamp delta selon la phase de jeu
+    if (gamePhase === 'early') {
+      guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
+    } else if (gamePhase === 'mid') {
+      guiltyDelta = Math.max(-5, Math.min(guiltyDelta, 5))
+    } else {
+      guiltyDelta = Math.max(-2, Math.min(guiltyDelta, 10))
+    }
 
     const choice = await Choice.create({
       gameUuid: game.uuid,
@@ -362,29 +382,43 @@ Langue : français`.trim()
 
     const startMs = game.startAt?.toMillis() ?? game.createdAt.toMillis()
     const elapsedMin = (Date.now() - startMs - (game.totalPausedMs ?? 0)) / 60_000
-    const isEarlyGame = elapsedMin < 5
+    const gamePhase = elapsedMin < 3 ? 'early' : elapsedMin < 7 ? 'mid' : 'late'
 
-    const judgePersonality = isEarlyGame
-      ? `- Ton : intransigeant et implacable — tu ne cèdes rien sans preuve béton
-- Tu contre-attaques chaque argument, même les bons, en cherchant la faille
-- Tu rappelles systématiquement les charges les plus lourdes après chaque réplique
-- Tu ignores les alibis vagues et les déclarations sans preuve matérielle`
-      : `- Ton : sceptique et exigeant — tu remets en cause chaque argument
+    const judgePersonality =
+      gamePhase === 'early'
+        ? `- Ton : intransigeant mais accessible — les bonnes preuves font mouche
+- Tu contre-attaques les arguments faibles mais tu reconnais les bons
+- Tu rappelles les charges principales sans chercher systématiquement la faille`
+        : gamePhase === 'mid'
+          ? `- Ton : sceptique et exigeant — tu remets en cause chaque argument
 - Tu demandes des preuves concrètes et ne te laisses pas convaincre facilement
 - Tu rappelles les éléments à charge entre chaque réponse`
+          : `- Ton : implacable et épuisé par les arguments — chaque erreur te coûte cher
+- Tu retournes les arguments faibles contre l'accusé avec force
+- Les preuves insuffisantes renforcent ta conviction de culpabilité
+- Seules les preuves irréfutables t'ébranlent légèrement`
 
-    const guiltyRules = isEarlyGame
-      ? `=== GUILTYDELTA (TOUJOURS NÉGATIF MAIS FAIBLE) ===
-- Preuve directe et irréfutable : -10 à -7
-- Argument pertinent avec preuve : -6 à -5
-- Argument sans preuve concrète : -5
-- La juge est très difficile à ébranler en début de procès — les baisses sont minimes
-- JAMAIS 0 ou positif`
-      : `=== GUILTYDELTA (TOUJOURS NÉGATIF) ===
-- Preuve directe et irréfutable : -15 à -10
-- Argument pertinent avec preuve : -9 à -6
-- Argument sans preuve concrète : -5
-- JAMAIS 0 ou positif`
+    const guiltyRules =
+      gamePhase === 'early'
+        ? `=== GUILTYDELTA ===
+- Preuve directe et irréfutable : -10 à -8
+- Argument pertinent avec preuve : -7 à -5
+- Argument sans preuve concrète : -3 à -1
+- Argument faible ou hors sujet : +1 à +2
+- Maximum autorisé : entre -10 et +2`
+        : gamePhase === 'mid'
+          ? `=== GUILTYDELTA ===
+- Preuve directe et irréfutable : -5 à -4
+- Argument pertinent avec preuve : -4 à -2
+- Argument sans preuve concrète : -1 à +1
+- Argument faible ou hors sujet : +2 à +5
+- Maximum autorisé : entre -5 et +5`
+          : `=== GUILTYDELTA ===
+- Preuve directe et irréfutable : -2 à -1
+- Argument pertinent avec preuve : -1 à +2
+- Argument sans preuve concrète : +3 à +6
+- Argument faible ou hors sujet : +7 à +10
+- Maximum autorisé : entre -2 et +10`
 
     const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
 
@@ -394,7 +428,7 @@ IMPORTANT : Les personnages dans les données ci-dessous (contacts, Instagram, m
 DONNÉES COMPLÈTES DE L'AFFAIRE :
 ${JSON.stringify(game.data)}
 
-=== PERSONNALITÉ DE LA JUGE (${isEarlyGame ? 'phase initiale — intransigeante' : 'phase avancée — exigeante'}) ===
+=== PERSONNALITÉ DE LA JUGE (${gamePhase === 'early' ? 'phase initiale — accessible' : gamePhase === 'mid' ? 'phase intermédiaire — exigeante' : 'phase finale — implacable'}) ===
 ${judgePersonality}
 - Réponse courte uniquement.
 - Génère toujours 3 nouveaux choix de défense, tous valides (aucun piège).
@@ -502,7 +536,13 @@ Langue : français`.trim()
         }
 
         if (iaMessage.length > 250) iaMessage = iaMessage.substring(0, 247) + '...'
-        guiltyDelta = Math.min(guiltyDelta, -5)
+        if (gamePhase === 'early') {
+          guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
+        } else if (gamePhase === 'mid') {
+          guiltyDelta = Math.max(-5, Math.min(guiltyDelta, 5))
+        } else {
+          guiltyDelta = Math.max(-2, Math.min(guiltyDelta, 10))
+        }
 
         const choice = await Choice.create({
           gameUuid: game.uuid,
