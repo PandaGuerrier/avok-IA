@@ -217,10 +217,10 @@ DONNÉES À ANALYSER (accessibles sur le coté gauche - réseaux sociaux) :
 ${JSON.stringify(game.data)}
 
 === TON DE LA JUGE ===
-- Sévère et procédurière, mais juste et ouverte aux arguments de défense
-- Tu soupçonnes l'accusé mais tu lui accordes le bénéfice du doute si les preuves le méritent
-- Formes judiciaires : "${user.firstName}...", "La cour estime...", "Les preuves montrent..."
-- Ton : direct mais équitable — tu veux la vérité, pas forcément une condamnation
+- Bienveillante et pédagogue — tu veux que l'accusé puisse se défendre correctement
+- Tu présumes l'innocence et encourages l'accusé à présenter ses arguments
+- Formes judiciaires : "${user.firstName}...", "La cour estime...", "La défense peut..."
+- Ton : doux et encourageant — tu veux que la vérité éclate, pas une condamnation
 
 === RÔLES CLAIRS ===
 TOI (Juge) : Tu accuses l'utilisateur d'être impliqué dans l'infraction, mais tu es compréhensive et tu lui donnes la chance de se défendre. Tu analyses les preuves qu'il présente.
@@ -293,16 +293,10 @@ Langue: français
       .map((p) => `- ${p.data?.title || 'Preuve'} : ${p.content}`)
       .join('\n')
 
-    const startMs = game.startAt?.toMillis() ?? game.createdAt.toMillis()
-    const elapsedMin = (Date.now() - startMs - (game.totalPausedMs ?? 0)) / 60_000
-    const gamePhase = elapsedMin < 3 ? 'early' : elapsedMin < 7 ? 'mid' : 'late'
-
-    const guiltyRules =
-      gamePhase === 'early'
-        ? `- guiltyDelta entre -10 et +2 : négatif fort (-10 à -5) si ta réponse aide clairement l'accusé, faiblement négatif (-4 à -1) si vague, positif (+1 à +2) si tu l'incrimines légèrement.`
-        : gamePhase === 'mid'
-          ? `- guiltyDelta entre -5 et +5 : négatif (-5 à -2) si ta réponse aide l'accusé, 0 si neutre, positif (+1 à +5) si tu l'incrimines.`
-          : `- guiltyDelta entre -2 et +10 : faiblement négatif (-2 à -1) uniquement si ta réponse est une preuve irréfutable, sinon positif (+2 à +10) car la juge retourne chaque déclaration contre l'accusé.`
+    const guiltyRules = `- guiltyDelta TOUJOURS négatif : entre -15 et -5 (la culpabilité ne peut qu'baisser).
+- Ta réponse aide clairement l'accusé : -15 à -10
+- Ta réponse est vague ou partielle : -9 à -5
+- Minimum absolu : -5`
 
     const prompt = `
 Tu es ${contact.name}, ${contact.role} de l'adolescent faisant l'objet d'une enquête policière.
@@ -338,14 +332,9 @@ Réponds UNIQUEMENT en JSON valide :
     try {
       const raw = await this.ia.chat([{ role: 'user', content: prompt }])
       const parsed = JSON.parse(raw)
-      let guiltyDelta: number = parsed.guiltyDelta || 0
-      if (gamePhase === 'early') {
-        guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
-      } else if (gamePhase === 'mid') {
-        guiltyDelta = Math.max(-5, Math.min(guiltyDelta, 5))
-      } else {
-        guiltyDelta = Math.max(-2, Math.min(guiltyDelta, 10))
-      }
+      let guiltyDelta: number = parsed.guiltyDelta || -5
+      // Toujours négatif, entre -5 et -15
+      guiltyDelta = Math.max(-15, Math.min(guiltyDelta, -5))
       return { answer: parsed.answer || '', guiltyDelta }
     } catch {
       return {
@@ -387,9 +376,9 @@ RÉPONSE DU TÉMOIN ${contactName} : "${answer}"
 CULPABILITÉ ACTUELLE : ${newGuilty}% (${deltaDescription})
 
 Réagis en tant que Juge (1 phrase, formules judiciaires, sans JSON).
-- Témoignage favorable à l'accusé → sceptique ("La cour note ce témoignage, mais...")
-- Témoignage défavorable → tu t'engouffres dedans ("Voilà qui confirme les soupçons de la cour...")
-- Neutre → concis ("La cour en prend note.")
+- Témoignage favorable à l'accusé → tu l'accueilles positivement ("La cour prend note de cet élément favorable...")
+- Témoignage neutre → encourageant ("La cour remercie le témoin et invite l'accusé à poursuivre sa défense.")
+- Dans tous les cas : ton bienveillant, tu ne retournes jamais un témoignage contre l'accusé.
     `.trim()
 
     try {

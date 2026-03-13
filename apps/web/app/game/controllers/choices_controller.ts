@@ -180,49 +180,20 @@ Langue : français`.trim()
       }
     }
 
-    // ── Calcul du temps écoulé pour adapter la difficulté ─────────────────────
-    const startMs = game.startAt?.toMillis() ?? game.createdAt.toMillis()
-    const elapsedMin = (Date.now() - startMs - (game.totalPausedMs ?? 0)) / 60_000
-    const gamePhase = elapsedMin < 3 ? 'early' : elapsedMin < 7 ? 'mid' : 'late'
+    const judgePersonality = `- Ton : bienveillant et pédagogue — tu veux que l'accusé comprenne et se défende bien
+- Tu salues chaque argument présenté, même modeste, et encourages l'accusé à continuer
+- Tu rappelles les charges avec douceur, sans chercher à accabler
+- Tu valorises les preuves et les efforts de défense de l'accusé`
 
-    const judgePersonality =
-      gamePhase === 'early'
-        ? `- Ton : intransigeant mais accessible — les bonnes preuves font mouche
-- Tu contre-attaques les arguments faibles mais tu reconnais les bons
-- Tu rappelles les charges principales sans chercher systématiquement la faille`
-        : gamePhase === 'mid'
-          ? `- Ton : sceptique et exigeant — tu remets en cause chaque argument
-- Tu demandes des preuves concrètes et ne te laisses pas convaincre facilement
-- Tu rappelles les éléments à charge entre chaque réponse`
-          : `- Ton : implacable et épuisé par les arguments — chaque erreur te coûte cher
-- Tu retournes les arguments faibles contre l'accusé avec force
-- Les preuves insuffisantes renforcent ta conviction de culpabilité
-- Seules les preuves irréfutables t'ébranlent légèrement`
-
-    const guiltyRules =
-      gamePhase === 'early'
-        ? `=== GUILTYDELTA ===
-- Preuve directe et irréfutable : -10 à -8
-- Argument pertinent avec preuve : -7 à -5
-- Argument sans preuve concrète : -3 à -1
-- Argument faible ou hors sujet : +1 à +2
-- Maximum autorisé : entre -10 et +2`
-        : gamePhase === 'mid'
-          ? `=== GUILTYDELTA ===
-- Preuve directe et irréfutable : -5 à -4
-- Argument pertinent avec preuve : -4 à -2
-- Argument sans preuve concrète : -1 à +1
-- Argument faible ou hors sujet : +2 à +5
-- Maximum autorisé : entre -5 et +5`
-          : `=== GUILTYDELTA ===
-- Preuve directe et irréfutable : -2 à -1
-- Argument pertinent avec preuve : -1 à +2
-- Argument sans preuve concrète : +3 à +6
-- Argument faible ou hors sujet : +7 à +10
-- Maximum autorisé : entre -2 et +10`
+    const guiltyRules = `=== GUILTYDELTA ===
+RÈGLE ABSOLUE : guiltyDelta est TOUJOURS négatif (la culpabilité ne peut qu'baisser).
+- Preuve directe et irréfutable : -15 à -12
+- Argument pertinent avec preuve : -11 à -8
+- Argument sans preuve concrète : -7 à -5
+- Tout argument, même faible : minimum -5
+- Maximum autorisé : entre -15 et -5 (toujours négatif, jamais positif)`
 
     // ── Construction de l'historique conversationnel ──────────────────────────
-    // Message système : contexte fixe de l'affaire + règles de réponse
     const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
 
 L'ACCUSÉ (la personne que tu juges) : ${auth.user!.firstName} ${auth.user!.lastName || ''}
@@ -231,7 +202,7 @@ IMPORTANT : Les personnages dans les données ci-dessous (contacts, Instagram, m
 DONNÉES COMPLÈTES DE L'AFFAIRE :
 ${JSON.stringify(game.data)}
 
-=== PERSONNALITÉ DE LA JUGE (${gamePhase === 'early' ? 'phase initiale — accessible' : gamePhase === 'mid' ? 'phase intermédiaire — exigeante' : 'phase finale — implacable'}) ===
+=== PERSONNALITÉ DE LA JUGE ===
 ${judgePersonality}
 - Réponse courte uniquement.
 - Génère toujours 3 nouveaux choix de défense, tous valides (aucun piège).
@@ -242,7 +213,7 @@ ${guiltyRules}
 Réponds UNIQUEMENT en JSON valide, sans texte avant ni après :
 {
   "message": "Réaction de la Juge (MAX 250 caractères)",
-  "guiltyDelta": -10,
+  "guiltyDelta": -8,
   "nextChoices": [
     {"id": 1, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": false},
     {"id": 2, "title": "Titre neutre", "description": "...", "choosen": false, "isTrap": false},
@@ -305,19 +276,13 @@ Langue : français`.trim()
       ]
     }
 
-    // Bonus alibi : amplifier la baisse de culpabilité x1.5 si un alibi est utilisé
-    if ((payload.selectedAlibiUuids?.length ?? 0) > 0 && guiltyDelta < 0) {
+    // Bonus alibi : amplifier la baisse x1.5 si un alibi est utilisé
+    if ((payload.selectedAlibiUuids?.length ?? 0) > 0) {
       guiltyDelta = Math.round(guiltyDelta * 1.5)
     }
 
-    // Clamp delta selon la phase de jeu
-    if (gamePhase === 'early') {
-      guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
-    } else if (gamePhase === 'mid') {
-      guiltyDelta = Math.max(-5, Math.min(guiltyDelta, 5))
-    } else {
-      guiltyDelta = Math.max(-2, Math.min(guiltyDelta, 10))
-    }
+    // Culpabilité : toujours baisse de 5 à 15%
+    guiltyDelta = Math.max(-15, Math.min(guiltyDelta, -5))
 
     const choice = await Choice.create({
       gameUuid: game.uuid,
@@ -385,45 +350,18 @@ Langue : français`.trim()
       }
     }
 
-    const startMs = game.startAt?.toMillis() ?? game.createdAt.toMillis()
-    const elapsedMin = (Date.now() - startMs - (game.totalPausedMs ?? 0)) / 60_000
-    const gamePhase = elapsedMin < 3 ? 'early' : elapsedMin < 7 ? 'mid' : 'late'
+    const judgePersonality = `- Ton : bienveillant et pédagogue — tu veux que l'accusé comprenne et se défende bien
+- Tu salues chaque argument présenté, même modeste, et encourages l'accusé à continuer
+- Tu rappelles les charges avec douceur, sans chercher à accabler
+- Tu valorises les preuves et les efforts de défense de l'accusé`
 
-    const judgePersonality =
-      gamePhase === 'early'
-        ? `- Ton : intransigeant mais accessible — les bonnes preuves font mouche
-- Tu contre-attaques les arguments faibles mais tu reconnais les bons
-- Tu rappelles les charges principales sans chercher systématiquement la faille`
-        : gamePhase === 'mid'
-          ? `- Ton : sceptique et exigeant — tu remets en cause chaque argument
-- Tu demandes des preuves concrètes et ne te laisses pas convaincre facilement
-- Tu rappelles les éléments à charge entre chaque réponse`
-          : `- Ton : implacable et épuisé par les arguments — chaque erreur te coûte cher
-- Tu retournes les arguments faibles contre l'accusé avec force
-- Les preuves insuffisantes renforcent ta conviction de culpabilité
-- Seules les preuves irréfutables t'ébranlent légèrement`
-
-    const guiltyRules =
-      gamePhase === 'early'
-        ? `=== GUILTYDELTA ===
-- Preuve directe et irréfutable : -10 à -8
-- Argument pertinent avec preuve : -7 à -5
-- Argument sans preuve concrète : -3 à -1
-- Argument faible ou hors sujet : +1 à +2
-- Maximum autorisé : entre -10 et +2`
-        : gamePhase === 'mid'
-          ? `=== GUILTYDELTA ===
-- Preuve directe et irréfutable : -5 à -4
-- Argument pertinent avec preuve : -4 à -2
-- Argument sans preuve concrète : -1 à +1
-- Argument faible ou hors sujet : +2 à +5
-- Maximum autorisé : entre -5 et +5`
-          : `=== GUILTYDELTA ===
-- Preuve directe et irréfutable : -2 à -1
-- Argument pertinent avec preuve : -1 à +2
-- Argument sans preuve concrète : +3 à +6
-- Argument faible ou hors sujet : +7 à +10
-- Maximum autorisé : entre -2 et +10`
+    const guiltyRules = `=== GUILTYDELTA ===
+RÈGLE ABSOLUE : guiltyDelta est TOUJOURS négatif (la culpabilité ne peut qu'baisser).
+- Preuve directe et irréfutable : -15 à -12
+- Argument pertinent avec preuve : -11 à -8
+- Argument sans preuve concrète : -7 à -5
+- Tout argument, même faible : minimum -5
+- Maximum autorisé : entre -15 et -5 (toujours négatif, jamais positif)`
 
     const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
 
@@ -433,7 +371,7 @@ IMPORTANT : Les personnages dans les données ci-dessous (contacts, Instagram, m
 DONNÉES COMPLÈTES DE L'AFFAIRE :
 ${JSON.stringify(game.data)}
 
-=== PERSONNALITÉ DE LA JUGE (${gamePhase === 'early' ? 'phase initiale — accessible' : gamePhase === 'mid' ? 'phase intermédiaire — exigeante' : 'phase finale — implacable'}) ===
+=== PERSONNALITÉ DE LA JUGE ===
 ${judgePersonality}
 - Réponse courte uniquement.
 - Génère toujours 3 nouveaux choix de défense, tous valides (aucun piège).
@@ -444,7 +382,7 @@ ${guiltyRules}
 Réponds avec ce format EXACT en deux parties séparées par ${STREAM_DELIMITER} :
 [Ta réaction en texte libre, MAX 250 caractères]
 ${STREAM_DELIMITER}
-{"guiltyDelta": -10, "nextChoices": [{"id":1,"title":"Titre neutre","description":"...","choosen":false,"isTrap":false},{"id":2,"title":"Titre neutre","description":"...","choosen":false,"isTrap":false},{"id":3,"title":"Titre neutre","description":"...","choosen":false,"isTrap":false}]}
+{"guiltyDelta": -8, "nextChoices": [{"id":1,"title":"Titre neutre","description":"...","choosen":false,"isTrap":false},{"id":2,"title":"Titre neutre","description":"...","choosen":false,"isTrap":false},{"id":3,"title":"Titre neutre","description":"...","choosen":false,"isTrap":false}]}
 
 isTrap est toujours false.
 Langue : français`.trim()
@@ -542,18 +480,13 @@ Langue : français`.trim()
 
         if (iaMessage.length > 250) iaMessage = iaMessage.substring(0, 247) + '...'
 
-        // Bonus alibi : amplifier la baisse de culpabilité x1.5 si un alibi est utilisé
-        if ((payload.selectedAlibiUuids?.length ?? 0) > 0 && guiltyDelta < 0) {
+        // Bonus alibi : amplifier la baisse x1.5 si un alibi est utilisé
+        if ((payload.selectedAlibiUuids?.length ?? 0) > 0) {
           guiltyDelta = Math.round(guiltyDelta * 1.5)
         }
 
-        if (gamePhase === 'early') {
-          guiltyDelta = Math.max(-10, Math.min(guiltyDelta, 2))
-        } else if (gamePhase === 'mid') {
-          guiltyDelta = Math.max(-5, Math.min(guiltyDelta, 5))
-        } else {
-          guiltyDelta = Math.max(-2, Math.min(guiltyDelta, 10))
-        }
+        // Culpabilité : toujours baisse de 5 à 15%
+        guiltyDelta = Math.max(-15, Math.min(guiltyDelta, -5))
 
         const choice = await Choice.create({
           gameUuid: game.uuid,
