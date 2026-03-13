@@ -15,7 +15,7 @@ export default class AdminGamesController {
       const user = game.user
       return {
         uuid: game.uuid,
-        username: user?.pseudo ?? `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || 'Inconnu',
+        username: user?.pseudo ?? (`${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || 'Inconnu'),
         userUuid: game.userUuid,
         guiltyPourcentage: game.guiltyPourcentage,
         isFinished: game.isFinished,
