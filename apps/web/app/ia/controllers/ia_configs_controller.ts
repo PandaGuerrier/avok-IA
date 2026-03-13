@@ -39,6 +39,11 @@ export default class IaConfigsController {
     return response.redirect().back()
   }
 
+  async useEnv({ response }: HttpContext) {
+    await IaConfig.query().update({ isActive: false })
+    return response.redirect().back()
+  }
+
   async destroy({ params, response }: HttpContext) {
     const config = await IaConfig.findByOrFail('uuid', params.uuid)
     if (!config.isActive) {

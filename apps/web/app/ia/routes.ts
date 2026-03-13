@@ -9,6 +9,7 @@ router
     router.post('/admin/ia', [IaConfigsController, 'store']).as('admin.ia.store')
     router.put('/admin/ia/:uuid', [IaConfigsController, 'update']).as('admin.ia.update')
     router.patch('/admin/ia/:uuid/activate', [IaConfigsController, 'activate']).as('admin.ia.activate')
+    router.patch('/admin/ia/use-env', [IaConfigsController, 'useEnv']).as('admin.ia.useEnv')
     router.delete('/admin/ia/:uuid', [IaConfigsController, 'destroy']).as('admin.ia.destroy')
   })
   .use([middleware.auth()])

@@ -6,7 +6,7 @@ import { Button } from '@workspace/ui/components/button'
 import { Input } from '@workspace/ui/components/input'
 import { Label } from '@workspace/ui/components/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@workspace/ui/components/card'
-import { Eye, EyeOff, Plus, Trash2, Zap } from 'lucide-react'
+import { Eye, EyeOff, Plus, Trash2, Zap, ServerCog } from 'lucide-react'
 import { router } from '@inertiajs/react'
 
 interface IaConfigItem {
@@ -65,6 +65,10 @@ export default function IaConfigPage() {
     router.delete(`/admin/ia/${uuid}`)
   }
 
+  function handleUseEnv() {
+    router.patch('/admin/ia/use-env')
+  }
+
   function startEdit(config: IaConfigItem) {
     setEditUuid(config.uuid)
     setEditForm({
@@ -75,16 +79,34 @@ export default function IaConfigPage() {
     })
   }
 
+  const activeConfig = configs.find((c) => c.isActive)
+  const usingEnv = !activeConfig
+
   return (
     <AppLayout breadcrumbs={[{ label: 'Admin' }, { label: 'Configuration IA' }]}>
       <div className="p-6 max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Configuration IA</h1>
-          <Button onClick={() => setShowNewForm((v) => !v)} size="sm">
-            <Plus className="w-4 h-4 mr-2" />
-            Nouvelle config
-          </Button>
+          <div className="flex gap-2">
+            {!usingEnv && (
+              <Button variant="outline" size="sm" onClick={handleUseEnv}>
+                <ServerCog className="w-4 h-4 mr-2" />
+                Basculer sur .env
+              </Button>
+            )}
+            <Button onClick={() => setShowNewForm((v) => !v)} size="sm">
+              <Plus className="w-4 h-4 mr-2" />
+              Nouvelle config
+            </Button>
+          </div>
         </div>
+
+        {usingEnv && (
+          <div className="flex items-center gap-3 rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-600 dark:text-blue-400">
+            <ServerCog className="w-4 h-4 shrink-0" />
+            <span>Aucune config active — l'IA utilise les variables <code className="font-mono text-xs">.env</code> (IA_API_URL, IA_API_KEY).</span>
+          </div>
+        )}
 
         {showNewForm && (
           <Card>
