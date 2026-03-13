@@ -7,6 +7,7 @@ import { isSSREnableForPage } from '#config/ssr'
 import UserDto from '#users/dtos/user'
 import GameDto from '#game/dtos/game'
 import Game from '#game/models/game'
+import IaConfig from '#ia/models/ia_config'
 import env from '#start/env'
 
 const inertiaConfig = defineConfig({
@@ -31,6 +32,10 @@ const inertiaConfig = defineConfig({
         await auth.user.load('role')
         return new UserDto(auth?.user)
       }
+    },
+    iaModel: async () => {
+      const config = await IaConfig.query().where('isActive', true).first()
+      return config?.model ?? 'o3-mini'
     },
     flashMessages: (ctx) => ctx.session?.flashMessages.all(),
     game: async ({ auth, params }: any) => {

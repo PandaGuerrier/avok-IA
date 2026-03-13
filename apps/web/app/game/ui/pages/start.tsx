@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import AppLayout from '#common/ui/components/app_layout'
 import usePageProps from '#common/ui/hooks/use_page_props'
+import { usePage } from '@inertiajs/react'
 import type GameDto from '#game/dtos/game'
 import type AlibiDto from '#game/dtos/alibi'
 import type ProofDto from '#game/dtos/proof'
@@ -208,6 +209,7 @@ export default function StartPage() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   const contacts: ContactData[] = (game.data as any)?.contacts ?? []
+  const { iaModel } = usePage<any>().props
 
   return (
     <GameStoreProvider game={game}>
@@ -336,6 +338,13 @@ export default function StartPage() {
               />
             )}
           </div>
+        </div>
+
+        {/* IA model badge */}
+        <div className="absolute bottom-2 right-3 z-30 pointer-events-none">
+          <span className="text-[10px] font-mono text-muted-foreground/40 select-none">
+            {iaModel}
+          </span>
         </div>
 
         {/* Win overlay */}
