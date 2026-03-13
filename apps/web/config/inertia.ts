@@ -35,7 +35,7 @@ const inertiaConfig = defineConfig({
     },
     iaModel: async () => {
       const config = await IaConfig.query().where('isActive', true).first()
-      return config?.model ?? 'o3-mini'
+      return config?.name ?? 'ENV Configured'
     },
     flashMessages: (ctx) => ctx.session?.flashMessages.all(),
     game: async ({ auth, params }: any) => {
