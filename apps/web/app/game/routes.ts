@@ -5,6 +5,7 @@ const GamesController = () => import('#game/controllers/games_controller')
 const ChoicesController = () => import('#game/controllers/choices_controller')
 const AlibisController = () => import('#game/controllers/alibis_controller')
 const LeaderboardController = () => import('#game/controllers/leaderboard_controller')
+const AdminGamesController = () => import('#game/controllers/admin_games_controller')
 
 router
   .group(() => {
@@ -27,6 +28,9 @@ router
     router.get('/game/:uuid/choices/:choiceUuid', [ChoicesController, 'show']).as('game.choices.show')
 
     router.get('/leaderboard', [LeaderboardController, 'index']).as('leaderboard.index')
+
+    router.get('/admin/games', [AdminGamesController, 'index']).as('admin.games.index')
+    router.delete('/admin/games', [AdminGamesController, 'bulkDestroy']).as('admin.games.bulkDestroy')
 
     router.get('/game/:uuid/alibis', [AlibisController, 'index']).as('game.alibis.index')
     router.post('/game/:uuid/alibis', [AlibisController, 'store']).as('game.alibis.store')

@@ -10,6 +10,7 @@ import {
   Mail,
   BookOpen,
   Bot,
+  Gamepad2,
 } from 'lucide-react'
 
 import type { NavMainItem, NavUserOptionsGroup } from '#common/ui/types/navigation'
@@ -36,6 +37,11 @@ export function getNavUser(_: SimpleTFunction, isAdmin?: boolean): NavUserOption
         title: 'Config IA',
         url: '/admin/ia',
         icon: Bot,
+      },
+      {
+        title: 'Parties',
+        url: '/admin/games',
+        icon: Gamepad2,
       },
     ])
   }
