@@ -187,11 +187,11 @@ Langue : français`.trim()
 
     const guiltyRules = `=== GUILTYDELTA ===
 RÈGLE ABSOLUE : guiltyDelta est TOUJOURS négatif (la culpabilité ne peut qu'baisser).
-- Preuve directe et irréfutable : -30 à -25
-- Argument pertinent avec preuve : -24 à -20
-- Argument sans preuve concrète : -19 à -15
-- Tout argument, même faible : minimum -15
-- Maximum autorisé : entre -30 et -15 (toujours négatif, jamais positif)`
+- Preuve directe et irréfutable : -15 à -12
+- Argument pertinent avec preuve : -11 à -8
+- Argument sans preuve concrète : -7 à -5
+- Tout argument, même faible : minimum -5
+- Maximum autorisé : entre -15 et -5 (toujours négatif, jamais positif)`
 
     // ── Construction de l'historique conversationnel ──────────────────────────
     const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
@@ -282,7 +282,7 @@ Langue : français`.trim()
     }
 
     // Culpabilité : toujours baisse de 5 à 15%
-    guiltyDelta = Math.max(-30, Math.min(guiltyDelta, -15))
+    guiltyDelta = Math.max(-15, Math.min(guiltyDelta, -5))
 
     const choice = await Choice.create({
       gameUuid: game.uuid,
@@ -357,11 +357,11 @@ Langue : français`.trim()
 
     const guiltyRules = `=== GUILTYDELTA ===
 RÈGLE ABSOLUE : guiltyDelta est TOUJOURS négatif (la culpabilité ne peut qu'baisser).
-- Preuve directe et irréfutable : -30 à -25
-- Argument pertinent avec preuve : -24 à -20
-- Argument sans preuve concrète : -19 à -15
-- Tout argument, même faible : minimum -15
-- Maximum autorisé : entre -30 et -15 (toujours négatif, jamais positif)`
+- Preuve directe et irréfutable : -15 à -12
+- Argument pertinent avec preuve : -11 à -8
+- Argument sans preuve concrète : -7 à -5
+- Tout argument, même faible : minimum -5
+- Maximum autorisé : entre -15 et -5 (toujours négatif, jamais positif)`
 
     const systemMessage = `Tu es la Juge Moreau. Tu interroges un accusé dans un jeu de déduction policière.
 
@@ -486,7 +486,7 @@ Langue : français`.trim()
         }
 
         // Culpabilité : toujours baisse de 5 à 15%
-        guiltyDelta = Math.max(-30, Math.min(guiltyDelta, -15))
+        guiltyDelta = Math.max(-15, Math.min(guiltyDelta, -5))
 
         const choice = await Choice.create({
           gameUuid: game.uuid,

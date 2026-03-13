@@ -14,8 +14,16 @@ export async function getLeaderboardEntries(): Promise<LeaderboardEntryDto[]> {
     .where('is_finished', true)
     .whereNotNull('finished_at')
     .preload('user')
-    .orderByRaw('(100 - guilty_pourcentage) DESC, finished_at ASC')
-    .limit(20)
 
-  return games.map((game, i) => new LeaderboardEntryDto(game, i + 1))
+  const entries = games
+    .map((game) => {
+      const start = game.startAt?.toMillis() ?? game.createdAt.toMillis()
+      const end = game.finishedAt!.toMillis()
+      const durationMs = Math.max(0, end - start - (game.totalPausedMs ?? 0))
+      return { game, durationMs }
+    })
+    .sort((a, b) => a.durationMs - b.durationMs)
+    .slice(0, 20)
+
+  return entries.map(({ game }, i) => new LeaderboardEntryDto(game, i + 1))
 }

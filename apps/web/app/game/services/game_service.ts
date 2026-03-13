@@ -294,9 +294,9 @@ Langue: français
       .join('\n')
 
     const guiltyRules = `- guiltyDelta TOUJOURS négatif : entre -30 et -15 (la culpabilité ne peut qu'baisser).
-- Ta réponse aide clairement l'accusé : -30 à -25
-- Ta réponse est vague ou partielle : -24 à -15
-- Minimum absolu : -15`
+- Ta réponse aide clairement l'accusé : -15 à -10
+- Ta réponse est vague ou partielle : -9 à -5
+- Minimum absolu : -5`
 
     const prompt = `
 Tu es ${contact.name}, ${contact.role} de l'adolescent faisant l'objet d'une enquête policière.
@@ -334,7 +334,7 @@ Réponds UNIQUEMENT en JSON valide :
       const parsed = JSON.parse(raw)
       let guiltyDelta: number = parsed.guiltyDelta || -5
       // Toujours négatif, entre -5 et -15
-      guiltyDelta = Math.max(-30, Math.min(guiltyDelta, -15))
+      guiltyDelta = Math.max(-15, Math.min(guiltyDelta, -5))
       return { answer: parsed.answer || '', guiltyDelta }
     } catch {
       return {
