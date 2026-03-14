@@ -1,6 +1,6 @@
-# ExprEfrei
+# Avok'IA
 
-ExprEfrei est une plateforme sociale et communautaire moderne, conçue pour faciliter l'échange et l'expression au sein de l'Efrei.
+Avok'IA jeu pour le hackaton 2026 de l'efrei
 
 ## 🚀 Technologies
 
@@ -14,15 +14,6 @@ Ce projet utilise une stack moderne et performante :
 *   **Cache/Queue :** [Redis](https://redis.io/)
 *   **Monorepo :** [TurboRepo](https://turbo.build/)
 *   **Infrastructure :** [Docker](https://www.docker.com/)
-
-## ✨ Fonctionnalités
-
-*   **Authentification et Gestion des Utilisateurs** : Inscription, connexion, réinitialisation de mot de passe, authentification sécurisée.
-*   **Système de Posts** : Création, affichage et suppression de posts.
-*   **Temps Réel** : Mises à jour en direct des interactions.
-*   **Modération** : Outils d'administration pour la gestion du contenu et des utilisateurs (bannissement, suppression).
-*   **Profile Utilisateur** : Gestion des informations personnelles.
-*   **Système de Sondages** : Sondages pour les élèves et génération de rapports pour l'administration.
 
 ## 🛠️ Prérequis
 
@@ -38,7 +29,7 @@ Avant de commencer, assurez-vous d'avoir installé :
 
     ```bash
     git clone <votre-repo-url>
-    cd ExprEfrei
+    cd avok-ia
     ```
 
 2.  **Installer les dépendances :**
@@ -90,22 +81,8 @@ Ce projet est un monorepo géré par TurboRepo :
 *   `packages/eslint-config` : Configuration ESLint partagée.
 *   `packages/typescript-config` : Configuration TypeScript partagée.
 
-## 🤝 Contribution
+## IMPORTANT
 
-Les contributions sont les bienvenues ! Pour les tâches à venir, consultez le fichier `todo.md`.
-
-## ⚖️ Licence et Droits d'Utilisation
-
-Ce projet est protégé par le droit d'auteur. Contrairement à de nombreux projets sur GitHub, **ce code n'est PAS Open Source** (au sens MIT/GPL).
-
-**✅ Ce que vous POUVEZ faire :**
-* Consulter le code pour comprendre son fonctionnement (transparence).
-* Télécharger et lancer le projet **localement** pour le tester.
-* Copier de petits extraits de code (snippets, fonctions utilitaires) pour vos propres projets personnels ou éducatifs.
-
-**❌ Ce qu'il est STRICTEMENT INTERDIT de faire :**
-* **Redéployer ce site** en production (publicement) sur un autre serveur/domaine.
-* Utiliser le nom **"Expr'efrei"**, son logo ou son identité visuelle.
-* Copier l'intégralité ou une partie substantielle du projet pour créer un service concurrent.
+Oubliez pas votre api key dans le .env, (openai compatible) ps: c'est un gouffre a token ;)
 
 > ⚠️ **Note légale :** Le code est mis à disposition sous une licence **"Source Available"** restrictive. Tout usage commercial ou redéploiement non autorisé constitue une violation de la propriété intellectuelle. Voir le fichier [LICENSE](./LICENSE) pour le texte juridique complet.
